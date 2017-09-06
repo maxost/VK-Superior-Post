@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">vk-superior-post</string>
+    <string name="app_name">VK Superior Post</string>
+
+    <integer name="com_vk_sdk_AppId">6174972</integer>
 </resources>

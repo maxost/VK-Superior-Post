@@ -8,6 +8,7 @@ import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
 import kotlinx.android.synthetic.main.activity_login.*
+import ru.maxost.switchlog.SwitchLog
 
 class LoginActivity : AppCompatActivity() {
 
@@ -27,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onError(error: VKError?) {
-                //TODO show error
+                SwitchLog.log(error.toString())
             }
         })
     }

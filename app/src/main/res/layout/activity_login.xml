@@ -5,13 +5,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.maxost.vk_superior_post.LoginActivity">
+    tools:context="ru.maxost.vk_superior_post.LoginActivity"
+    android:background="@drawable/drawable_login_backgound"
+    >
 
-    <Button
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="26sp"
+        app:fontFamily="@font/pacifico"
+        app:layout_constraintBottom_toTopOf="@+id/activity_login_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/activity_login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="login"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/login_button_text"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        android:background="@drawable/login_button"
         />
 
 </android.support.constraint.ConstraintLayout>

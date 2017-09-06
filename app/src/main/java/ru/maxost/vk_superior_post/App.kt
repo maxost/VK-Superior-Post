@@ -4,7 +4,6 @@ import android.app.Application
 import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKAccessTokenTracker
 import com.vk.sdk.VKSdk
-import es.dmoral.toasty.Toasty
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import ru.maxost.switchlog.SwitchLog
@@ -36,11 +35,7 @@ class App : Application() {
         val tokenTracker = object: VKAccessTokenTracker() {
             override fun onVKAccessTokenChanged(oldToken: VKAccessToken?,
                                                 newToken: VKAccessToken?) {
-                if(newToken==null) {
-                    Toasty.error(
-                            this@App,
-                            getString(R.string.login_auth_data_revoked_message)).show()
-                }
+                //TODO
             }
         }
         tokenTracker.startTracking()

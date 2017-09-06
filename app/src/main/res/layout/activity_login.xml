@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.maxost.vk_superior_post.LoginActivity"
+    tools:context="ru.maxost.vk_superior_post.UI.LoginActivity"
     android:background="@drawable/drawable_login_backgound"
     >
 
@@ -24,12 +24,13 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/activity_login_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:fontFamily="@font/roboto_medium"
         android:text="@string/login_button_text"
+        android:textSize="16sp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

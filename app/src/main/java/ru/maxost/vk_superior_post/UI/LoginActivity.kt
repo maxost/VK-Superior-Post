@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post
+package ru.maxost.vk_superior_post.UI
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -9,13 +9,15 @@ import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
 import kotlinx.android.synthetic.main.activity_login.*
 import ru.maxost.switchlog.SwitchLog
+import ru.maxost.vk_superior_post.R
+import ru.maxost.vk_superior_post.UI.PostScreen.PostActivity
 
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        activity_login_button.setOnClickListener { VKSdk.login(this, "wall") }
+        activity_login_button.setOnClickListener { VKSdk.login(this, "wall", "photos") }
 
         if(VKAccessToken.currentToken()!=null) { startPostActivity() }
     }

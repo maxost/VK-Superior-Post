@@ -9,4 +9,8 @@
     <string name="login_auth_data_revoked_message">Авторизация отозвана\nНеобходимо выполнить вход</string>
     <string name="login_button_text">Войти через Вконтакте</string>
 
+    <!-- Post -->
+    <string name="post_text_hint">Что у Вас нового?</string>
+    <string name="post_button_send_text">Отправить</string>
+
 </resources>

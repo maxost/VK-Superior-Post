@@ -17,7 +17,11 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.TextView
+import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Utils.dp2px
 
 
@@ -34,17 +38,24 @@ class ProdBitmapService(private val context: Context): BitmapService {
         val canvas = Canvas(bitmap)
         canvas.drawColor(ContextCompat.getColor(context, R.color.white))
 
+        val frameLayout = FrameLayout(context)
+        frameLayout.isDrawingCacheEnabled = true
+
         //text
         val textView = TextView(context)
-        val textWidth = canvas.width - 48.dp2px(context)
-        textView.layout(0, 0, textWidth, canvas.height)
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
         textView.text = post.text
         textView.typeface = ResourcesCompat.getFont(context, R.font.roboto_medium)
         textView.gravity = Gravity.CENTER
-        textView.isDrawingCacheEnabled = true
-        canvas.drawBitmap(textView.drawingCache, 24f.dp2px(context), (canvas.height / 2 - textView.height / 2).toFloat(), null)
+        textView.setPadding(24.dp2px(context), 24.dp2px(context), 24.dp2px(context), 24.dp2px(context))
+        frameLayout.addView(textView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+
+        frameLayout.measure(
+                View.MeasureSpec.makeMeasureSpec(canvas.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(canvas.height, View.MeasureSpec.EXACTLY))
+        frameLayout.layout(0, 0, canvas.width, canvas.height)
+        canvas.drawBitmap(frameLayout.drawingCache, 0f, 0f, null)
 
         return@fromCallable bitmap
     }

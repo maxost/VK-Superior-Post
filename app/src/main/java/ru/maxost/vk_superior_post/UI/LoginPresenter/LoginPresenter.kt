@@ -20,9 +20,13 @@ class LoginPresenter @Inject constructor(private val dataManger: DataManger)
     override fun attach(view: View, isInitialAttach: Boolean) {
         super.attach(view, isInitialAttach)
         dataManger.isLoggedIn()
-                .subscribe({
-                    this@LoginPresenter.view?.showPostScreen()
-                    this@LoginPresenter.view?.close()
+                .subscribe({ isLoggedIn ->
+                    if(isLoggedIn) {
+                        this@LoginPresenter.view?.showPostScreen()
+                        this@LoginPresenter.view?.close()
+                    } else {
+                        // do nothing
+                    }
                 }, {
                     it.printStackTrace()
                 }).addToDisposables()

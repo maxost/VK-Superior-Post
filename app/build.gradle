@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 26
@@ -49,9 +50,18 @@ dependencies {
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
+    //dagger
+    kapt     "com.google.dagger:dagger-compiler:$dagger_version"
+    compile  "com.google.dagger:dagger:$dagger_version"
+    provided 'javax.annotation:jsr250-api:1.0'
+
     //rx
     implementation "io.reactivex.rxjava2:rxjava:$rx_java_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
+
+    //state
+    compile "com.evernote:android-state:$android_state_version"
+    kapt "com.evernote:android-state-processor:$android_state_version"
 
     //vk
     implementation 'com.vk:androidsdk:1.6.9'

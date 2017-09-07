@@ -7,6 +7,7 @@ import com.vk.sdk.VKSdk
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import ru.maxost.switchlog.SwitchLog
+import ru.maxost.vk_superior_post.DI.*
 
 /**
  * Created by Maxim Ostrovidov on 06.09.17.
@@ -14,8 +15,16 @@ import ru.maxost.switchlog.SwitchLog
  */
 class App : Application() {
 
+    companion object { @JvmStatic lateinit var graph: AppComponent }
+
     override fun onCreate() {
         super.onCreate()
+
+        //dagger
+        graph = DaggerAppComponent.builder()
+                .fileModule(FileModule(this))
+                .bitmapModule(BitmapModule(this))
+                .build()
 
         //log
         if(BuildConfig.DEBUG) SwitchLog.setLogMethod(SwitchLog.METHOD_ANDROID_LOG)

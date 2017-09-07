@@ -11,24 +11,24 @@
     >
 
     <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/activity_post_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:fontFamily="@font/roboto_bold"
+        android:gravity="center"
         android:hint="@string/post_text_hint"
+        android:paddingEnd="24dp"
+        android:paddingStart="24dp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="AsdAD DAS AASD dA ADS DAS DAS aDAS AD  ADS ASD ASDAS DD SAS D"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        />
+        tools:text="AsdAD DAS AASD dA ADS DAS DAS aDAS AD  ADS ASD ASDAS DD SAS D" />
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/activity_post_send_button"
+        android:id="@+id/activity_post_submit_button"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
@@ -36,14 +36,5 @@
         android:text="@string/post_button_send_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/activity_post_logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginBottom="500dp"
-        android:layout_marginEnd="244dp"
-        android:text="logout"
-        />
 
 </android.support.constraint.ConstraintLayout>

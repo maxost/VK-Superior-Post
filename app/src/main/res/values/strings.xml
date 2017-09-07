@@ -13,4 +13,12 @@
     <string name="post_text_hint">Что у Вас нового?</string>
     <string name="post_button_send_text">Отправить</string>
 
+    <!-- Upload -->
+    <string name="upload_loading">Публикация…</string>
+    <string name="upload_success">Опубликовано!</string>
+    <string name="upload_error">Произошла ошибка</string>
+    <string name="upload_cancel">Отмена</string>
+    <string name="upload_retry">Повторить</string>
+    <string name="upload_load_more">Создать ещё</string>
+
 </resources>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    android:id="@+id/activity_post_root_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_post_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.PostScreen.PostActivity"
     android:background="@color/white"
-    >
+    tools:context=".UI.PostScreen.PostActivity">
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/activity_post_text"
@@ -25,16 +23,154 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="AsdAD DAS AASD dA ADS DAS DAS aDAS AD  ADS ASD ASDAS DD SAS D" />
+        tools:text=" " />
+
+    <View
+        android:id="@+id/activity_post_bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyDivider"
+        app:layout_constraintBottom_toTopOf="@+id/activity_post_bottom_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel"
+        tools:layout_editor_absoluteX="0dp" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/activity_post_submit_button"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/send_button"
+        android:fontFamily="@font/roboto_medium"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
         android:text="@string/post_button_send_text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_bottom_panel"
+        app:layout_constraintEnd_toEndOf="@+id/activity_post_bottom_panel"
+        app:layout_constraintStart_toEndOf="@+id/activity_post_backgrounds_list"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel" />
+
+    <View
+        android:id="@+id/activity_post_top_panel"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyDivider"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_post_top_panel"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/ic_toolbar_font"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
+        app:layout_constraintStart_toStartOf="@+id/activity_post_top_panel"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginRight="13dp"
+        android:src="@drawable/ic_toolbar_sticker"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toEndOf="@+id/activity_post_top_panel"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/activity_post_type_post"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:fontFamily="@font/roboto_medium"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        android:text="@string/post_type_post"
+        android:textAllCaps="true"
+        android:textColor="@color/cornFlowerBlueTwo"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toEndOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toStartOf="@+id/activity_post_type_story"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/activity_post_top_panel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/activity_post_type_story"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:fontFamily="@font/roboto_medium"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        android:text="@string/post_type_story"
+        android:textAllCaps="true"
+        android:textColor="@color/cornFlowerBlueTwo"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/activity_post_type_post"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel"
+        tools:layout_editor_absoluteX="222dp" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@drawable/drawable_post_type_selector"
+        app:layout_constraintBottom_toTopOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toEndOf="@+id/activity_post_type_post"
+        app:layout_constraintStart_toStartOf="@+id/activity_post_type_post"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_post_backgrounds_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_bottom_panel"
+        app:layout_constraintEnd_toStartOf="@+id/activity_post_submit_button"
+        app:layout_constraintStart_toStartOf="@+id/activity_post_bottom_panel"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/greyDivider"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_bottom_panel"
+        app:layout_constraintEnd_toEndOf="@+id/activity_post_backgrounds_list"
+        app:layout_constraintStart_toEndOf="@+id/activity_post_backgrounds_list"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel"
+        tools:layout_editor_absoluteX="0dp"
+        />
 
 </android.support.constraint.ConstraintLayout>

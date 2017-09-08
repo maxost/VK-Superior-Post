@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ru.maxost.vk_superior_post">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,26 +16,38 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts"
+            />
+
         <activity
             android:name="com.vk.sdk.VKServiceActivity"
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
-        <activity android:name=".UI.LoginPresenter.LoginActivity">
+
+        <activity
+            android:name=".UI.LoginPresenter.LoginActivity"
+            tools:ignore="InnerclassSeparator"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".UI.PostScreen.PostActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="InnerclassSeparator"
+            />
 
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+        <activity
+            android:name=".UI.UploadScreen.UploadActivity"
+            tools:ignore="InnerclassSeparator"
+            />
 
-        <activity android:name=".UI.UploadScreen.UploadActivity"></activity>
     </application>
 
 </manifest>

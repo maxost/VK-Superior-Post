@@ -39,18 +39,20 @@ class ProdBitmapService(private val context: Context): BitmapService {
         canvas.drawColor(ContextCompat.getColor(context, R.color.blue))
 
         //stickers
-        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeResource(context.resources, R.drawable.sticker_fish_5, options)
+        while (!post.stickers.empty()) {
+            val sticker = post.stickers.pop()
 
-        val matrix = Matrix().apply {
-            setRotate(90f)
-            setTranslate(200f, 200f)
+            val matrix = Matrix().apply {
+                setRotate(90f)
+                setTranslate(200f, 200f)
+            }
+            val drawable = BitmapFactory.decodeResource(context.resources, sticker.id)
+            val stickerScaled = Bitmap.createScaledBitmap(drawable, 200, 200, true)
+
+            SwitchLog.scream("${stickerScaled.height} ${stickerScaled.width}")
+            canvas.drawBitmap(stickerScaled, matrix, null)
         }
-        val sticker = BitmapFactory.decodeResource(context.resources, R.drawable.sticker_fish_5)
-        val stickerScaled = Bitmap.createScaledBitmap(sticker, 200, 200, true)
 
-        SwitchLog.scream("${stickerScaled.height} ${stickerScaled.width}")
-        canvas.drawBitmap(stickerScaled, matrix, null)
 
         val frameLayout = FrameLayout(context)
         frameLayout.isDrawingCacheEnabled = true

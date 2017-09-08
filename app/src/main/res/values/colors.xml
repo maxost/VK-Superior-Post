@@ -5,6 +5,10 @@
     <color name="white">#ffffff</color>
     <color name="whiteTransparent">#40ffffff</color>
     <color name="cornFlowerBlue">#5692d7</color>
+    <color name="cornFlowerBlueTwo">#528bcc</color>
+    <color name="cornFlowerBlueTwoTransparent">#80528bcc</color>
     <color name="coolBlue">#4680c2</color>
     <color name="blue">#528bcc</color>
+    <color name="greyDivider">#26000000</color>
+    <color name="panelWhiteTransparent">#e6ebebeb</color>
 </resources>

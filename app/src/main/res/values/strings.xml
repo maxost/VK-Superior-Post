@@ -12,6 +12,8 @@
     <!-- Post -->
     <string name="post_text_hint">Что у Вас нового?</string>
     <string name="post_button_send_text">Отправить</string>
+    <string name="post_type_post">Запись</string>
+    <string name="post_type_story">История</string>
 
     <!-- Upload -->
     <string name="upload_loading">Публикация…</string>

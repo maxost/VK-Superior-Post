@@ -8,6 +8,17 @@
     android:background="@color/white"
     tools:context=".UI.PostScreen.PostActivity">
 
+    <ImageView
+        android:id="@+id/activity_post_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/blue"
+        />
+
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/activity_post_text"
         android:layout_width="wrap_content"
@@ -93,13 +104,28 @@
         app:layout_constraintStart_toStartOf="@+id/activity_post_top_panel"
         app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
 
+    <View
+        android:id="@+id/activity_post_text_style_clickbox"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toEndOf="@+id/activity_post_top_panel"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+
     <ImageView
-        android:id="@+id/imageView2"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginEnd="13dp"
         android:layout_marginRight="13dp"
         android:src="@drawable/ic_toolbar_sticker"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
+        app:layout_constraintEnd_toEndOf="@+id/activity_post_top_panel"
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+
+    <View
+        android:id="@+id/activity_post_stickers_clickbox"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
         app:layout_constraintEnd_toEndOf="@+id/activity_post_top_panel"
         app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />

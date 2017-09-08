@@ -8,4 +8,9 @@ import java.util.*
  * (c) White Soft
  */
 data class Post(var text: String = "",
+                var textStyle: TextStyle = TextStyle.WHITE,
                 var stickers: Stack<Sticker>): Serializable
+
+enum class TextStyle {
+    BLACK, WHITE, WHITE_WITH_BACKGROUND, BLACK_WITH_BACKGROUND
+}

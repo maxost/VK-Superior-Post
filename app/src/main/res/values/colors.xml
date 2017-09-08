@@ -11,4 +11,5 @@
     <color name="blue">#528bcc</color>
     <color name="greyDivider">#26000000</color>
     <color name="panelWhiteTransparent">#e6ebebeb</color>
+    <color name="shadow">#1e000000</color>
 </resources>

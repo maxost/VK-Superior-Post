@@ -1,6 +1,7 @@
 package ru.maxost.vk_superior_post.Data.Services.File
 
 import io.reactivex.Single
+import java.io.File
 import java.net.URI
 
 /**
@@ -8,5 +9,5 @@ import java.net.URI
  * (c) White Soft
  */
 interface FileService {
-    fun getImagesFromGallery(count: Int): Single<List<URI>>
+    fun getImagesFromGallery(count: Int): Single<List<File>>
 }

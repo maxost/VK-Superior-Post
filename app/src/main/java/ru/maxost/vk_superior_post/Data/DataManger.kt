@@ -10,6 +10,7 @@ import ru.maxost.vk_superior_post.Data.Services.Bitmap.BitmapService
 import ru.maxost.vk_superior_post.Data.Services.File.FileService
 import ru.maxost.vk_superior_post.GALLERY_LAST_IMAGES_COUNT
 import ru.maxost.vk_superior_post.Model.Post
+import java.io.File
 import java.net.URI
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class DataManger @Inject constructor(private val fileService: FileService,
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun getImagesFromGallery(): Single<List<URI>> {
+    fun getImagesFromGallery(): Single<List<File>> {
         return fileService.getImagesFromGallery(GALLERY_LAST_IMAGES_COUNT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

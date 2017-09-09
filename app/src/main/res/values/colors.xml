@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#2c2d2e</color>
     <color name="grey">#909499</color>
+    <color name="lightGrey">#ebebeb</color>
     <color name="white">#ffffff</color>
     <color name="whiteTransparent">#40ffffff</color>
     <color name="cornFlowerBlue">#5692d7</color>
@@ -12,4 +13,5 @@
     <color name="greyDivider">#26000000</color>
     <color name="panelWhiteTransparent">#e6ebebeb</color>
     <color name="shadow">#1e000000</color>
+    <color name="backgroundThumbBlue">#d6e2f3</color>
 </resources>

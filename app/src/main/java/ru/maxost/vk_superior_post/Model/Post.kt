@@ -9,7 +9,8 @@ import java.util.*
  */
 data class Post(var text: String = "",
                 var textStyle: TextStyle = TextStyle.WHITE,
-                var stickers: Stack<Sticker>): Serializable
+                var background: Background = Background(),
+                var stickers: Stack<Sticker> = Stack()): Serializable
 
 enum class TextStyle {
     BLACK, WHITE, WHITE_WITH_BACKGROUND, BLACK_WITH_BACKGROUND

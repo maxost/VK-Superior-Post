@@ -53,7 +53,6 @@ class ProdBitmapService(private val context: Context): BitmapService {
             canvas.drawBitmap(stickerScaled, matrix, null)
         }
 
-
         val frameLayout = FrameLayout(context)
         frameLayout.isDrawingCacheEnabled = true
 

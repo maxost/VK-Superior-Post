@@ -58,7 +58,7 @@
             android:scaleType="fitXY"
             />
 
-        <android.support.v7.widget.AppCompatEditText
+        <ru.maxost.vk_superior_post.Utils.MyEditText
             android:id="@+id/activity_post_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

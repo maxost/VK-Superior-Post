@@ -31,6 +31,10 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun enableSubmitButton(enable: Boolean)
         fun closeKeyboard()
         fun setPostType(postType: PostType)
+        fun shiftPostKeyboard(shift: Boolean)
+        fun shiftPostGalleryList(shift: Boolean)
+        fun shiftBottomPanelKeyboard(shift: Boolean)
+        fun shiftBottomPanelGalleryList(shift: Boolean)
 
         //post
         fun setText(text: String)
@@ -46,8 +50,9 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     @State var post: Post = Post()
     @State var lastSelectedGalleryImage: File? = null
-    @State var isKeyboardVisible: Boolean = false
-    @State var isBottomPanelVisible: Boolean = false
+
+    private var isKeyboardVisible: Boolean = false
+    private var isBottomPanelVisible: Boolean = false
 
     override fun attach(view: View, isInitialAttach: Boolean) {
         super.attach(view, isInitialAttach)
@@ -56,7 +61,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             setText(post.text)
             setTextStyle(post.textStyle)
             setBackground(post.background)
-            setSelectedBackground(post.background) //TODO animation doesn't work on activity recreation
+            setSelectedBackground(post.background) //TODO scroll doesn't work on activity recreation
             if(isBottomPanelVisible) loadGalleryImages()
             setPostType(post.postType)
         }
@@ -80,14 +85,23 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     }
 
     fun onKeyboardShow(show: Boolean) {
-
-        isKeyboardVisible = show
+        if(isKeyboardVisible == show) return
 
         if(show) {
-            view?.showGalleryPanel(false)
-        } else if(!show && isBottomPanelVisible) {
-//            view?.showGalleryPanel(true)
+            if(isBottomPanelVisible) {
+                view?.showGalleryPanel(false)
+                view?.shiftPostGalleryList(false)
+                view?.shiftBottomPanelGalleryList(false)
+                isBottomPanelVisible = false
+            }
+            view?.shiftPostKeyboard(true)
+            view?.shiftBottomPanelKeyboard(true)
+        } else {
+            view?.shiftPostKeyboard(false)
+            view?.shiftBottomPanelKeyboard(false)
         }
+
+        isKeyboardVisible = show
     }
 
     fun onBack(): Boolean {
@@ -95,6 +109,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             isKeyboardVisible -> false
             isBottomPanelVisible -> {
                 view?.showGalleryPanel(false)
+                view?.shiftPostGalleryList(false)
+                view?.shiftBottomPanelGalleryList(false)
                 isBottomPanelVisible = false
                 true
             }
@@ -126,11 +142,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         }
 
         if(background.type == BackgroundType.IMAGE) {
-            view?.closeKeyboard()
-            isKeyboardVisible = false
-            view?.showGalleryPanel(true)
-            isBottomPanelVisible = true
-            loadGalleryImages()
+            onImageBackgroundSelected()
         } else {
             post.background = background
             view?.setBackground(post.background)
@@ -152,6 +164,28 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     fun onOpenGalleryClick() = view?.showGallery()
 
     fun onSubmitClick() = view?.showUploadScreen(post)
+
+    private fun onImageBackgroundSelected() {
+
+        if(isBottomPanelVisible) {
+            loadGalleryImages()
+            return
+        }
+
+        if(isKeyboardVisible) {
+            view?.closeKeyboard()
+            view?.shiftPostKeyboard(false)
+            view?.shiftBottomPanelKeyboard(false)
+            isKeyboardVisible = false
+        }
+
+        view?.shiftPostGalleryList(true)
+        view?.shiftBottomPanelGalleryList(true)
+        view?.showGalleryPanel(true)
+        isBottomPanelVisible = true
+
+        loadGalleryImages()
+    }
 
     private fun Post.nextTextStyle(): TextStyle {
         textStyle = when (textStyle) {

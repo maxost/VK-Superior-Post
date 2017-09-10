@@ -39,7 +39,6 @@ import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightProvider
 class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity() {
 
     private val presenter by lazy { App.graph.getPostPresenter() }
-
     private var keyboardHeight: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,15 +58,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
             activity_post_text.requestFocus()
         }
-
-        activity_post_root_layout.viewTreeObserver.addOnGlobalLayoutListener {
-            val size = Point()
-            windowManager.defaultDisplay.getSize(size)
-            val accessibleHeight = size.y
-            val diff = accessibleHeight - activity_post_root_layout.height
-            presenter.onKeyboardShow(diff > 120.dp2px(this))
-            SwitchLog.scream("accessibleHeight: $accessibleHeight layout.height: ${activity_post_root_layout.height} diff: ${diff.px2dp(this)}")
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -85,16 +75,11 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
-        SwitchLog.scream("onKeyboardHeightChanged: $height")
         if(height > 0) {
             keyboardHeight = height
-            activity_post_compose_root_layout.y -= keyboardHeight / 2
+            presenter.onKeyboardShow(true)
         } else {
-            activity_post_compose_root_layout.y += keyboardHeight / 2
-        }
-
-        activity_post_bottom_panel.layoutParams = (activity_post_bottom_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
-            setMargins(0, 0, 0, height)
+            presenter.onKeyboardShow(false)
         }
     }
 
@@ -224,20 +209,37 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         getGalleryAdapter().setNewData(list)
     }
 
-    override fun showGalleryPanel(show: Boolean) {
-        activity_post_gallery_list.show(show)
-        if(keyboardHeight >= activity_post_gallery_list.height) {
-            activity_post_gallery_list.layoutParams = activity_post_gallery_list.layoutParams.apply {
-                height = keyboardHeight
-            }
-        }
-        SwitchLog.scream("activity_post_compose_root_layout.y: ${activity_post_compose_root_layout.y}")
-        if(show) {
+    override fun showGalleryPanel(show: Boolean) = activity_post_gallery_list.show(show)
+
+    override fun shiftPostKeyboard(shift: Boolean) {
+        SwitchLog.scream("$shift")
+        if(shift) {
             activity_post_compose_root_layout.y -= keyboardHeight / 2
-            SwitchLog.scream("activity_post_compose_root_layout.y: ${activity_post_compose_root_layout.y}")
         } else {
             activity_post_compose_root_layout.y += keyboardHeight / 2
-            SwitchLog.scream("activity_post_compose_root_layout.y: ${activity_post_compose_root_layout.y}")
+        }
+    }
+
+    override fun shiftPostGalleryList(shift: Boolean) {
+        SwitchLog.scream("$shift")
+        if(shift) {
+            activity_post_compose_root_layout.y -= 208.dp2px(this) / 2
+        } else {
+            activity_post_compose_root_layout.y += 208.dp2px(this) / 2
+        }
+    }
+
+    override fun shiftBottomPanelKeyboard(shift: Boolean) {
+        SwitchLog.scream("$shift")
+        activity_post_bottom_panel.layoutParams = (activity_post_bottom_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
+            setMargins(0, 0, 0, if(shift) keyboardHeight else 0)
+        }
+    }
+
+    override fun shiftBottomPanelGalleryList(shift: Boolean) {
+        SwitchLog.scream("$shift")
+        activity_post_bottom_panel.layoutParams = (activity_post_bottom_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
+            setMargins(0, 0, 0, if(shift) 208.dp2px(this@PostActivity) else 0)
         }
     }
 

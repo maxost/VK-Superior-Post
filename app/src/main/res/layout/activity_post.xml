@@ -83,7 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/activity_post_gallery_list"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />

@@ -10,8 +10,13 @@ import java.util.*
 data class Post(var text: String = "",
                 var textStyle: TextStyle = TextStyle.BLACK,
                 var background: Background = Background(),
+                var postType: PostType = PostType.POST,
                 var stickers: Stack<Sticker> = Stack()): Serializable
 
 enum class TextStyle {
     BLACK, WHITE, WHITE_WITH_BACKGROUND, BLACK_WITH_BACKGROUND
+}
+
+enum class PostType {
+    POST, STORY
 }

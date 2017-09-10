@@ -15,11 +15,11 @@
     <FrameLayout
         android:id="@+id/activity_post_compose_root_layout"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/activity_post_bottom_panel"
+        app:layout_constraintBottom_toBottomOf="parent"
         >
 
         <ImageView
@@ -60,11 +60,12 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/activity_post_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:fontFamily="@font/roboto_bold"
             android:gravity="center"
+            android:layout_gravity="center"
             android:hint="@string/post_text_hint"
             android:paddingEnd="24dp"
             android:paddingStart="24dp"
@@ -84,7 +85,8 @@
         android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/activity_post_gallery_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <View
         android:layout_width="match_parent"

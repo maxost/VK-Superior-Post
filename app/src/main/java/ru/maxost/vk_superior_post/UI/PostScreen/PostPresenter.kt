@@ -30,6 +30,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun setSelectedGalleryImage(file: File?)
         fun enableSubmitButton(enable: Boolean)
         fun closeKeyboard()
+        fun setPostType(postType: PostType)
 
         //post
         fun setText(text: String)
@@ -57,6 +58,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             setBackground(post.background)
             setSelectedBackground(post.background) //TODO animation doesn't work on activity recreation
             if(isBottomPanelVisible) loadGalleryImages()
+            setPostType(post.postType)
         }
     }
 
@@ -70,6 +72,13 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         view?.setTextStyle(post.textStyle)
     }
 
+    fun onPostTypeChange(postType: PostType) {
+        if(post.postType == postType) return
+
+        post.postType = postType
+        view?.setPostType(post.postType)
+    }
+
     fun onKeyboardShow(show: Boolean) {
 
         isKeyboardVisible = show
@@ -77,7 +86,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         if(show) {
             view?.showGalleryPanel(false)
         } else if(!show && isBottomPanelVisible) {
-            view?.showGalleryPanel(true)
+//            view?.showGalleryPanel(true)
         }
     }
 

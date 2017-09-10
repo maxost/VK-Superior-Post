@@ -8,7 +8,7 @@ import java.util.*
  * (c) White Soft
  */
 data class Post(var text: String = "",
-                var textStyle: TextStyle = TextStyle.WHITE,
+                var textStyle: TextStyle = TextStyle.BLACK,
                 var background: Background = Background(),
                 var stickers: Stack<Sticker> = Stack()): Serializable
 

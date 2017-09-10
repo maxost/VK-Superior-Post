@@ -2,7 +2,7 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/coolBlue</item>
-        <item name="colorPrimaryDark">@color/coolBlue</item>
+        <item name="colorPrimaryDark">@color/backgroundThumbBlue</item>
         <item name="colorAccent">@color/coolBlue</item>
     </style>
 

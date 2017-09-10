@@ -19,26 +19,31 @@ import ru.maxost.vk_superior_post.Utils.*
  * dustlooped@yandex.ru
  */
 
+interface BackgroundsAdapter {
+    fun setSelectedItem(background: Background?)
+}
+
 inline fun backgroundsAdapter(
         context: Context,
         crossinline onItemClick: (Background) -> Unit)
         : RecyclerView.Adapter<RecyclerView.ViewHolder>
-        = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        = object : RecyclerView.Adapter<RecyclerView.ViewHolder>(), BackgroundsAdapter {
 
     init { setHasStableIds(true) }
 
     private var data = listOf(
-            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_white),
-            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_blue),
-            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_green),
-            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_orange),
-            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_red),
-            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_violet),
+            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_white_full),
+            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_blue_full),
+            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_green_full),
+            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_orange_full),
+            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_red_full),
+            Background(type = BackgroundType.COLORED, colorDrawableResId = R.drawable.background_violet_full),
             Background(type = BackgroundType.BEACH),
             Background(type = BackgroundType.STARS),
             Background(type = BackgroundType.IMAGE)
     )
-    private var selectedItem: Background = Background()
+    private var selectedItem: Background? = null
+    private var recyclerView: RecyclerView? = null
 
     override fun getItemCount(): Int = data.size
 
@@ -48,14 +53,28 @@ inline fun backgroundsAdapter(
             = object : RecyclerView.ViewHolder
     (LayoutInflater.from(parent.context).inflate(R.layout.background_list_item, parent, false)) {}
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val image: ImageView = holder.itemView.findViewById(R.id.background_list_item_image)
         val item = data[position]
         when(item.type) {
             BackgroundType.COLORED -> {
+                val resource = when(item.colorDrawableResId!!) {
+                    R.drawable.background_white_full -> R.drawable.background_white
+                    R.drawable.background_blue_full -> R.drawable.background_blue
+                    R.drawable.background_green_full -> R.drawable.background_green
+                    R.drawable.background_orange_full -> R.drawable.background_orange
+                    R.drawable.background_red_full -> R.drawable.background_red
+                    R.drawable.background_violet_full -> R.drawable.background_violet
+                    else -> throw IllegalArgumentException("unknown resId")
+                }
                 image.setPadding(0, 0, 0, 0)
                 image.setBackgroundResource(0)
-                image.setImageResource(item.colorDrawableResId!!)
+                image.setImageResource(resource)
             }
             BackgroundType.BEACH -> {
                 image.setPadding(0, 0, 0, 0)
@@ -75,7 +94,7 @@ inline fun backgroundsAdapter(
             }
             BackgroundType.IMAGE -> {
                 image.setPadding(4.dp2px(context), 4.dp2px(context), 4.dp2px(context), 4.dp2px(context))
-                image.setBackgroundResource(R.color.cornFlowerBlueTwoTransparent)
+                image.setBackgroundResource(R.drawable.drawable_gallery_option_background)
                 Glide.with(context)
                         .load(R.drawable.ic_toolbar_new)
                         .bitmapTransform(RoundedCornersTransformation(context, 4.dp2px(context), 0))
@@ -83,17 +102,24 @@ inline fun backgroundsAdapter(
             }
         }
 
-        if(item == selectedItem) image.foreground = ContextCompat.getDrawable(context, R.drawable.drawable_list_selection)
-        else image.foreground = ColorDrawable(Color.TRANSPARENT)
+        if(item == selectedItem ||
+                item.type == BackgroundType.IMAGE && selectedItem?.type == BackgroundType.IMAGE) {
+            image.foreground = ContextCompat.getDrawable(context, R.drawable.drawable_list_selection)
+        } else {
+            image.foreground = ColorDrawable(Color.TRANSPARENT)
+        }
 
         holder.itemView.setOnClickListener {
             onItemClick(item)
-            setSelectedItem(item)
         }
     }
 
-    fun setSelectedItem(background: Background) {
+    override fun setSelectedItem(background: Background?) {
         selectedItem = background
-        notifyDataSetChanged() //TODO optimize
+        selectedItem?.let {
+            if(it.type == BackgroundType.IMAGE) recyclerView?.smoothScrollToPosition(data.size - 1)
+            else recyclerView?.smoothScrollToPosition(data.indexOf(it))
+        }
+        notifyDataSetChanged()
     }
 }

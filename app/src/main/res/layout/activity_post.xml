@@ -12,11 +12,11 @@
     <FrameLayout
         android:id="@+id/activity_post_compose_root_layout"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/activity_post_bottom_panel"
         >
 
         <ImageView

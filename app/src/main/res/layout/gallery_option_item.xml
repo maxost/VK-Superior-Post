@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="84dp"
+    android:layout_height="84dp"
+    android:background="@drawable/drawable_gallery_option_background"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/gallery_option_item_icon"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        tools:src="@drawable/ic_photopicker_albums"
+        android:layout_gravity="center"
+        />
+
+</FrameLayout>

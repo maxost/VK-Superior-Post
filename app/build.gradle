@@ -74,4 +74,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.8.0'
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
     implementation 'com.github.GrenderG:Toasty:1.2.5'
+    implementation 'com.mlsdev.rximagepicker:library:2.0.2'
 }

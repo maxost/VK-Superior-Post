@@ -1,25 +1,19 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ImageView
-import android.widget.Switch
 import com.bumptech.glide.Glide
 import com.evernote.android.state.StateSaver
+import com.mlsdev.rximagepicker.RxImagePicker
+import com.mlsdev.rximagepicker.Sources
 import com.tbruyelle.rxpermissions2.RxPermissions
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_post.*
-import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.App
 import ru.maxost.vk_superior_post.Model.Background
 import ru.maxost.vk_superior_post.Model.BackgroundType
@@ -28,15 +22,12 @@ import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.UI.UploadScreen.UploadActivity
 import ru.maxost.vk_superior_post.Utils.*
+import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterGridLayoutManager
+import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterLinearLayoutManager
 import java.io.File
-import java.net.URI
 
 
 class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogFragment.Listener {
-
-    companion object {
-        const val REQUEST_CODE_FILE_CHOOSE = 1231
-    }
 
     private val presenter by lazy { App.graph.getPostPresenter() }
 
@@ -47,17 +38,6 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
         initBackgroundsList()
         initGalleryList()
         initPresenter(savedInstanceState)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if ((requestCode == REQUEST_CODE_FILE_CHOOSE) and (resultCode == Activity.RESULT_OK)) {
-            SwitchLog.scream(data!!.data.toString())
-            Glide.with(this)
-                    .load(data.data)
-                    .fitCenter()
-                    .into(activity_post_compose_background_center)
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -76,22 +56,37 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
     }
 
     override fun showGallery() {
-        val intent: Intent
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-        } else {
-            intent = Intent(Intent.ACTION_GET_CONTENT)
-        }
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.type = "image/*"
-        startActivityForResult(intent, REQUEST_CODE_FILE_CHOOSE)
+        RxPermissions(this)
+                .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .filter { it }
+                .flatMap { RxImagePicker.with(this).requestImage(Sources.GALLERY) }
+                .subscribe({ uri ->
+                    Glide.with(this)
+                            .load(uri)
+                            .fitCenter()
+                            .into(activity_post_compose_background_center)
+                    getGalleryAdapter().setSelectedFile(null)
+                }, {
+                    it.printStackTrace()
+                    Toasty.error(this, "Произошла ошибка").show()
+                })
     }
 
     override fun takePhoto() {
-
+        RxPermissions(this)
+                .request(Manifest.permission.CAMERA)
+                .filter { it }
+                .flatMap { RxImagePicker.with(this).requestImage(Sources.CAMERA) }
+                .subscribe({ uri ->
+                    Glide.with(this)
+                            .load(uri)
+                            .fitCenter()
+                            .into(activity_post_compose_background_center)
+                    getGalleryAdapter().setSelectedFile(null)
+                }, {
+                    it.printStackTrace()
+                    Toasty.error(this, "Произошла ошибка").show()
+                })
     }
 
     override fun showUploadScreen(post: Post) = UploadActivity.start(this, post)
@@ -140,19 +135,23 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
     }
 
     override fun setGalleyList(list: List<File>) {
-        (activity_post_gallery_list.adapter as GalleryAdapter).setNewData(list)
+        getGalleryAdapter().setNewData(list)
     }
 
     override fun showGalleryPanel(show: Boolean) {
         activity_post_gallery_list.show(show)
     }
 
-    override fun showKeyboard(show: Boolean) {
-        if(show) {
-            //TODO ?
-        } else {
-            hideKeyboard()
-        }
+    override fun enableSubmitButton(enable: Boolean) {
+        activity_post_submit_button.isEnabled = enable
+    }
+
+    override fun setSelectedGalleryImage(file: File?) {
+        getGalleryAdapter().setSelectedFile(file)
+    }
+
+    override fun setSelectedBackground(background: Background?) {
+        (activity_post_backgrounds_list.adapter as BackgroundsAdapter).setSelectedItem(background)
     }
 
     private fun initPresenter(savedInstanceState: Bundle?) {
@@ -168,20 +167,20 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
     }
 
     private fun initBackgroundsList() {
-        LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false). apply {
+        CenterLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false). apply {
             activity_post_backgrounds_list.layoutManager = this
         }
         activity_post_backgrounds_list.adapter = backgroundsAdapter(
                 context = this,
                 onItemClick = { background ->
-                    if(background.type == BackgroundType.IMAGE && !RxPermissions(this).isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    if(background.type == BackgroundType.IMAGE) {
                         RxPermissions(this)
                                 .request(Manifest.permission.READ_EXTERNAL_STORAGE)
                                 .subscribe({ granted ->
                                     if(granted) {
                                         presenter.onBackgroundSelected(background)
                                     } else {
-                                        //TODO
+                                        activity_post_gallery_list.show(true)
                                     }
                                 })
                     } else {
@@ -191,8 +190,10 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
         )
     }
 
+    private fun getGalleryAdapter() = activity_post_gallery_list.adapter as GalleryAdapter
+
     private fun initGalleryList() {
-        GridLayoutManager(this, 2, LinearLayoutManager.HORIZONTAL, false).apply {
+        CenterGridLayoutManager(this, 2, LinearLayoutManager.HORIZONTAL, false).apply {
             activity_post_gallery_list.layoutManager = this
         }
         activity_post_gallery_list.adapter = galleryAdapter(
@@ -204,9 +205,13 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
         activity_post_gallery_list.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
                 val position = parent!!.getChildLayoutPosition(view)
-                outRect.right = 8.dp2px(this@PostActivity)
                 if(position % 2 == 1) {
                     outRect.top = 4.dp2px(this@PostActivity)
+                }
+                if(position > getGalleryAdapter().getItemsCount() - 3) {
+                    outRect.right = 0
+                } else {
+                    outRect.right = 8.dp2px(this@PostActivity)
                 }
             }
         })

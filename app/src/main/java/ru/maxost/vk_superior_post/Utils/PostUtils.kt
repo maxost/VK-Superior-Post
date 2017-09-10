@@ -27,10 +27,10 @@ fun TextView.setTextStyle(textStyle: TextStyle) {
             setShadowLayer(1f, 0f, 0.5f, ContextCompat.getColor(context, R.color.shadow))
         }
         TextStyle.BLACK_WITH_BACKGROUND -> {
-            setTextColor(ContextCompat.getColor(this.context, R.color.black))
+            setTextColor(ContextCompat.getColor(this.context, R.color.blue))
         }
         TextStyle.WHITE_WITH_BACKGROUND -> {
-            setTextColor(ContextCompat.getColor(this.context, R.color.white))
+            setTextColor(ContextCompat.getColor(this.context, R.color.blue))
             setShadowLayer(1f, 0f, 0.5f, ContextCompat.getColor(context, R.color.shadow))
         }
     }

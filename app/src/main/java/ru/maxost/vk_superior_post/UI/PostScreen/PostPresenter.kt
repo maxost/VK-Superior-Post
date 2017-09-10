@@ -29,6 +29,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun setSelectedBackground(background: Background?)
         fun setSelectedGalleryImage(file: File?)
         fun enableSubmitButton(enable: Boolean)
+        fun closeKeyboard()
 
         //post
         fun setText(text: String)
@@ -44,6 +45,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     @State var post: Post = Post()
     @State var lastSelectedGalleryImage: File? = null
+    @State var isKeyboardVisible: Boolean = false
+    @State var isBottomPanelVisible: Boolean = false
 
     override fun attach(view: View, isInitialAttach: Boolean) {
         super.attach(view, isInitialAttach)
@@ -52,6 +55,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             setText(post.text)
             setTextStyle(post.textStyle)
             setBackground(post.background)
+            setSelectedBackground(post.background) //TODO animation doesn't work on activity recreation
+            if(isBottomPanelVisible) loadGalleryImages()
         }
     }
 
@@ -65,6 +70,29 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         view?.setTextStyle(post.textStyle)
     }
 
+    fun onKeyboardShow(show: Boolean) {
+
+        isKeyboardVisible = show
+
+        if(show) {
+            view?.showGalleryPanel(false)
+        } else if(!show && isBottomPanelVisible) {
+            view?.showGalleryPanel(true)
+        }
+    }
+
+    fun onBack(): Boolean {
+        return when {
+            isKeyboardVisible -> false
+            isBottomPanelVisible -> {
+                view?.showGalleryPanel(false)
+                isBottomPanelVisible = false
+                true
+            }
+            else -> false
+        }
+    }
+
     fun onStickerPickerClick() = view?.showStickerPickerDialog()
 
     fun onStickerClick(stickerId: Int) {
@@ -72,31 +100,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     }
 
     fun onBackgroundSelected(background: Background) {
-
-        val previousWasNotImage = post.background.type != BackgroundType.IMAGE
-        post.background = background
-
-        view?.setSelectedBackground(post.background)
-        view?.setBackground(post.background)
-
-        if(background.type == BackgroundType.IMAGE) {
-            view?.showGalleryPanel(true)
-
-            dataManger.getImagesFromGallery()
-                    .subscribe({
-                        if(it.isNotEmpty() && previousWasNotImage) {
-                            val file = lastSelectedGalleryImage ?: it.first()
-                            post.background = Background(type = BackgroundType.IMAGE, imageFile = file)
-                            view?.setBackground(post.background)
-                            view?.setSelectedGalleryImage(file)
-                        }
-                        view?.setGalleyList(it)
-                    }, {
-                        it.printStackTrace()
-                    })
-        } else {
-            view?.setSelectedGalleryImage(null)
-        }
+        view?.setSelectedBackground(background)
 
         //text stuff
         if(post.textStyle==TextStyle.BLACK
@@ -110,6 +114,18 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
                 && background.colorDrawableResId == R.drawable.background_white_full) {
             post.textStyle = TextStyle.BLACK
             view?.setTextStyle(post.textStyle)
+        }
+
+        if(background.type == BackgroundType.IMAGE) {
+            view?.closeKeyboard()
+            isKeyboardVisible = false
+            view?.showGalleryPanel(true)
+            isBottomPanelVisible = true
+            loadGalleryImages()
+        } else {
+            post.background = background
+            view?.setBackground(post.background)
+            view?.setSelectedGalleryImage(null)
         }
     }
 
@@ -137,5 +153,21 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         }
 
         return textStyle
+    }
+
+    private fun loadGalleryImages() {
+        dataManger.getImagesFromGallery()
+                .subscribe({
+                    val previousWasNotImage = post.background.type != BackgroundType.IMAGE
+                    if(it.isNotEmpty() && previousWasNotImage) {
+                        val file = lastSelectedGalleryImage ?: it.first()
+                        post.background = Background(type = BackgroundType.IMAGE, imageFile = file)
+                        view?.setBackground(post.background)
+                        view?.setSelectedGalleryImage(file)
+                    }
+                    view?.setGalleyList(it)
+                }, {
+                    it.printStackTrace()
+                })
     }
 }

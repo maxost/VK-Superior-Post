@@ -21,6 +21,7 @@ class App : Application() {
         super.onCreate()
 
         //TODO accessibility
+        //TODO exit dialog
 
         //dagger
         graph = DaggerAppComponent.builder()

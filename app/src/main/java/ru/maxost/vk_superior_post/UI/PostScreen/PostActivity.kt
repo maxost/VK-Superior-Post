@@ -25,6 +25,15 @@ import ru.maxost.vk_superior_post.Utils.*
 import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterGridLayoutManager
 import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterLinearLayoutManager
 import java.io.File
+import android.R.attr.y
+import android.R.attr.x
+import android.content.Context
+import android.graphics.Point
+import android.view.Display
+import android.view.WindowManager
+import ru.maxost.switchlog.SwitchLog
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.view.inputmethod.InputMethodManager
 
 
 class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogFragment.Listener {
@@ -38,11 +47,34 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
         initBackgroundsList()
         initGalleryList()
         initPresenter(savedInstanceState)
+
+        //prevent editText gain focus
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        activity_post_text.clearFocus()
+        activity_post_root_layout.requestFocus()
+
+        if(savedInstanceState==null) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            activity_post_text.requestFocus()
+        }
+
+        activity_post_root_layout.viewTreeObserver.addOnGlobalLayoutListener {
+            val size = Point()
+            windowManager.defaultDisplay.getSize(size)
+            val accessibleHeight = size.y
+            val diff = accessibleHeight - activity_post_root_layout.height
+            presenter.onKeyboardShow(diff > 120.dp2px(this))
+            SwitchLog.scream("accessibleHeight: $accessibleHeight layout.height: ${activity_post_root_layout.height} diff: ${diff.px2dp(this)}")
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         StateSaver.saveInstanceState(presenter, outState)
+    }
+
+    override fun onBackPressed() {
+        if(!presenter.onBack()) super.onBackPressed()
     }
 
     override fun onDestroy() {
@@ -60,7 +92,7 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
                 .request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .filter { it }
                 .flatMap { RxImagePicker.with(this).requestImage(Sources.GALLERY) }
-                .subscribe({ uri ->
+                .subscribe({ uri -> //TODO get file instead of uri and show selection in list if match
                     Glide.with(this)
                             .load(uri)
                             .fitCenter()
@@ -131,6 +163,14 @@ class PostActivity : AppCompatActivity(), PostPresenter.View, StickerListDialogF
                         .centerCrop()
                         .into(activity_post_compose_background_center)
             }
+        }
+    }
+
+    override fun closeKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 

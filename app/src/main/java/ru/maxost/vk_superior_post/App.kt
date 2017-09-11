@@ -7,7 +7,10 @@ import com.vk.sdk.VKSdk
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import ru.maxost.switchlog.SwitchLog
-import ru.maxost.vk_superior_post.DI.*
+import ru.maxost.vk_superior_post.DI.AppComponent
+import ru.maxost.vk_superior_post.DI.BitmapModule
+import ru.maxost.vk_superior_post.DI.DaggerAppComponent
+import ru.maxost.vk_superior_post.DI.FileModule
 
 /**
  * Created by Maxim Ostrovidov on 06.09.17.

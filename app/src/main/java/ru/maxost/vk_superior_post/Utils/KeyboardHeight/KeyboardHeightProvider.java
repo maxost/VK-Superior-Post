@@ -18,22 +18,15 @@
 package ru.maxost.vk_superior_post.Utils.KeyboardHeight;
 
 import android.app.Activity;
-
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.util.Log;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.util.DisplayMetrics;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-
 import android.view.WindowManager.LayoutParams;
-
 import android.widget.PopupWindow;
 
 import ru.maxost.vk_superior_post.R;

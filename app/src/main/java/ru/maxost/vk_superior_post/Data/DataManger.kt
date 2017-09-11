@@ -1,7 +1,6 @@
 package ru.maxost.vk_superior_post.Data
 
 import io.reactivex.Completable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -11,7 +10,6 @@ import ru.maxost.vk_superior_post.Data.Services.File.FileService
 import ru.maxost.vk_superior_post.GALLERY_LAST_IMAGES_COUNT
 import ru.maxost.vk_superior_post.Model.Post
 import java.io.File
-import java.net.URI
 import javax.inject.Inject
 
 /**

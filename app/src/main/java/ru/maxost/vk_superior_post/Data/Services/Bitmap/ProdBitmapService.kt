@@ -1,27 +1,21 @@
 package ru.maxost.vk_superior_post.Data.Services.Bitmap
 
 import android.content.Context
-import android.graphics.*
-import android.provider.FontRequest
-import android.provider.FontsContract
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Matrix
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
-import io.reactivex.Single
-import ru.maxost.vk_superior_post.Model.Post
-import ru.maxost.vk_superior_post.R
-import android.text.Layout
-import android.text.StaticLayout
-import android.text.TextPaint
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import io.reactivex.Single
 import ru.maxost.switchlog.SwitchLog
+import ru.maxost.vk_superior_post.Model.Post
+import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.Utils.dp2px
 
 

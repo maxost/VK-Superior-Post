@@ -1,12 +1,12 @@
 package ru.maxost.vk_superior_post.Utils
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.text.Editable
 import android.view.View
-import java.net.URI
-import android.app.Activity
 import android.view.inputmethod.InputMethodManager
+import java.net.URI
 
 
 /**

@@ -2,7 +2,6 @@ package ru.maxost.vk_superior_post.Data.Services.File
 
 import io.reactivex.Single
 import java.io.File
-import java.net.URI
 
 /**
  * Created by Maxim Ostrovidov on 06.09.17.

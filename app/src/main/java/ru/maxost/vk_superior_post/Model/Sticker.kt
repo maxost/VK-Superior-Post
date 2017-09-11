@@ -6,4 +6,8 @@ import java.io.Serializable
  * Created by Maxim Ostrovidov on 08.09.17.
  * (c) White Soft
  */
-data class Sticker(val id: Int): Serializable
+data class Sticker(val id: Int,
+                   var xFactor: Float = 0.2f,
+                   var yFactor: Float = 0.2f,
+                   var scaleFactor: Float = 0.2f,
+                   var angle: Float = 0f): Serializable

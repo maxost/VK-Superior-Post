@@ -1,14 +1,6 @@
 package ru.maxost.vk_superior_post.Utils.KeyboardHeight;
 
-import android.content.res.Configuration;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import ru.maxost.vk_superior_post.R;
 
 /**
  * Created by Maksim Ostrovidov on 10.09.17.

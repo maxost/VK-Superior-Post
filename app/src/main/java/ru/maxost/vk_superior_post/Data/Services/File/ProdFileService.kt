@@ -1,10 +1,9 @@
 package ru.maxost.vk_superior_post.Data.Services.File
 
 import android.content.Context
-import io.reactivex.Single
-import android.provider.MediaStore.MediaColumns
 import android.net.Uri
-import android.provider.MediaStore
+import android.provider.MediaStore.MediaColumns
+import io.reactivex.Single
 import java.io.File
 
 /**

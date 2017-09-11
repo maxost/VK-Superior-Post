@@ -1,12 +1,20 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import android.Manifest
+import android.graphics.Point
 import android.graphics.Rect
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintSet
+import android.support.transition.TransitionManager
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import com.bumptech.glide.Glide
 import com.evernote.android.state.StateSaver
 import com.mlsdev.rximagepicker.RxImagePicker
@@ -14,31 +22,22 @@ import com.mlsdev.rximagepicker.Sources
 import com.tbruyelle.rxpermissions2.RxPermissions
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_post.*
+import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.App
+import ru.maxost.vk_superior_post.Model.*
 import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.UI.UploadScreen.UploadActivity
 import ru.maxost.vk_superior_post.Utils.*
+import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightActivity
+import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightProvider
 import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterGridLayoutManager
 import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterLinearLayoutManager
 import java.io.File
-import android.R.attr.y
-import android.R.attr.x
-import android.content.Context
-import android.graphics.Point
-import android.view.Display
-import android.view.WindowManager
-import ru.maxost.switchlog.SwitchLog
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.support.constraint.ConstraintLayout
-import android.view.Gravity
-import android.view.inputmethod.InputMethodManager
-import ru.maxost.vk_superior_post.Model.*
-import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightActivity
-import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightProvider
+import java.util.*
 
 class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity() {
 
-    private val presenter by lazy { App.graph.getPostPresenter() }
+    private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,26 +90,45 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     override fun setPostType(postType: PostType) {
         val size = Point()
         windowManager.defaultDisplay.getSize(size)
-        SwitchLog.scream(size.toString())
 
         when (postType) {
             PostType.POST -> {
                 activity_post_compose_root_layout.layoutParams =
                         activity_post_compose_root_layout.layoutParams
                                 .apply {
-                                    SwitchLog.scream("1 ${height}")
                                     height = size.x
-                                    SwitchLog.scream("2 ${height}")
                                 }
+                val newConstraints = ConstraintSet().apply {
+                    constrainHeight(R.id.activity_post_type_selector, 3.dp2px(this@PostActivity))
+                    connect(R.id.activity_post_type_selector, ConstraintSet.RIGHT, R.id.activity_post_type_post, ConstraintSet.RIGHT)
+                    connect(R.id.activity_post_type_selector, ConstraintSet.LEFT, R.id.activity_post_type_post, ConstraintSet.LEFT)
+                    connect(R.id.activity_post_type_selector, ConstraintSet.TOP, R.id.activity_post_top_panel, ConstraintSet.TOP)
+                    connect(R.id.activity_post_type_selector, ConstraintSet.BOTTOM, R.id.activity_post_top_panel, ConstraintSet.TOP)
+                }
+                TransitionManager.beginDelayedTransition(activity_post_root_layout)
+                newConstraints.applyTo(activity_post_root_layout)
+                activity_post_top_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                activity_post_bottom_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
             }
             PostType.STORY -> {
                 activity_post_compose_root_layout.layoutParams =
                         activity_post_compose_root_layout.layoutParams
                                 .apply {
                                     SwitchLog.scream("3 ${height}")
-                                    height = 0
+                                    height = ViewGroup.LayoutParams.MATCH_PARENT
                                     SwitchLog.scream("4 ${height}")
                                 }
+                val newConstraints = ConstraintSet().apply {
+                    constrainHeight(R.id.activity_post_type_selector, 3.dp2px(this@PostActivity))
+                    connect(R.id.activity_post_type_selector, ConstraintSet.RIGHT, R.id.activity_post_type_story, ConstraintSet.RIGHT)
+                    connect(R.id.activity_post_type_selector, ConstraintSet.LEFT, R.id.activity_post_type_story, ConstraintSet.LEFT)
+                    connect(R.id.activity_post_type_selector, ConstraintSet.TOP, R.id.activity_post_top_panel, ConstraintSet.TOP)
+                    connect(R.id.activity_post_type_selector, ConstraintSet.BOTTOM, R.id.activity_post_top_panel, ConstraintSet.TOP)
+                }
+                TransitionManager.beginDelayedTransition(activity_post_root_layout)
+                newConstraints.applyTo(activity_post_root_layout)
+                activity_post_top_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.whiteTransparentMore))
+                activity_post_bottom_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.whiteTransparentMore))
             }
         }
 
@@ -156,6 +174,14 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     override fun onStickerClicked(stickerId: Int) = presenter.onStickerClick(stickerId)
 
+    override fun addSticker(sticker: Sticker) {
+        activity_post_sticker_view.addSticker(sticker)
+    }
+
+    override fun setStickers(stickers: Stack<Sticker>) {
+        activity_post_sticker_view.setStickers(stickers)
+    }
+
     override fun setTextStyle(textStyle: TextStyle) {
         activity_post_text.setTextStyle(textStyle)
     }
@@ -168,6 +194,9 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         activity_post_compose_background_top.setImageResource(0)
         activity_post_compose_background_bottom.setImageResource(0)
 
+        val screenSize = Point()
+        windowManager.defaultDisplay.getSize(screenSize)
+
         when (background.type) {
             BackgroundType.COLORED -> {
                 activity_post_compose_background_center.setImageResource(background.colorDrawableResId!!)
@@ -175,6 +204,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             BackgroundType.BEACH -> {
                 Glide.with(this)
                         .load(R.drawable.bg_beach_center)
+                        .override(screenSize.x, screenSize.y)
                         .into(activity_post_compose_background_center)
                 Glide.with(this)
                         .load(R.drawable.bg_beach_top)
@@ -185,12 +215,14 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             }
             BackgroundType.STARS -> {
                 Glide.with(this)
-                        .load(R.drawable.bg_stars_center) //TODO must load as pattern image
+                        .load(R.drawable.bg_stars_center) //TODO must load as pattern image?
+                        .override(screenSize.x, screenSize.y)
                         .into(activity_post_compose_background_center)
             }
             BackgroundType.IMAGE -> {
                 Glide.with(this)
                         .load(background.imageFile)
+                        .override(screenSize.x, screenSize.y) //TODO proper handle horizontal photos too
                         .centerCrop()
                         .into(activity_post_compose_background_center)
             }

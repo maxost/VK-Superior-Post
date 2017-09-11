@@ -23,14 +23,14 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        var line = 0
-        while (line < lineCount) {
-            val rect = Rect()
-            getLineBounds(line, rect)
-            paint.color = if(line % 2 ==0) color1 else color2
-            canvas?.drawRect(rect, paint)
-            SwitchLog.scream("$rect")
-            line++
-        }
+//        var line = 0
+//        while (line < lineCount) {
+//            val rect = Rect()
+//            getLineBounds(line, rect)
+//            paint.color = if(line % 2 ==0) color1 else color2
+//            canvas?.drawRect(rect, paint)
+//            SwitchLog.scream("$rect")
+//            line++
+//        }
     }
 }

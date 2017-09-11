@@ -12,7 +12,8 @@ import com.bumptech.glide.Glide
 import ru.maxost.vk_superior_post.Model.Background
 import ru.maxost.vk_superior_post.Model.BackgroundType
 import ru.maxost.vk_superior_post.R
-import ru.maxost.vk_superior_post.Utils.*
+import ru.maxost.vk_superior_post.Utils.RoundedCornersTransformation
+import ru.maxost.vk_superior_post.Utils.dp2px
 
 /**
  * Created by Maksim Ostrovidov on 08.09.17.

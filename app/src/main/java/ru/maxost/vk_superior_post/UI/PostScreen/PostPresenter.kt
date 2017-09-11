@@ -1,17 +1,11 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
-import android.os.Bundle
-import android.widget.Switch
-import com.evernote.android.state.Bundler
 import com.evernote.android.state.State
-import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Data.DataManger
-import ru.maxost.vk_superior_post.Data.Services.File.FileService
 import ru.maxost.vk_superior_post.Model.*
 import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.Utils.BasePresenter
 import java.io.File
-import java.net.URI
 import java.util.*
 import javax.inject.Inject
 
@@ -40,6 +34,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun setText(text: String)
         fun setTextStyle(textStyle: TextStyle)
         fun setBackground(background: Background)
+        fun addSticker(sticker: Sticker)
+        fun setStickers(stickers: Stack<Sticker>)
 
         //other
         fun showUploadScreen(post: Post)
@@ -64,6 +60,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             setSelectedBackground(post.background) //TODO scroll doesn't work on activity recreation
             if(isBottomPanelVisible) loadGalleryImages()
             setPostType(post.postType)
+            setStickers(post.stickers)
         }
     }
 
@@ -121,7 +118,9 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     fun onStickerPickerClick() = view?.showStickerPickerDialog()
 
     fun onStickerClick(stickerId: Int) {
-        post.stickers.add(Sticker(stickerId))
+        val sticker = Sticker(stickerId)
+        post.stickers.add(sticker)
+        view?.setStickers(post.stickers)
     }
 
     fun onBackgroundSelected(background: Background) {

@@ -5,6 +5,7 @@
     <color name="lightGrey">#ebebeb</color>
     <color name="white">#ffffff</color>
     <color name="whiteTransparent">#40ffffff</color>
+    <color name="whiteTransparentMore">#E6ffffff</color>
     <color name="cornFlowerBlue">#5692d7</color>
     <color name="cornFlowerBlueTwo">#528bcc</color>
     <color name="cornFlowerBlueTwoTransparent">#80528bcc</color>

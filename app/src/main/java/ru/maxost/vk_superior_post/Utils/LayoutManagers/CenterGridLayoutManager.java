@@ -1,15 +1,9 @@
 package ru.maxost.vk_superior_post.Utils.LayoutManagers;
 
 import android.content.Context;
-import android.graphics.PointF;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-
-import ru.maxost.switchlog.SwitchLog;
 
 /**
  * Created by Maksim Ostrovidov on 10.09.17.

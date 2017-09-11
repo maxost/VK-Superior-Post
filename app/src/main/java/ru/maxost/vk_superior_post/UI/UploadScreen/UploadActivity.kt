@@ -2,9 +2,8 @@ package ru.maxost.vk_superior_post.UI.UploadScreen
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.support.v7.app.AppCompatActivity
 import com.evernote.android.state.StateSaver
 import kotlinx.android.synthetic.main.activity_upload.*
 import ru.maxost.vk_superior_post.App
@@ -14,7 +13,7 @@ import ru.maxost.vk_superior_post.UI.PostScreen.PostActivity
 
 class UploadActivity : AppCompatActivity(), UploadPresenter.View {
 
-    private val presenter: UploadPresenter by lazy { App.graph.getUploadPresenter() }
+    private val presenter: UploadPresenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getUploadPresenter() }
 
     companion object {
         const val POST_KEY = "POST_KEY"

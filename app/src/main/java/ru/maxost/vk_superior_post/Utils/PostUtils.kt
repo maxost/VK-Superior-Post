@@ -1,14 +1,7 @@
 package ru.maxost.vk_superior_post.Utils
 
-import android.content.Context
-import android.graphics.Rect
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
-import android.widget.Switch
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_post.*
-import kotlinx.android.synthetic.main.activity_post.view.*
-import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
 

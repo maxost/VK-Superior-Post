@@ -25,6 +25,7 @@ class App : Application() {
 
         //TODO accessibility
         //TODO exit dialog
+        //TODO panels color animation
 
         //dagger
         graph = DaggerAppComponent.builder()

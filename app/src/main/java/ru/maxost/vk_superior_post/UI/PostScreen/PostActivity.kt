@@ -288,7 +288,51 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onMultiTouch(enable: Boolean) {
+        SwitchLog.scream("$enable")
         activity_post_text.isInterceptingTouches = !enable
+        activity_post_bin.show(false)
+    }
+
+    override fun onDragging(isDragging: Boolean): Rect {
+        SwitchLog.scream("$isDragging")
+        //TODO animate
+        activity_post_bin.show(isDragging)
+
+        val array = IntArray(2)
+        activity_post_bin.getLocationOnScreen(array)
+        val rect = Rect(
+                array[0],
+                array[1],
+                array[0] + activity_post_bin.width,
+                array[1] + activity_post_bin.height
+        )
+        SwitchLog.scream(rect.toString())
+        return rect
+    }
+
+    override fun onOverBin(isOverBin: Boolean) {
+        SwitchLog.scream("$isOverBin")
+        if(isOverBin) {
+            activity_post_bin.setImageResource(R.drawable.ic_fab_trash_released)
+        } else {
+            activity_post_bin.setImageResource(R.drawable.ic_fab_trash)
+        }
+
+        //TODO animate
+        activity_post_bin.layoutParams =
+                activity_post_bin.layoutParams
+                        .apply {
+                            height = (if(isOverBin) 56 else 48).dp2px(this@PostActivity)
+                            width = (if(isOverBin) 56 else 48).dp2px(this@PostActivity)
+                        }
+
+    }
+
+    override fun onDeleteSticker(sticker: Sticker) {
+        SwitchLog.scream()
+        //TODO animate
+        activity_post_bin.show(false)
+        presenter.onStickerDelete(sticker)
     }
 
     private fun initPresenter(savedInstanceState: Bundle?) {

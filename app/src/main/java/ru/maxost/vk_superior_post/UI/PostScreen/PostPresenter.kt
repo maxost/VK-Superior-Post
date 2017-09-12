@@ -117,10 +117,14 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     fun onStickerPickerClick() = view?.showStickerPickerDialog()
 
-    fun onStickerClick(stickerId: Int) {
-        val sticker = Sticker(stickerId)
+    fun onStickerClick(stickerResId: Int) {
+        val sticker = Sticker(id = UUID.randomUUID().toString(), resId = stickerResId)
         post.stickers.add(sticker)
         view?.setStickers(post.stickers)
+    }
+
+    fun onStickerDelete(sticker: Sticker) {
+        post.stickers.remove(sticker)
     }
 
     fun onBackgroundSelected(background: Background) {

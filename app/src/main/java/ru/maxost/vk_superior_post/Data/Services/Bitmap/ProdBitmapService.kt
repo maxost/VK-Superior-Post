@@ -40,7 +40,7 @@ class ProdBitmapService(private val context: Context): BitmapService {
                 setRotate(90f)
                 setTranslate(200f, 200f)
             }
-            val drawable = BitmapFactory.decodeResource(context.resources, sticker.id)
+            val drawable = BitmapFactory.decodeResource(context.resources, sticker.resId)
             val stickerScaled = Bitmap.createScaledBitmap(drawable, 200, 200, true)
 
             SwitchLog.scream("${stickerScaled.height} ${stickerScaled.width}")

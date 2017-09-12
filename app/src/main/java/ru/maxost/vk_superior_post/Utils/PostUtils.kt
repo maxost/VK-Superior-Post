@@ -20,14 +20,14 @@ fun TextView.setTextStyle(textStyle: TextStyle) {
         }
         TextStyle.WHITE -> {
             setTextColor(ContextCompat.getColor(this.context, R.color.white))
-            setShadowLayer(1f, 0f, 0.5f, ContextCompat.getColor(context, R.color.shadow))
+            setShadowLayer(1f, 0f, 1f, ContextCompat.getColor(context, R.color.shadow))
         }
         TextStyle.BLACK_WITH_BACKGROUND -> {
-            setTextColor(ContextCompat.getColor(this.context, R.color.blue))
+            setTextColor(ContextCompat.getColor(this.context, R.color.black))
         }
         TextStyle.WHITE_WITH_BACKGROUND -> {
-            setTextColor(ContextCompat.getColor(this.context, R.color.blue))
-            setShadowLayer(1f, 0f, 0.5f, ContextCompat.getColor(context, R.color.shadow))
+            setTextColor(ContextCompat.getColor(this.context, R.color.white))
+            setShadowLayer(1f, 0f, 1f, ContextCompat.getColor(context, R.color.shadow))
         }
     }
 }

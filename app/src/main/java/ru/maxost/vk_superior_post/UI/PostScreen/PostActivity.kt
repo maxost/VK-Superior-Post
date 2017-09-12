@@ -35,7 +35,7 @@ import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterLinearLayoutManager
 import java.io.File
 import java.util.*
 
-class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity() {
+class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity(), StickerView.Listener {
 
     private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0
@@ -285,6 +285,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     override fun setSelectedBackground(background: Background?) {
         (activity_post_backgrounds_list.adapter as BackgroundsAdapter).setSelectedItem(background)
+    }
+
+    override fun onMultiTouch(enable: Boolean) {
+        activity_post_text.isInterceptingTouches = !enable
     }
 
     private fun initPresenter(savedInstanceState: Bundle?) {

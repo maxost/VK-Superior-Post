@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatEditText
 import android.util.AttributeSet
+import android.view.MotionEvent
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.R
 
@@ -15,6 +16,8 @@ import ru.maxost.vk_superior_post.R
  * dustlooped@yandex.ru
  */
 class MyEditText @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : AppCompatEditText(context, attributeSet) {
+
+    var isInterceptingTouches = true
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val color1 = ContextCompat.getColor(context, R.color.cornFlowerBlueTwoTransparent)
@@ -32,5 +35,9 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 //            SwitchLog.scream("$rect")
 //            line++
 //        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return if(isInterceptingTouches) super.onTouchEvent(event) else false
     }
 }

@@ -26,6 +26,8 @@ class App : Application() {
         //TODO accessibility
         //TODO exit dialog
         //TODO panels color animation
+        //TODO stickers load issues
+        //TODO keyboard on start doesn't always pushes bottom panel to top
 
         //dagger
         graph = DaggerAppComponent.builder()

@@ -28,6 +28,7 @@ class App : Application() {
         //TODO panels color animation
         //TODO stickers load issues
         //TODO keyboard on start doesn't always pushes bottom panel to top
+        //TODO keyboard stops working after some conditions
         //TODO foreground api23 only. pizdos
 
         //dagger

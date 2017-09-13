@@ -29,7 +29,6 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
     private val stickers: MutableList<Sticker> = mutableListOf()
     private var bitmaps: MutableSet<Pair<Int, Bitmap>> = mutableSetOf() // resId - Bitmap
-    private val myMatrix = Matrix()
 
     fun addSticker(sticker: Sticker) {
         stickers.add(sticker)

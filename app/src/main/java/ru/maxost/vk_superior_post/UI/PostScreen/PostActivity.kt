@@ -344,8 +344,13 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         activity_post_submit_button.setOnClickListener { presenter.onSubmitClick() }
         activity_post_stickers_clickbox.setOnClickListener { presenter.onStickerPickerClick() }
         activity_post_text.onTextChanged {
-            if (it.isBlank()) activity_post_text.gravity = Gravity.START
-            else activity_post_text.gravity = Gravity.CENTER
+            if (it.isBlank()) {
+                activity_post_text.gravity = Gravity.START
+                activity_post_text.hint = getString(R.string.post_text_hint)
+            } else {
+                activity_post_text.gravity = Gravity.CENTER
+                activity_post_text.hint = ""
+            }
             presenter.onTextInput(it)
         }
         activity_post_text_style_clickbox.setOnClickListener { presenter.onTextStyleClick() }

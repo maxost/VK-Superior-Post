@@ -51,10 +51,9 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
                 points.add(PointF(rect.left - wOffset, rect.bottom + hBottomOffset))
                 points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
                 break
-            } else if(lineIndex == 0) path.moveTo(rect.left - wOffset, rect.bottom - 20)
+            } else if(lineIndex == 0) path.moveTo(rect.centerX(), rect.top - hTopOffset)
 
             if (lineIndex == 0) {
-                points.add(PointF(rect.left - wOffset, rect.bottom))
                 points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
@@ -67,8 +66,7 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
                 }
                 points.add(PointF(rect.right + wOffset, points.last().y))
                 points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
-                points.add(PointF(rect.left - wOffset, rect.bottom + hBottomOffset))
-                points.add(PointF(rect.left - wOffset, rect.top + hTopOffset))
+                points.add(PointF(rect.centerX(), rect.bottom + hBottomOffset))
                 continue
             }
 
@@ -84,23 +82,8 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 
         for (lineIndex in lineCount-1 downTo 0) {
             if(lineCount == 1 || points.isEmpty()) break
-            if(lineIndex == lineCount - 1) continue
 
-            val rect = getLineRect(lineIndex)
-
-            if(lineIndex == 0) {
-//                if(points.first().x > points.last().x) {
-//                    points.add(PointF(points.last().x, points.last().y - hTopOffset))
-//                }
-                points.add(PointF(points.first().x, points.last().y))
-                continue
-            }
-
-            if(rect.left - wOffset > points.last().x) {
-                points.add(PointF(points.last().x, points.last().y - hBottomOffset))
-            }
-            points.add(PointF(rect.left - wOffset, points.last().y))
-            points.add(PointF(rect.left - wOffset, rect.top + hTopOffset))
+            //TODO reverse list
         }
 
         points.forEach { path.lineTo(it.x, it.y) }
@@ -109,7 +92,7 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
         paint.color = color1
         paint.isDither = true
         paint.strokeWidth = 10f
-        paint.style = Paint.Style.FILL
+        paint.style = Paint.Style.STROKE
         paint.strokeJoin = Paint.Join.ROUND
         paint.strokeCap = Paint.Cap.ROUND
         paint.pathEffect = CornerPathEffect(10f)

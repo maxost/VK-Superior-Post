@@ -21,7 +21,8 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val color1 = ContextCompat.getColor(context, R.color.whiteTransparent)
-    private val hOffset = 6.dp2px(context)
+    private val hTopOffset = 6.dp2px(context)
+    private val hBottomOffset = 8.dp2px(context)
     private val wOffset = 12.dp2px(context)
     private val path = Path()
     private val points = mutableListOf<PointF>()
@@ -31,7 +32,6 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
         path.reset()
         points.clear()
 
-        //TODO last joint not rounded
         //TODO need proper height
         //TODO multiple enters
 
@@ -45,54 +45,66 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
             val rect = getLineRect(lineIndex)
 
             if(lineCount == 1 || (lineIndex == 0 && lineIndex + 1 < lineCount && getLineWidth(lineIndex + 1) == 0)) {
-                path.moveTo(rect.left - wOffset, rect.top - hOffset)
-                points.add(PointF(rect.right + wOffset, rect.top - hOffset))
-                points.add(PointF(rect.right + wOffset, rect.bottom + hOffset))
-                points.add(PointF(rect.left - wOffset, rect.bottom + hOffset))
-                points.add(PointF(rect.left - wOffset, rect.top - hOffset))
+                path.moveTo(rect.left - wOffset + 20, rect.top - hTopOffset)
+                points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
+                points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
+                points.add(PointF(rect.left - wOffset, rect.bottom + hBottomOffset))
+                points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
                 break
-            } else if(lineIndex == 0) path.moveTo(rect.left - wOffset, rect.bottom)
+            } else if(lineIndex == 0) path.moveTo(rect.left - wOffset, rect.bottom - 20)
 
             if (lineIndex == 0) {
                 points.add(PointF(rect.left - wOffset, rect.bottom))
-                points.add(PointF(rect.left - wOffset, rect.top - hOffset))
-                points.add(PointF(rect.right + wOffset, rect.top - hOffset))
-                points.add(PointF(rect.right + wOffset, rect.bottom))
+                points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
+                points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
+                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
                 continue
             }
 
             if (lineIndex == lineCount - 1 || (lineIndex + 1 < lineCount && getLineWidth(lineIndex + 1) == 0)) {
+                if(rect.right + wOffset < points.last().x) {
+                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
+                }
                 points.add(PointF(rect.right + wOffset, points.last().y))
-                points.add(PointF(rect.right + wOffset, rect.bottom + hOffset))
-                points.add(PointF(rect.left - wOffset, rect.bottom + hOffset))
-                points.add(PointF(rect.left - wOffset, rect.top))
+                points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
+                points.add(PointF(rect.left - wOffset, rect.bottom + hBottomOffset))
+                points.add(PointF(rect.left - wOffset, rect.top + hTopOffset))
                 continue
             }
 
             if (lineIndex > 0 && lineIndex < lineCount - 1) {
+                if(rect.right + wOffset < points.last().x) {
+                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
+                }
                 points.add(PointF(rect.right + wOffset, points.last().y))
-                points.add(PointF(rect.right + wOffset, rect.bottom))
+                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
                 continue
             }
         }
 
         for (lineIndex in lineCount-1 downTo 0) {
+            if(lineCount == 1 || points.isEmpty()) break
+            if(lineIndex == lineCount - 1) continue
+
             val rect = getLineRect(lineIndex)
 
-            if(lineCount == 1) break
-            if(lineIndex == lineCount - 1) continue
             if(lineIndex == 0) {
+//                if(points.first().x > points.last().x) {
+//                    points.add(PointF(points.last().x, points.last().y - hTopOffset))
+//                }
                 points.add(PointF(points.first().x, points.last().y))
                 continue
             }
 
+            if(rect.left - wOffset > points.last().x) {
+                points.add(PointF(points.last().x, points.last().y - hBottomOffset))
+            }
             points.add(PointF(rect.left - wOffset, points.last().y))
-            points.add(PointF(rect.left - wOffset, rect.top))
+            points.add(PointF(rect.left - wOffset, rect.top + hTopOffset))
         }
 
-
-
         points.forEach { path.lineTo(it.x, it.y) }
+        path.close()
 
         paint.color = color1
         paint.isDither = true

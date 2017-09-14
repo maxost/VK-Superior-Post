@@ -86,11 +86,12 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         when (action) {
             MotionEvent.ACTION_DOWN -> {
                 SwitchLog.scream("DOWN x: ${event.x} y: ${event.y}")
-                (context as Listener).onMultiTouch(true)
                 stickers.lastOrNull {
                     calculateRect(it, width, height).contains(event.x.toInt(), event.y.toInt())
                 }?.let {
                     SwitchLog.scream("Sticker match!")
+                    (context as Listener).onMultiTouch(true)
+
                     //move sticker to the end of list
                     stickers.remove(it)
                     stickers.add(it)

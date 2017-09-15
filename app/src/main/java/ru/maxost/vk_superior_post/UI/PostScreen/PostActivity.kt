@@ -3,7 +3,9 @@ package ru.maxost.vk_superior_post.UI.PostScreen
 import android.Manifest
 import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
+import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
 import android.support.transition.TransitionManager
@@ -181,10 +183,12 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     override fun setTextStyle(textStyle: TextStyle) {
         activity_post_text.textStyle = textStyle
+        updateBorder()
     }
 
     override fun setText(text: String) {
         activity_post_text.text = text.toEditable()
+        updateBorder()
     }
 
     override fun setBackground(background: Background) {
@@ -238,7 +242,14 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         getGalleryAdapter().setNewData(list)
     }
 
-    override fun showGalleryPanel(show: Boolean) = activity_post_gallery_list.show(show)
+    override fun showGalleryPanel(show: Boolean, animate: Boolean) {
+        activity_post_gallery_list.show(show)
+        if(show) {
+            activity_post_compose_root_layout.y -= 208.dp2px(this) / 2
+        } else {
+            activity_post_compose_root_layout.y += 208.dp2px(this) / 2
+        }
+    }
 
     override fun shiftPostKeyboard(shift: Boolean) {
         SwitchLog.scream("$shift")
@@ -246,15 +257,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             activity_post_compose_root_layout.y -= keyboardHeight / 2
         } else {
             activity_post_compose_root_layout.y += keyboardHeight / 2
-        }
-    }
-
-    override fun shiftPostGalleryList(shift: Boolean) {
-        SwitchLog.scream("$shift")
-        if(shift) {
-            activity_post_compose_root_layout.y -= 208.dp2px(this) / 2
-        } else {
-            activity_post_compose_root_layout.y += 208.dp2px(this) / 2
         }
     }
 
@@ -285,13 +287,11 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onMultiTouch(enable: Boolean) {
-        SwitchLog.scream("$enable")
         activity_post_text.isInterceptingTouches = !enable
         activity_post_bin.show(false)
     }
 
     override fun onDragging(isDragging: Boolean): Rect {
-        SwitchLog.scream("$isDragging")
         //TODO animate
         activity_post_bin.show(isDragging)
 
@@ -308,7 +308,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onOverBin(isOverBin: Boolean) {
-        SwitchLog.scream("$isOverBin")
         if(isOverBin) {
             activity_post_bin.setImageResource(R.drawable.ic_fab_trash_released)
         } else {
@@ -326,7 +325,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onDeleteSticker(sticker: Sticker) {
-        SwitchLog.scream()
         //TODO animate
         activity_post_bin.show(false)
         presenter.onStickerDelete(sticker)
@@ -349,6 +347,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 activity_post_text.hint = ""
             }
             presenter.onTextInput(it)
+            updateBorder()
         }
         activity_post_text_style_clickbox.setOnClickListener { presenter.onTextStyleClick() }
         activity_post_type_post.setOnClickListener { presenter.onPostTypeChange(PostType.POST) }
@@ -407,5 +406,11 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 }
             }
         })
+    }
+
+    private fun updateBorder() {
+        Handler().postDelayed({
+            activity_post_text_border.setState(activity_post_text.getState())
+        }, 1)
     }
 }

@@ -20,14 +20,13 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     interface View {
         //ui
         fun setGalleyList(list: List<File>)
-        fun showGalleryPanel(show: Boolean)
+        fun showGalleryPanel(show: Boolean, animate: Boolean)
         fun setSelectedBackground(background: Background?)
         fun setSelectedGalleryImage(file: File?)
         fun enableSubmitButton(enable: Boolean)
         fun closeKeyboard()
         fun setPostType(postType: PostType)
         fun shiftPostKeyboard(shift: Boolean)
-        fun shiftPostGalleryList(shift: Boolean)
         fun shiftBottomPanelKeyboard(shift: Boolean)
         fun shiftBottomPanelGalleryList(shift: Boolean)
 
@@ -87,8 +86,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
         if(show) {
             if(isBottomPanelVisible) {
-                view?.showGalleryPanel(false)
-                view?.shiftPostGalleryList(false)
+                view?.showGalleryPanel(false, false)
                 view?.shiftBottomPanelGalleryList(false)
                 isBottomPanelVisible = false
             }
@@ -106,8 +104,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         return when {
             isKeyboardVisible -> false
             isBottomPanelVisible -> {
-                view?.showGalleryPanel(false)
-                view?.shiftPostGalleryList(false)
+                view?.showGalleryPanel(false, true)
                 view?.shiftBottomPanelGalleryList(false)
                 isBottomPanelVisible = false
                 true
@@ -176,6 +173,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             return
         }
 
+        val keyBoardWasVisible = isKeyboardVisible
+
         if(isKeyboardVisible) {
             view?.closeKeyboard()
             view?.shiftPostKeyboard(false)
@@ -183,9 +182,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             isKeyboardVisible = false
         }
 
-        view?.shiftPostGalleryList(true)
         view?.shiftBottomPanelGalleryList(true)
-        view?.showGalleryPanel(true)
+        view?.showGalleryPanel(true, !keyBoardWasVisible)
         isBottomPanelVisible = true
 
         loadGalleryImages()

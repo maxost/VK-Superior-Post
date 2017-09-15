@@ -2,6 +2,7 @@
   <dictionary name="user">
     <words>
       <w>clickbox</w>
+      <w>coord</w>
       <w>maxost</w>
     </words>
   </dictionary>

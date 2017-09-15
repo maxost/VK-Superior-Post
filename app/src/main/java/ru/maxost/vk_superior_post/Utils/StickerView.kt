@@ -43,7 +43,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        SwitchLog.scream("stickers: ${stickers.size} bitmaps: ${bitmaps.size}")
+//        SwitchLog.scream("stickers: ${stickers.size} bitmaps: ${bitmaps.size}")
 
         stickers.forEach { sticker ->
 //            SwitchLog.scream(sticker.toString())

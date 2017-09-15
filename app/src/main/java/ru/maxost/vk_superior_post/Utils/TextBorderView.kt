@@ -39,6 +39,16 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     //TODO multiple spaces
     //TODO smooth edges
 
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        SwitchLog.scream("onLayout top: $top")
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        SwitchLog.scream("onSizeChanged h: $h oldh: $oldh")
+    }
+
     override fun onDraw(canvas: Canvas?) {
         SwitchLog.scream("onDraw")
         if(state == null || state!!.text.isEmpty()) {
@@ -50,11 +60,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         if(state?.textStyle == TextStyle.BLACK_WITH_BACKGROUND) drawBorder(canvas, colorWhite)
 
         super.onDraw(canvas)
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        if(changed) invalidate()
-        super.onLayout(changed, left, top, right, bottom)
     }
 
     private fun drawBorder(canvas: Canvas?, color: Int) {
@@ -94,7 +99,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     }
 
     private fun createBorderPath(path: Path, linesList: List<RectF>): Path {
-        SwitchLog.scream("createBorderPath")
         points.clear()
         path.reset()
 

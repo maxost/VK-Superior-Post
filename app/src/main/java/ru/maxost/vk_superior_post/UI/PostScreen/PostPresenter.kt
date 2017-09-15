@@ -26,9 +26,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun enableSubmitButton(enable: Boolean)
         fun closeKeyboard()
         fun setPostType(postType: PostType)
-        fun shiftPostKeyboard(shift: Boolean)
-        fun shiftBottomPanelKeyboard(shift: Boolean)
-        fun shiftBottomPanelGalleryList(shift: Boolean)
+        fun shiftViewsForKeyboard(shift: Boolean)
 
         //post
         fun setText(text: String)
@@ -85,16 +83,14 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         if(isKeyboardVisible == show) return
 
         if(show) {
+            view?.shiftViewsForKeyboard(true)
             if(isBottomPanelVisible) {
                 view?.showGalleryPanel(false, false)
-                view?.shiftBottomPanelGalleryList(false)
                 isBottomPanelVisible = false
             }
-            view?.shiftPostKeyboard(true)
-            view?.shiftBottomPanelKeyboard(true)
+
         } else {
-            view?.shiftPostKeyboard(false)
-            view?.shiftBottomPanelKeyboard(false)
+            view?.shiftViewsForKeyboard(false)
         }
 
         isKeyboardVisible = show
@@ -105,7 +101,6 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             isKeyboardVisible -> false
             isBottomPanelVisible -> {
                 view?.showGalleryPanel(false, true)
-                view?.shiftBottomPanelGalleryList(false)
                 isBottomPanelVisible = false
                 true
             }
@@ -177,12 +172,10 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
         if(isKeyboardVisible) {
             view?.closeKeyboard()
-            view?.shiftPostKeyboard(false)
-            view?.shiftBottomPanelKeyboard(false)
+            view?.shiftViewsForKeyboard(false)
             isKeyboardVisible = false
         }
 
-        view?.shiftBottomPanelGalleryList(true)
         view?.showGalleryPanel(true, !keyBoardWasVisible)
         isBottomPanelVisible = true
 

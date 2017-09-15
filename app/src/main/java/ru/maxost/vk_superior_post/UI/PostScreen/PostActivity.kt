@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
@@ -35,6 +36,8 @@ import java.io.File
 import java.util.*
 
 class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity(), StickerView.Listener {
+
+    private val ANIMATION_DURATION = 300
 
     private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0
@@ -65,6 +68,11 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     override fun onBackPressed() {
         if (!presenter.onBack()) super.onBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateBorder()
     }
 
     override fun onDestroy() {
@@ -113,9 +121,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 activity_post_compose_root_layout.layoutParams =
                         activity_post_compose_root_layout.layoutParams
                                 .apply {
-                                    SwitchLog.scream("3 ${height}")
                                     height = ViewGroup.LayoutParams.MATCH_PARENT
-                                    SwitchLog.scream("4 ${height}")
                                 }
                 val newConstraints = ConstraintSet().apply {
                     constrainHeight(R.id.activity_post_type_selector, 3.dp2px(this@PostActivity))
@@ -243,34 +249,31 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun showGalleryPanel(show: Boolean, animate: Boolean) {
-        activity_post_gallery_list.show(show)
-        if(show) {
-            activity_post_compose_root_layout.y -= 208.dp2px(this) / 2
-        } else {
-            activity_post_compose_root_layout.y += 208.dp2px(this) / 2
-        }
+        val panelHeight = 208.dp2px(this).toFloat()
+
+        ViewCompat.animate(activity_post_gallery_list)
+                .translationYBy(if(show) -panelHeight else panelHeight)
+                .setDuration(if(animate) 300 else 0)
+                .start()
+
+        ViewCompat.animate(activity_post_compose_root_layout)
+                .translationYBy(if(show) -panelHeight / 2 else panelHeight / 2)
+                .setDuration(if(animate) 300 else 0)
+                .start()
+
+        ViewCompat.animate(activity_post_bottom_panel)
+                .translationYBy(if(show) -panelHeight else panelHeight)
+                .setDuration(if(animate) 300 else 0)
+                .start()
     }
 
-    override fun shiftPostKeyboard(shift: Boolean) {
-        SwitchLog.scream("$shift")
+    override fun shiftViewsForKeyboard(shift: Boolean) {
         if(shift) {
             activity_post_compose_root_layout.y -= keyboardHeight / 2
+            activity_post_bottom_panel.y -= keyboardHeight
         } else {
             activity_post_compose_root_layout.y += keyboardHeight / 2
-        }
-    }
-
-    override fun shiftBottomPanelKeyboard(shift: Boolean) {
-        SwitchLog.scream("$shift")
-        activity_post_bottom_panel.layoutParams = (activity_post_bottom_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
-            setMargins(0, 0, 0, if(shift) keyboardHeight else 0)
-        }
-    }
-
-    override fun shiftBottomPanelGalleryList(shift: Boolean) {
-        SwitchLog.scream("$shift")
-        activity_post_bottom_panel.layoutParams = (activity_post_bottom_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
-            setMargins(0, 0, 0, if(shift) 208.dp2px(this@PostActivity) else 0)
+            activity_post_bottom_panel.y += keyboardHeight
         }
     }
 
@@ -347,7 +350,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 activity_post_text.hint = ""
             }
             presenter.onTextInput(it)
-            updateBorder()
+            Handler().postDelayed({ updateBorder() }, 1)
         }
         activity_post_text_style_clickbox.setOnClickListener { presenter.onTextStyleClick() }
         activity_post_type_post.setOnClickListener { presenter.onPostTypeChange(PostType.POST) }
@@ -355,6 +358,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
         keyboardHeightProvider = KeyboardHeightProvider(this)
         activity_post_root_layout.post({ keyboardHeightProvider.start() })
+
+        activity_post_compose_root_layout.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            updateBorder()
+        }
     }
 
     private fun initBackgroundsList() {
@@ -409,8 +416,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     private fun updateBorder() {
-        Handler().postDelayed({
-            activity_post_text_border.setState(activity_post_text.getState())
-        }, 1)
+        activity_post_text_border.setState(activity_post_text.getState())
     }
 }

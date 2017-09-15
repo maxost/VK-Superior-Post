@@ -98,44 +98,6 @@
     </FrameLayout>
 
     <View
-        android:id="@+id/activity_post_bottom_panel"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/greyDivider"
-        app:layout_constraintBottom_toTopOf="@+id/activity_post_bottom_panel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/activity_post_submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/send_button"
-        android:fontFamily="@font/roboto_medium"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:text="@string/post_button_send_text"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_post_bottom_panel"
-        app:layout_constraintEnd_toEndOf="@+id/activity_post_bottom_panel"
-        app:layout_constraintStart_toEndOf="@+id/activity_post_backgrounds_list"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel" />
-
-    <View
         android:id="@+id/activity_post_top_panel"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -242,30 +204,68 @@
         app:layout_constraintStart_toStartOf="@+id/activity_post_type_post"
         app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_post_backgrounds_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
-        android:paddingRight="10dp"
-        android:paddingEnd="10dp"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_post_bottom_panel"
-        app:layout_constraintEnd_toStartOf="@+id/activity_post_submit_button"
-        app:layout_constraintStart_toStartOf="@+id/activity_post_bottom_panel"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel" />
+    <RelativeLayout
+        android:id="@+id/activity_post_bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="@color/greyDivider"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_post_bottom_panel"
-        app:layout_constraintEnd_toEndOf="@+id/activity_post_backgrounds_list"
-        app:layout_constraintStart_toEndOf="@+id/activity_post_backgrounds_list"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_bottom_panel"
-        tools:layout_editor_absoluteX="0dp"
-        />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyDivider"
+            android:layout_alignParentTop="true"
+            />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/activity_post_submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/send_button"
+            android:fontFamily="@font/roboto_medium"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/post_button_send_text"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_post_backgrounds_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            android:clipToPadding="false"
+            android:layout_toLeftOf="@+id/activity_post_bottom_panel_vertical_divider"
+            />
+
+        <View
+            android:id="@+id/activity_post_bottom_panel_vertical_divider"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/greyDivider"
+            android:layout_toLeftOf="@id/activity_post_submit_button"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyDivider"
+            android:layout_alignParentBottom="true"
+            />
+
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_post_gallery_list"
@@ -281,18 +281,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
         android:background="@color/white"
+        android:translationY="208dp"
         />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/greyDivider"
-        app:layout_constraintBottom_toTopOf="@+id/activity_post_gallery_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_gallery_list" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/activity_post_bin"

@@ -10,10 +10,7 @@ import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import com.bumptech.glide.Glide
 import com.evernote.android.state.StateSaver
@@ -183,7 +180,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun setTextStyle(textStyle: TextStyle) {
-        activity_post_text.setTextStyle(textStyle)
+        activity_post_text.textStyle = textStyle
     }
 
     override fun setText(text: String) {

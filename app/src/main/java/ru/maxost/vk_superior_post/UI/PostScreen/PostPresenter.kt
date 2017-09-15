@@ -1,6 +1,7 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import com.evernote.android.state.State
+import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Data.DataManger
 import ru.maxost.vk_superior_post.Model.*
 import ru.maxost.vk_superior_post.R
@@ -192,9 +193,9 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     private fun Post.nextTextStyle(): TextStyle {
         textStyle = when (textStyle) {
-            TextStyle.BLACK                 -> TextStyle.WHITE
-            TextStyle.WHITE                 -> TextStyle.BLACK_WITH_BACKGROUND
-            TextStyle.BLACK_WITH_BACKGROUND -> TextStyle.WHITE_WITH_BACKGROUND
+            TextStyle.BLACK                 -> TextStyle.BLACK_WITH_BACKGROUND
+            TextStyle.BLACK_WITH_BACKGROUND -> TextStyle.WHITE
+            TextStyle.WHITE                 -> TextStyle.WHITE_WITH_BACKGROUND
             TextStyle.WHITE_WITH_BACKGROUND -> TextStyle.BLACK
         }
 

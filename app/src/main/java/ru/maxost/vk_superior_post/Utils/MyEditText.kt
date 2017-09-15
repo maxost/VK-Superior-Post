@@ -7,8 +7,9 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatEditText
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.widget.Switch
+import android.view.View
 import ru.maxost.switchlog.SwitchLog
+import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
 
 /**
@@ -19,85 +20,59 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 
     var isInterceptingTouches = true
 
+    var textStyle = TextStyle.WHITE
+        set(value) {
+            SwitchLog.scream("$value")
+            field = value
+
+            setShadowLayer(0f, 0f, 0f, 0)
+            if(text.isBlank()) return
+
+            when(textStyle) {
+                TextStyle.BLACK -> {
+                    setTextColor(ContextCompat.getColor(this.context, R.color.black))
+                }
+                TextStyle.WHITE -> {
+                    setTextColor(ContextCompat.getColor(this.context, R.color.white))
+                    setShadowLayer(5f, 0f, 5f, colorShadow)
+                }
+                TextStyle.BLACK_WITH_BACKGROUND -> {
+                    setTextColor(ContextCompat.getColor(this.context, R.color.black))
+                }
+                TextStyle.WHITE_WITH_BACKGROUND -> {
+                    setTextColor(ContextCompat.getColor(this.context, R.color.white))
+                    setShadowLayer(5f, 0f, 5f, colorShadow)
+                }
+            }
+            invalidate()
+        }
+
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val color1 = ContextCompat.getColor(context, R.color.whiteTransparent)
+    private val colorWhite = ContextCompat.getColor(context, R.color.white)
+    private val colorWhiteTransparent = ContextCompat.getColor(context, R.color.whiteTransparent)
+    private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
     private val hTopOffset = 6.dp2px(context)
     private val hBottomOffset = 8.dp2px(context)
     private val wOffset = 12.dp2px(context)
-    private val path = Path()
     private val points = mutableListOf<PointF>()
+
+    private val currentBorderPath = Path()
+    private var lastText = ""
+
+    //TODO multiple enters
+    //TODO multiple spaces
+    //TODO smooth edges
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-        path.reset()
-        points.clear()
-
-        //TODO need proper height
-        //TODO multiple enters
-
-        for (lineIndex in 0 until lineCount) {
-            if(text.isEmpty()) {
-                super.onDraw(canvas)
-                return
-            }
-            if(getLineWidth(lineIndex) == 0) continue
-
-            val rect = getLineRect(lineIndex)
-
-            if(lineCount == 1 || (lineIndex == 0 && lineIndex + 1 < lineCount && getLineWidth(lineIndex + 1) == 0)) {
-                path.moveTo(rect.left - wOffset + 20, rect.top - hTopOffset)
-                points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
-                points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
-                points.add(PointF(rect.left - wOffset, rect.bottom + hBottomOffset))
-                points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
-                break
-            } else if(lineIndex == 0) path.moveTo(rect.centerX(), rect.top - hTopOffset)
-
-            if (lineIndex == 0) {
-                points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
-                points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
-                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
-                continue
-            }
-
-            if (lineIndex == lineCount - 1 || (lineIndex + 1 < lineCount && getLineWidth(lineIndex + 1) == 0)) {
-                if(rect.right + wOffset < points.last().x) {
-                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
-                }
-                points.add(PointF(rect.right + wOffset, points.last().y))
-                points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
-                points.add(PointF(rect.centerX(), rect.bottom + hBottomOffset))
-                continue
-            }
-
-            if (lineIndex > 0 && lineIndex < lineCount - 1) {
-                if(rect.right + wOffset < points.last().x) {
-                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
-                }
-                points.add(PointF(rect.right + wOffset, points.last().y))
-                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
-                continue
-            }
+        SwitchLog.scream("onDraw")
+        if(text.isEmpty()) {
+            super.onDraw(canvas)
+            return
         }
 
-        for (lineIndex in lineCount-1 downTo 0) {
-            if(lineCount == 1 || points.isEmpty()) break
-
-            //TODO reverse list
-        }
-
-        points.forEach { path.lineTo(it.x, it.y) }
-        path.close()
-
-        paint.color = color1
-        paint.isDither = true
-        paint.strokeWidth = 10f
-        paint.style = Paint.Style.STROKE
-        paint.strokeJoin = Paint.Join.ROUND
-        paint.strokeCap = Paint.Cap.ROUND
-        paint.pathEffect = CornerPathEffect(10f)
-        paint.isAntiAlias = true
-        canvas?.drawPath(path, paint)
+        if(textStyle == TextStyle.WHITE_WITH_BACKGROUND) drawBorder(canvas, colorWhiteTransparent)
+        if(textStyle == TextStyle.BLACK_WITH_BACKGROUND) drawBorder(canvas, colorWhite)
 
         super.onDraw(canvas)
     }
@@ -140,5 +115,91 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
                 text.takeLastWhile { Character.isWhitespace(it) }.length
         val spaceWidth = getPaint().measureText(" ").toInt()
         return count * spaceWidth
+    }
+
+    private fun drawBorder(canvas: Canvas?, color: Int) {
+        if(canvas == null) return
+
+        paint.apply {
+            this.color = color
+            isDither = true
+            strokeWidth = 10f
+            style = Paint.Style.FILL
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
+            pathEffect = CornerPathEffect(10f)
+//            this.setShadowLayer(5f, 0f, 5f, colorShadow)
+//            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            isAntiAlias = true
+        }
+
+//        if(text.toString() != lastText) {
+            SwitchLog.scream("text: ${text} lastText: $lastText")
+            createBorderPath(currentBorderPath)
+            lastText = text.toString()
+//        }
+
+        canvas.drawPath(currentBorderPath, paint)
+    }
+
+    private fun createBorderPath(path: Path): Path {
+        SwitchLog.scream("createBorderPath")
+        points.clear()
+        path.reset()
+
+        for (lineIndex in 0 until lineCount) {
+            if(getLineWidth(lineIndex) == 0) continue
+
+            val rect = getLineRect(lineIndex)
+            SwitchLog.scream("rect left: ${rect.left} right: ${rect.right}")
+
+            if(lineCount == 1 || (lineIndex == 0 && lineIndex + 1 < lineCount && getLineWidth(lineIndex + 1) == 0)) {
+                path.moveTo(rect.left - wOffset + 20, rect.top - hTopOffset)
+                points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
+                points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
+                points.add(PointF(rect.left - wOffset, rect.bottom + hBottomOffset))
+                points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
+                break
+            }
+
+            if (lineIndex == 0) {
+                path.moveTo(rect.centerX(), rect.top - hTopOffset)
+                points.add(PointF(rect.centerX(), rect.top - hTopOffset))
+                points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
+                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
+                continue
+            }
+
+            if (lineIndex == lineCount - 1 || (lineIndex + 1 < lineCount && getLineWidth(lineIndex + 1) == 0)) {
+                if(rect.right + wOffset < points.last().x) {
+                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
+                }
+                points.add(PointF(rect.right + wOffset, points.last().y))
+                points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
+                points.add(PointF(rect.centerX(), rect.bottom + hBottomOffset))
+                continue
+            }
+
+            if (lineIndex > 0 && lineIndex < lineCount - 1) {
+                if(rect.right + wOffset < points.last().x) {
+                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
+                }
+                points.add(PointF(rect.right + wOffset, points.last().y))
+                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
+                continue
+            }
+        }
+        points.forEach { path.lineTo(it.x, it.y) }
+
+        //draw left side
+        if(lineCount != 1 && points.isNotEmpty() && getLineWidth(1) != 0) {
+            val centerX = points.first().x
+            points.reversed().forEach {
+                path.lineTo(centerX - (it.x - centerX), it.y)
+            }
+        }
+
+        path.close()
+        return path
     }
 }

@@ -1,6 +1,7 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import android.Manifest
+import android.graphics.Interpolator
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
@@ -11,9 +12,11 @@ import android.support.constraint.ConstraintSet
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
+import android.support.v4.view.ViewPropertyAnimatorListener
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import com.bumptech.glide.Glide
 import com.evernote.android.state.StateSaver
@@ -37,7 +40,8 @@ import java.util.*
 
 class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity(), StickerView.Listener {
 
-    private val ANIMATION_DURATION = 300
+    private val DEFAULT_ANIMATION_DURATION = 300.toLong()
+    private val DEFAULT_INTERPOLATOR = AccelerateDecelerateInterpolator()
 
     private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0
@@ -90,6 +94,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun showStickerPickerDialog() {
+        closeKeyboard()
         StickerListDialogFragment.newInstance(24)
                 .show(supportFragmentManager, null)
     }
@@ -253,17 +258,20 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
         ViewCompat.animate(activity_post_gallery_list)
                 .translationYBy(if(show) -panelHeight else panelHeight)
-                .setDuration(if(animate) 300 else 0)
+                .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
+                .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
 
         ViewCompat.animate(activity_post_compose_root_layout)
                 .translationYBy(if(show) -panelHeight / 2 else panelHeight / 2)
-                .setDuration(if(animate) 300 else 0)
+                .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
+                .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
 
         ViewCompat.animate(activity_post_bottom_panel)
                 .translationYBy(if(show) -panelHeight else panelHeight)
-                .setDuration(if(animate) 300 else 0)
+                .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
+                .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
     }
 
@@ -290,47 +298,67 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onMultiTouch(enable: Boolean) {
+        SwitchLog.scream("onMultiTouch: $enable")
+
         activity_post_text.isInterceptingTouches = !enable
-        activity_post_bin.show(false)
+//        activity_post_bin.show(false)
     }
 
+    private var binVisible = false
     override fun onDragging(isDragging: Boolean): Rect {
-        //TODO animate
-        activity_post_bin.show(isDragging)
+        if(binVisible != isDragging) {
+            SwitchLog.scream("isDragging: $isDragging")
+            binVisible = isDragging
+            val distance = 20.dp2px(this).toFloat()
+            activity_post_root_layout.requestLayout()
+            ViewCompat.animate(activity_post_bin)
+                    .translationY(if (isDragging) -distance else distance)
+                    .alpha(if(isDragging) 1f else 0f)
+                    .setDuration(200)
+                    .setInterpolator(DEFAULT_INTERPOLATOR)
+                    .start()
+        }
 
         val array = IntArray(2)
         activity_post_bin.getLocationOnScreen(array)
-        val rect = Rect(
+        return Rect(
                 array[0],
                 array[1],
                 array[0] + activity_post_bin.width,
                 array[1] + activity_post_bin.height
         )
-        SwitchLog.scream(rect.toString())
-        return rect
     }
 
+    private var binExpanded = false
     override fun onOverBin(isOverBin: Boolean) {
-        if(isOverBin) {
+        if(binExpanded == isOverBin) return
+
+        SwitchLog.scream("isOverBin: $isOverBin")
+        binExpanded = isOverBin
+
+        if (isOverBin) {
             activity_post_bin.setImageResource(R.drawable.ic_fab_trash_released)
         } else {
             activity_post_bin.setImageResource(R.drawable.ic_fab_trash)
         }
 
-        //TODO animate
-        activity_post_bin.layoutParams =
-                activity_post_bin.layoutParams
-                        .apply {
-                            height = (if(isOverBin) 56 else 48).dp2px(this@PostActivity)
-                            width = (if(isOverBin) 56 else 48).dp2px(this@PostActivity)
-                        }
-
+        ViewCompat.animate(activity_post_bin)
+                .scaleX(if (isOverBin) 1.2f else 1f)
+                .scaleY(if (isOverBin) 1.2f else 1f)
+                .setDuration(200)
+                .setInterpolator(DEFAULT_INTERPOLATOR)
+                .start()
     }
 
     override fun onDeleteSticker(sticker: Sticker) {
-        //TODO animate
-        activity_post_bin.show(false)
         presenter.onStickerDelete(sticker)
+
+        ViewCompat.animate(activity_post_bin)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(200)
+                .setInterpolator(DEFAULT_INTERPOLATOR)
+                .start()
     }
 
     private fun initPresenter(savedInstanceState: Bundle?) {

@@ -113,7 +113,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     fun onStickerClick(stickerResId: Int) {
         val sticker = Sticker(id = UUID.randomUUID().toString(), resId = stickerResId)
         post.stickers.add(sticker)
-        view?.setStickers(post.stickers)
+        view?.addSticker(sticker)
     }
 
     fun onStickerDelete(sticker: Sticker) {

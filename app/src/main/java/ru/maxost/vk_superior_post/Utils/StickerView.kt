@@ -8,11 +8,52 @@ import android.view.View
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Model.Sticker
 import android.graphics.*
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.subjects.BehaviorSubject
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Maxim Ostrovidov on 11.09.17.
  * (c) White Soft
  */
+enum class StickerState {
+    NORMAL,
+    CREATING,
+    DELETING
+}
+
+object StickerTasks {
+
+    private val subjects = mutableMapOf<String, BehaviorSubject<Float>>()
+
+    fun startTask(stickerId: String) {
+        SwitchLog.scream("stickerId: $stickerId")
+        val subject = BehaviorSubject.createDefault<Float>(0f)
+        subjects.put(stickerId, subject)
+
+        Observable.range(1, 100)
+                .concatMap { Observable.just(it).delay(2, TimeUnit.MILLISECONDS) }
+                .map { it / 100f }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    SwitchLog.scream("subscribe: $it")
+                    subject.onNext(it)
+                }
+    }
+
+    fun getTaskCompletionFactor(stickerId: String): Float {
+        val factor = subjects[stickerId]?.value
+        if(factor == 1f) {
+            subjects[stickerId]?.onComplete()
+            subjects.remove(stickerId)
+        }
+
+        SwitchLog.scream("stickerId: $stickerId CompletionFactor: $factor")
+        return factor ?: 1f
+    }
+}
+
 class StickerView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : View(context, attributeSet) {
 
     companion object {
@@ -28,25 +69,30 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     private val stickers: MutableList<Sticker> = mutableListOf()
-    private var bitmaps: MutableSet<Pair<Int, Bitmap>> = mutableSetOf() // resId - Bitmap
+    private val stickerState = mutableMapOf<String, StickerState>() // String = stickerId
+    private var bitmaps: MutableSet<Pair<Int, Bitmap>> = mutableSetOf() // Int = resId
+    private val paint = Paint()
 
     fun addSticker(sticker: Sticker) {
         stickers.add(sticker)
+        stickerState.put(sticker.id, StickerState.CREATING)
+        StickerTasks.startTask(sticker.id)
         invalidate()
     }
 
     fun setStickers(stickers: MutableList<Sticker>) {
         this.stickers.clear()
         this.stickers.addAll(stickers)
+        stickers.forEach { stickerState.put(it.id, StickerState.NORMAL) }
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-//        SwitchLog.scream("stickers: ${stickers.size} bitmaps: ${bitmaps.size}")
+        SwitchLog.scream("stickers: ${stickers.size} bitmaps: ${bitmaps.size}")
 
         stickers.forEach { sticker ->
-//            SwitchLog.scream(sticker.toString())
+            SwitchLog.scream(sticker.toString())
 
             if(bitmaps.firstOrNull { it.first == sticker.resId } == null) {
                 val drawable = BitmapFactory.decodeResource(context.resources, sticker.resId)
@@ -58,15 +104,64 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
             }
 
             val bitmap = bitmaps.firstOrNull { it.first == sticker.resId }?.second ?: throw IllegalArgumentException("no bitmap!?")
-            val matrix = Matrix().apply {
-                preScale(sticker.scaleFactor, sticker.scaleFactor)
-                preRotate(sticker.angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
-                val translateX = sticker.xFactor * width - (sticker.scaleFactor * width / 2)
-                val translateY = sticker.yFactor * height - (sticker.scaleFactor * width / 2)
-                postTranslate(translateX, translateY)
+
+            when(stickerState[sticker.id]) {
+                StickerState.CREATING -> {
+                    val factor = StickerTasks.getTaskCompletionFactor(sticker.id)
+                    if(factor == 1f) {
+                        stickerState.put(sticker.id, StickerState.NORMAL)
+                        drawNormal(sticker, canvas, bitmap)
+                    } else {
+                        val matrix = Matrix().apply {
+                            preScale(sticker.scaleFactor * factor, sticker.scaleFactor * factor)
+                            preRotate(sticker.angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
+                            val translateX = sticker.xFactor * width - (sticker.scaleFactor * factor * width / 2)
+                            val translateY = sticker.yFactor * height - (sticker.scaleFactor * factor * width / 2)
+                            postTranslate(translateX, translateY)
+                        }
+                        paint.alpha = (255 * factor).toInt()
+                        canvas?.drawBitmap(bitmap, matrix, paint)
+                        invalidate()
+                    }
+                }
+                StickerState.DELETING -> {
+                    val factor = StickerTasks.getTaskCompletionFactor(sticker.id)
+                    if(factor == 1f) {
+                        bitmaps.firstOrNull { it.first == sticker.resId }?.second?.recycle()
+                        bitmaps.removeAll { it.first == sticker.resId }
+                        stickers.remove(sticker)
+                        stickerState.remove(sticker.id)
+                    } else {
+                        val scaleFactor = sticker.scaleFactor - sticker.scaleFactor * factor
+                        val matrix = Matrix().apply {
+                            preScale(scaleFactor, scaleFactor)
+                            preRotate(sticker.angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
+                            val translateX = sticker.xFactor * width - (scaleFactor * width / 2)
+                            val translateY = sticker.yFactor * height - (scaleFactor * width / 2)
+                            postTranslate(translateX, translateY)
+                        }
+                        paint.alpha = 255 - (255 * factor).toInt()
+                        canvas?.drawBitmap(bitmap, matrix, paint)
+                        invalidate()
+                    }
+                }
+                StickerState.NORMAL -> {
+                    drawNormal(sticker, canvas, bitmap)
+                }
             }
-            canvas?.drawBitmap(bitmap, matrix, null)
         }
+    }
+
+    private fun drawNormal(sticker: Sticker, canvas: Canvas?, bitmap: Bitmap) {
+        SwitchLog.scream("drawNormal")
+        val matrix = Matrix().apply {
+            preScale(sticker.scaleFactor, sticker.scaleFactor)
+            preRotate(sticker.angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
+            val translateX = sticker.xFactor * width - (sticker.scaleFactor * width / 2)
+            val translateY = sticker.yFactor * height - (sticker.scaleFactor * width / 2)
+            postTranslate(translateX, translateY)
+        }
+        canvas?.drawBitmap(bitmap, matrix, null)
     }
 
     private var currentSticker: Sticker? = null
@@ -180,11 +275,12 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 listener.onDragging(false)
                 val isOverBin = binRect.contains(event.rawX.toInt(), event.rawY.toInt())
                 if(isOverBin) {
-                    currentSticker?.let { listener.onDeleteSticker(it) }
-                    bitmaps.firstOrNull { it.first == currentSticker?.resId }?.second?.recycle()
-                    bitmaps.removeAll { it.first == currentSticker?.resId }
-                    stickers.remove(currentSticker)
-                    invalidate()
+                    currentSticker?.let { sticker ->
+                        listener.onDeleteSticker(sticker)
+                        stickerState.put(sticker.id, StickerState.DELETING)
+                        StickerTasks.startTask(sticker.id)
+                        invalidate()
+                    }
                 }
 
                 currentSticker = null

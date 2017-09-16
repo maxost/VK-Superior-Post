@@ -310,7 +310,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         activity_post_bin.layoutParams =
                 (activity_post_bin.layoutParams as ConstraintLayout.LayoutParams)
                         .apply {
-                            val baseMargin = 16.dp2px(this@PostActivity)
                             val bottomPanelHeight = 56.dp2px(this@PostActivity)
                             val galleryListHeight = 208.dp2px(this@PostActivity)
                             val margin = when {
@@ -331,7 +330,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
                                     val distanceFromBottom = screenBottomY - postBottomY
                                     val result = distanceFromBottom
-                                    SwitchLog.scream("postYLocation: $postYLocation postHeight: $postHeight postBottomY: $postBottomY screenHeight: $screenHeight distanceFromBottom: $distanceFromBottom result: $result")
                                     result
                                 }
                                 else -> bottomPanelHeight

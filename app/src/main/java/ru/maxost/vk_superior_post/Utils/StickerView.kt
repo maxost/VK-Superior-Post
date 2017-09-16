@@ -136,11 +136,19 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                         val matrix = Matrix().apply {
                             preScale(scaleFactor, scaleFactor)
                             preRotate(sticker.angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
-                            val translateX = sticker.xFactor * width - (scaleFactor * width / 2)
-                            val translateY = sticker.yFactor * height - (scaleFactor * width / 2)
+                            var translateX = sticker.xFactor * width
+                            var translateY = sticker.yFactor * height
+
+                            SwitchLog.scream("translateX: $translateX translateY: $translateY binRect.centerX: ${binRect.centerX()} binRect.centerY: ${binRect.centerY()}")
+                            val binX = binRect.centerX() - IntArray(2).apply { getLocationOnScreen(this) }[0]
+                            val binY = binRect.centerY() - IntArray(2).apply { getLocationOnScreen(this) }[1]
+                            translateX += (binX - translateX) * factor - (scaleFactor * width / 2)
+                            translateY += (binY - translateY) * factor - (scaleFactor * width / 2)
+                            SwitchLog.scream("new translateX: $translateX new translateY: $translateY")
+
                             postTranslate(translateX, translateY)
                         }
-                        paint.alpha = 255 - (255 * factor).toInt()
+                        paint.alpha = 127 - (127 * factor).toInt()
                         canvas?.drawBitmap(bitmap, matrix, paint)
                         invalidate()
                     }
@@ -161,10 +169,17 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
             val translateY = sticker.yFactor * height - (sticker.scaleFactor * width / 2)
             postTranslate(translateX, translateY)
         }
-        canvas?.drawBitmap(bitmap, matrix, null)
+
+        if(sticker == currentStickerOverBin) {
+            paint.alpha = 127
+            canvas?.drawBitmap(bitmap, matrix, paint)
+        } else {
+            canvas?.drawBitmap(bitmap, matrix, null)
+        }
     }
 
     private var currentSticker: Sticker? = null
+    private var currentStickerOverBin: Sticker? = null
     private var currentTouchDistanceFromCenterX = 0
     private var currentTouchDistanceFromCenterY = 0
 
@@ -263,6 +278,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     binRect = listener.onDragging(true)
                     val isOverBin = binRect.contains(event.rawX.toInt(), event.rawY.toInt())
                     listener.onOverBin(isOverBin)
+                    currentStickerOverBin = if(isOverBin) currentSticker else null
                 } else listener.onDragging(false)
 
                 invalidate()

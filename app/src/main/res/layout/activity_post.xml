@@ -292,14 +292,12 @@
         android:layout_height="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/activity_post_bottom_panel"
+        app:layout_constraintBottom_toTopOf="parent"
         android:src="@drawable/ic_fab_trash"
         app:backgroundTint="@color/white"
         android:scaleType="center"
-        android:layout_marginBottom="16dp"
         app:elevation="1dp"
         android:alpha="0"
-        android:translationY="20dp"
         />
 
 </android.support.constraint.ConstraintLayout>

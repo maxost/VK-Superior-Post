@@ -161,6 +161,10 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     fun onSubmitClick() = view?.showUploadScreen(post)
 
+    fun isKeyboardVisible() = isKeyboardVisible
+    fun isGalleryPanelVisible() = isBottomPanelVisible
+    fun isPostTypePost() = post.postType == PostType.POST
+
     private fun onImageBackgroundSelected() {
 
         if(isBottomPanelVisible) {

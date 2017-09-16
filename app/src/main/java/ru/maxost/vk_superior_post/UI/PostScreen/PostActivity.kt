@@ -306,16 +306,51 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     private var binVisible = false
     override fun onDragging(isDragging: Boolean): Rect {
+
+        activity_post_bin.layoutParams =
+                (activity_post_bin.layoutParams as ConstraintLayout.LayoutParams)
+                        .apply {
+                            val baseMargin = 16.dp2px(this@PostActivity)
+                            val bottomPanelHeight = 56.dp2px(this@PostActivity)
+                            val galleryListHeight = 208.dp2px(this@PostActivity)
+                            val margin = when {
+                                presenter.isKeyboardVisible() -> keyboardHeight + bottomPanelHeight
+                                presenter.isGalleryPanelVisible() -> galleryListHeight + bottomPanelHeight
+                                presenter.isPostTypePost() -> {
+                                    val postYLocation = IntArray(2).apply {
+                                        activity_post_compose_root_layout.getLocationOnScreen(this)
+                                    }[1]
+                                    val postHeight = activity_post_compose_root_layout.height
+                                    val postBottomY = postYLocation + postHeight
+
+                                    val screenYLocation =  IntArray(2).apply {
+                                        activity_post_root_layout.getLocationOnScreen(this)
+                                    }[1]
+                                    val screenHeight = activity_post_root_layout.height
+                                    val screenBottomY = screenYLocation + screenHeight
+
+                                    val distanceFromBottom = screenBottomY - postBottomY
+                                    val result = distanceFromBottom
+                                    SwitchLog.scream("postYLocation: $postYLocation postHeight: $postHeight postBottomY: $postBottomY screenHeight: $screenHeight distanceFromBottom: $distanceFromBottom result: $result")
+                                    result
+                                }
+                                else -> bottomPanelHeight
+                            }
+
+                            bottomMargin = margin
+                        }
+
         if(binVisible != isDragging) {
             SwitchLog.scream("isDragging: $isDragging")
             binVisible = isDragging
-            val distance = 20.dp2px(this).toFloat()
+            val distance = 16.dp2px(this).toFloat()
             activity_post_root_layout.requestLayout()
             ViewCompat.animate(activity_post_bin)
-                    .translationY(if (isDragging) -distance else distance)
+                    .translationY(if (isDragging) -distance else distance / 2)
                     .alpha(if(isDragging) 1f else 0f)
                     .setDuration(200)
                     .setInterpolator(DEFAULT_INTERPOLATOR)
+                    .setStartDelay(if(isDragging) 300 else 0)
                     .start()
         }
 
@@ -347,6 +382,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 .scaleY(if (isOverBin) 1.2f else 1f)
                 .setDuration(200)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
+                .setStartDelay(0)
                 .start()
     }
 

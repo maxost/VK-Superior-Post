@@ -25,7 +25,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         invalidate()
     }
 
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val colorWhite = ContextCompat.getColor(context, R.color.white)
     private val colorWhiteTransparent = ContextCompat.getColor(context, R.color.whiteTransparent)
     private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
@@ -34,6 +33,24 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private val wOffset = 12.dp2px(context)
     private val points = mutableListOf<PointF>()
     private val path = Path()
+    private val shadowPath = Path()
+
+    private val paint = Paint().apply {
+        isDither = true
+        strokeWidth = 10f
+        style = Paint.Style.FILL
+        strokeJoin = Paint.Join.ROUND
+        strokeCap = Paint.Cap.ROUND
+        pathEffect = CornerPathEffect(10f)
+        isAntiAlias = true
+    }
+
+    private val shadowPaint = Paint().apply {
+        isDither = true
+        strokeWidth = 4f
+        style = Paint.Style.FILL
+        isAntiAlias = true
+    }
 
     //TODO multiple enters
     //TODO multiple spaces
@@ -65,26 +82,22 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private fun drawBorder(canvas: Canvas?, color: Int) {
         if(canvas == null) return
 
-        paint.apply {
-            this.color = color
-            isDither = true
-            strokeWidth = 10f
-            style = Paint.Style.FILL
-            strokeJoin = Paint.Join.ROUND
-            strokeCap = Paint.Cap.ROUND
-            pathEffect = CornerPathEffect(10f)
-//            this.setShadowLayer(5f, 0f, 5f, colorShadow) //TODO shadow
-//            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-            isAntiAlias = true
-        }
-
+        paint.color = color
         val lines = state!!.linesList
         val textStartPoint = state!!.startPoint
         val borderStartPoint = IntArray(2).apply { getLocationOnScreen(this) }
         SwitchLog.scream("textStartPoint ${textStartPoint[1]} borderStartPoint: ${borderStartPoint[1]}")
 
         createBorderPath(path, lines.map { convertRect(it, textStartPoint, borderStartPoint) })
+
         canvas.drawPath(path, paint)
+
+        shadowPath.reset()
+        shadowPath.addPath(path)
+        shadowPath.offset(0f, 4f)
+        shadowPath.op(path, Path.Op.DIFFERENCE)
+        shadowPaint.color = colorShadow
+        canvas.drawPath(shadowPath, shadowPaint) //TODO shadow
     }
 
     private fun convertRect(fromRect: RectF, fromViewStart: IntArray, toViewStart: IntArray): RectF {

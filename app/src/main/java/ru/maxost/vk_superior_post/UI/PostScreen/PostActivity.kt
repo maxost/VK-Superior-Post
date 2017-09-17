@@ -1,6 +1,8 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import android.Manifest
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
@@ -101,6 +103,9 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         val size = Point()
         windowManager.defaultDisplay.getSize(size)
 
+        val opaqueWhite = ContextCompat.getColor(this, R.color.white)
+        val transparentWhite = ContextCompat.getColor(this, R.color.whiteTransparentMore)
+
         when (postType) {
             PostType.POST -> {
                 activity_post_compose_root_layout.layoutParams =
@@ -117,8 +122,14 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 }
                 TransitionManager.beginDelayedTransition(activity_post_root_layout)
                 newConstraints.applyTo(activity_post_root_layout)
-                activity_post_top_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-                activity_post_bottom_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+
+                ValueAnimator.ofObject(ArgbEvaluator(), transparentWhite, opaqueWhite).apply {
+                    duration = 300
+                    addUpdateListener {
+                        activity_post_top_panel.setBackgroundColor(it.animatedValue as Int)
+                        activity_post_bottom_panel.setBackgroundColor(it.animatedValue as Int)
+                    }
+                }.start()
             }
             PostType.STORY -> {
                 activity_post_compose_root_layout.layoutParams =
@@ -135,8 +146,14 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 }
                 TransitionManager.beginDelayedTransition(activity_post_root_layout)
                 newConstraints.applyTo(activity_post_root_layout)
-                activity_post_top_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.whiteTransparentMore))
-                activity_post_bottom_panel.setBackgroundColor(ContextCompat.getColor(this, R.color.whiteTransparentMore))
+
+                ValueAnimator.ofObject(ArgbEvaluator(), opaqueWhite, transparentWhite).apply {
+                    duration = 300
+                    addUpdateListener {
+                        activity_post_top_panel.setBackgroundColor(it.animatedValue as Int)
+                        activity_post_bottom_panel.setBackgroundColor(it.animatedValue as Int)
+                    }
+                }.start()
             }
         }
 
@@ -233,7 +250,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             }
             BackgroundType.BEACH -> {
                 Glide.with(this)
-                        .load(R.drawable.bg_beach_center)
+                        .load(R.drawable.bg_beach_center) //TODO glitchy colors
                         .override(screenSize.x, screenSize.y)
                         .into(activity_post_compose_background_center)
                 Glide.with(this)

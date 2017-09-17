@@ -16,6 +16,7 @@ import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.Utils.dp2px
 import ru.maxost.vk_superior_post.Utils.px2dp
 
+//TODO must have constant height
 class StickerListDialogFragment : BottomSheetDialogFragment() {
 
     interface Listener {

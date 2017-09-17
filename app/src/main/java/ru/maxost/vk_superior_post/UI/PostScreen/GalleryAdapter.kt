@@ -11,6 +11,8 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import ru.maxost.vk_superior_post.R
+import ru.maxost.vk_superior_post.Utils.DrawableViewBackgroundTarget
+import ru.maxost.vk_superior_post.Utils.GlideDrawableViewBackgroundTarget
 import ru.maxost.vk_superior_post.Utils.RoundedCornersTransformation
 import ru.maxost.vk_superior_post.Utils.dp2px
 import java.io.File
@@ -103,10 +105,10 @@ inline fun galleryAdapter(context: Context,
                         .load(file)
                         .placeholder(placeholder)
                         .bitmapTransform(CenterCrop(context), RoundedCornersTransformation(context, 4.dp2px(context), 0))
-                        .into(image)
+                        .into(GlideDrawableViewBackgroundTarget(image))
 
-                if (file == selectedFile) image.foreground = ContextCompat.getDrawable(context, R.drawable.drawable_list_selection)
-                else image.foreground = transparentDrawable
+                if (file == selectedFile) image.setImageResource(R.drawable.drawable_list_selection)
+                else image.setImageResource(android.R.color.transparent)
 
                 holder.itemView.setOnClickListener {
                     onItemClick(file)

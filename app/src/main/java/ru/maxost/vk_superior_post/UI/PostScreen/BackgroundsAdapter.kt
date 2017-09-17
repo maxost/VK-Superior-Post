@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import ru.maxost.vk_superior_post.Model.Background
 import ru.maxost.vk_superior_post.Model.BackgroundType
 import ru.maxost.vk_superior_post.R
+import ru.maxost.vk_superior_post.Utils.GlideDrawableViewBackgroundTarget
 import ru.maxost.vk_superior_post.Utils.RoundedCornersTransformation
 import ru.maxost.vk_superior_post.Utils.dp2px
 
@@ -73,41 +74,33 @@ inline fun backgroundsAdapter(
                     R.drawable.background_violet_full -> R.drawable.background_violet
                     else -> throw IllegalArgumentException("unknown resId")
                 }
-                image.setPadding(0, 0, 0, 0)
-                image.setBackgroundResource(0)
-                image.setImageResource(resource)
+                image.setBackgroundResource(resource)
             }
             BackgroundType.BEACH -> {
-                image.setPadding(0, 0, 0, 0)
-                image.setBackgroundResource(0)
                 Glide.with(context)
                         .load(R.drawable.thumb_beach)
                         .bitmapTransform(RoundedCornersTransformation(context, 4.dp2px(context), 0))
-                        .into(image)
+                        .into(GlideDrawableViewBackgroundTarget(image))
             }
             BackgroundType.STARS -> {
-                image.setPadding(0, 0, 0, 0)
-                image.setBackgroundResource(0)
                 Glide.with(context)
                         .load(R.drawable.thumb_stars)
                         .bitmapTransform(RoundedCornersTransformation(context, 4.dp2px(context), 0))
-                        .into(image)
+                        .into(GlideDrawableViewBackgroundTarget(image))
             }
             BackgroundType.IMAGE -> {
-                image.setPadding(4.dp2px(context), 4.dp2px(context), 4.dp2px(context), 4.dp2px(context))
-                image.setBackgroundResource(R.drawable.drawable_gallery_option_background)
                 Glide.with(context)
-                        .load(R.drawable.ic_toolbar_new)
+                        .load(R.drawable.thumb_add)
                         .bitmapTransform(RoundedCornersTransformation(context, 4.dp2px(context), 0))
-                        .into(image)
+                        .into(GlideDrawableViewBackgroundTarget(image))
             }
         }
 
         if(item == selectedItem ||
                 item.type == BackgroundType.IMAGE && selectedItem?.type == BackgroundType.IMAGE) {
-            image.foreground = ContextCompat.getDrawable(context, R.drawable.drawable_list_selection)
+            image.setImageResource(R.drawable.drawable_list_selection)
         } else {
-            image.foreground = ColorDrawable(Color.TRANSPARENT)
+            image.setImageResource(android.R.color.transparent)
         }
 
         holder.itemView.setOnClickListener {

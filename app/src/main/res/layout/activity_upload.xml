@@ -94,9 +94,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:mpb_progressTint="@color/cornFlowerBlue"
-        android:progressTint="@color/cornFlowerBlue"
         app:mpb_indeterminateTint="@color/cornFlowerBlue"
-        android:indeterminateTint="@color/cornFlowerBlue"
         />
 
     <ImageView

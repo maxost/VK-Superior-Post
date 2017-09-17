@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,15 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import ru.maxost.switchlog.SwitchLog
+import com.squareup.picasso.Picasso
 
 import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.Utils.dp2px
 import ru.maxost.vk_superior_post.Utils.px2dp
-import java.lang.Exception
 
 //TODO must have constant height
 class StickerListDialogFragment : BottomSheetDialogFragment() {
@@ -101,8 +96,10 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val imageResId = resources.getIdentifier("sticker_fish_${position + 1}", "drawable", context.packageName)
 
-            Glide.with(context)
+            Picasso.with(context) // Glide not loading image sometimes so it's fast workaround
                     .load(imageResId)
+                    .centerInside()
+                    .fit()
                     .into(holder.image)
 
             holder.itemView.tag = imageResId

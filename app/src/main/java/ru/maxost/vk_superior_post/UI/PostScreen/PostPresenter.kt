@@ -123,6 +123,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         post.stickers.remove(sticker)
     }
 
+    fun getCurrentBackground() = post.background
+
     fun onBackgroundSelected(background: Background) {
         view?.setSelectedBackground(background)
 

@@ -286,7 +286,7 @@
         />
 
     <!-- TODO change when white background -->
-    <android.support.design.widget.FloatingActionButton
+    <ImageView
         android:id="@+id/activity_post_bin"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -294,9 +294,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="parent"
         android:src="@drawable/ic_fab_trash"
-        app:backgroundTint="@color/white"
         android:scaleType="center"
-        app:elevation="1dp"
+        android:elevation="1dp"
+        android:background="@drawable/drawable_bin"
+        android:padding="4dp"
         android:alpha="0"
         />
 

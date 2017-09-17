@@ -19,6 +19,7 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.evernote.android.state.StateSaver
 import com.mlsdev.rximagepicker.RxImagePicker
 import com.mlsdev.rximagepicker.Sources
@@ -217,7 +218,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         Toasty.error(this, getString(R.string.error)).show()
     }
 
-    override fun onStickerClicked(stickerId: Int) = presenter.onStickerClick(stickerId)
+    override fun onStickerClicked(stickerId: Int) {
+        presenter.onStickerClick(stickerId)
+        closeKeyboard()
+    }
 
     override fun addSticker(sticker: Sticker) {
         activity_post_sticker_view.addSticker(sticker)
@@ -250,7 +254,9 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             }
             BackgroundType.BEACH -> {
                 Glide.with(this)
-                        .load(R.drawable.bg_beach_center) //TODO glitchy colors
+                        .load(R.drawable.bg_beach_center)
+                        .asBitmap()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
                         .override(screenSize.x, screenSize.y)
                         .into(activity_post_compose_background_center)
                 Glide.with(this)
@@ -261,10 +267,11 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                         .into(activity_post_compose_background_bottom)
             }
             BackgroundType.STARS -> {
-                Glide.with(this)
-                        .load(R.drawable.bg_stars_center) //TODO must load as pattern image?
-                        .override(screenSize.x, screenSize.y)
-                        .into(activity_post_compose_background_center)
+//                Glide.with(this)
+//                        .load(R.drawable.drawable_stars)
+//                        .override(screenSize.x, screenSize.y)
+//                        .into(activity_post_compose_background_center)
+                activity_post_compose_background_center.setImageResource(R.drawable.drawable_stars) //TODO use async load
             }
             BackgroundType.IMAGE -> {
                 Glide.with(this)
@@ -341,6 +348,13 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     private var binVisible = false
     override fun onDragging(isDragging: Boolean): Rect {
+
+        if(presenter.getCurrentBackground().type == BackgroundType.COLORED
+                && presenter.getCurrentBackground().colorDrawableResId == R.drawable.background_white_full) {
+            activity_post_bin.setBackgroundResource(R.drawable.drawable_bin_circle)
+        } else {
+            activity_post_bin.setBackgroundResource(R.drawable.drawable_bin)
+        }
 
         activity_post_bin.layoutParams =
                 (activity_post_bin.layoutParams as ConstraintLayout.LayoutParams)

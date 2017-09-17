@@ -72,6 +72,7 @@ dependencies {
     //utils
     implementation 'ru.maxost:switchlog:2.0.1'
     implementation 'com.github.bumptech.glide:glide:3.8.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
     implementation 'com.github.GrenderG:Toasty:1.2.5'
     implementation 'com.mlsdev.rximagepicker:library:2.0.2'

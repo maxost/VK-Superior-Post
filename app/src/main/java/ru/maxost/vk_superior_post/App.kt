@@ -25,7 +25,6 @@ class App : Application() {
 
         //TODO accessibility
         //TODO exit dialog
-        //TODO stickers List load issues
         //TODO keyboard on start doesn't always pushes bottom panel to top
 
         //dagger

@@ -24,29 +24,24 @@ class UploadPresenter @Inject constructor(private val dataManger: DataManger)
         enum class ViewState { LOADING, SUCCESS, ERROR }
     }
 
-    lateinit var post: Post
     @State var viewModel = ViewModel()
-
-    fun init(post: Post) {
-        this.post = post
-    }
 
     override fun attach(view: View, isInitialAttach: Boolean) {
         super.attach(view, isInitialAttach)
         this.view?.updateView(viewModel)
-        if(viewModel.state == ViewModel.ViewState.LOADING) createAndPostImage(post)
+        if(viewModel.state == ViewModel.ViewState.LOADING) postImage()
     }
 
     fun onCommonButtonClick() {
         when(viewModel.state) {
             UploadPresenter.ViewModel.ViewState.SUCCESS -> view?.showNewPostScreen()
-            UploadPresenter.ViewModel.ViewState.ERROR -> createAndPostImage(post)
+            UploadPresenter.ViewModel.ViewState.ERROR -> postImage()
             UploadPresenter.ViewModel.ViewState.LOADING -> view?.close()
         }
     }
 
-    private fun createAndPostImage(post: Post) {
-        dataManger.createAndPostImage(post)
+    private fun postImage() {
+        dataManger.postImage()
                 .doOnSubscribe {
                     viewModel.state = ViewModel.ViewState.LOADING
                     view?.updateView(viewModel)

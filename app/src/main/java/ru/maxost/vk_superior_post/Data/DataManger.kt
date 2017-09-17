@@ -1,5 +1,6 @@
 package ru.maxost.vk_superior_post.Data
 
+import android.graphics.Bitmap
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,8 +33,14 @@ class DataManger @Inject constructor(private val fileService: FileService,
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun createAndPostImage(post: Post): Completable {
-        return bitmapService.createBitmap(post)
+    fun savePost(bitmap: Bitmap): Completable {
+        return fileService.storePost(bitmap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun postImage(): Completable {
+        return fileService.getPost()
                 .flatMap { apiService.uploadImage(it) }
                 .flatMapCompletable { apiService.wallPostPhoto(it) }
                 .subscribeOn(Schedulers.io())

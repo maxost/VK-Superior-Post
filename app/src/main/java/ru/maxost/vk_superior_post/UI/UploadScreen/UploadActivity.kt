@@ -16,11 +16,8 @@ class UploadActivity : AppCompatActivity(), UploadPresenter.View {
     private val presenter: UploadPresenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getUploadPresenter() }
 
     companion object {
-        const val POST_KEY = "POST_KEY"
-
-        fun start(caller: Activity, post: Post) {
+        fun start(caller: Activity) {
             val intent = Intent(caller, UploadActivity::class.java)
-            intent.putExtra(POST_KEY, post)
             caller.startActivity(intent)
         }
     }
@@ -29,7 +26,6 @@ class UploadActivity : AppCompatActivity(), UploadPresenter.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upload)
         activity_upload_common_button.setOnClickListener { presenter.onCommonButtonClick() }
-        presenter.init(intent.getSerializableExtra(POST_KEY) as Post)
         StateSaver.restoreInstanceState(presenter, savedInstanceState)
         presenter.attach(this, savedInstanceState==null)
     }
@@ -55,7 +51,7 @@ class UploadActivity : AppCompatActivity(), UploadPresenter.View {
                 activity_upload_common_button.text = getString(R.string.upload_load_more)
             }
             UploadPresenter.ViewModel.ViewState.ERROR -> {
-                activity_upload_common_text.text = getString(R.string.upload_error)
+                activity_upload_common_text.text = getString(R.string.error)
                 activity_upload_common_button.text = getString(R.string.upload_retry)
             }
         }

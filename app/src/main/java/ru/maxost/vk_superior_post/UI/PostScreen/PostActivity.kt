@@ -1,16 +1,14 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import android.Manifest
-import android.graphics.Interpolator
-import android.graphics.Point
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.BitmapCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPropertyAnimatorListener
 import android.support.v7.widget.LinearLayoutManager
@@ -180,7 +178,27 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 })
     }
 
-    override fun showUploadScreen(post: Post) = UploadActivity.start(this, post)
+    override fun showUploadScreen() = UploadActivity.start(this)
+
+    override fun requestPostBitmap() {
+        closeKeyboard()
+        activity_post_text.isCursorVisible = false
+        updateBorder()
+
+        val bitmap = Bitmap.createBitmap(
+                activity_post_compose_root_layout.width,
+                activity_post_compose_root_layout.height,
+                Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        activity_post_compose_root_layout.draw(canvas)
+        presenter.onBitmapReady(bitmap)
+
+        activity_post_text.isCursorVisible = true
+    }
+
+    override fun showError() {
+        Toasty.error(this, getString(R.string.error)).show()
+    }
 
     override fun onStickerClicked(stickerId: Int) = presenter.onStickerClick(stickerId)
 

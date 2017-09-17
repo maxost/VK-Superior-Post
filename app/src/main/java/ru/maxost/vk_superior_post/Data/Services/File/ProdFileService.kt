@@ -1,16 +1,22 @@
 package ru.maxost.vk_superior_post.Data.Services.File
 
 import android.content.Context
+import android.content.ContextWrapper
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore.MediaColumns
+import android.widget.ImageView
+import io.reactivex.Completable
 import io.reactivex.Single
-import java.io.File
+import ru.maxost.vk_superior_post.R
+import java.io.*
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
  * (c) White Soft
  */
-class ProdFileService(private val context: Context): FileService {
+class ProdFileService(private val context: Context) : FileService {
 
     override fun getImagesFromGallery(count: Int): Single<List<File>> = Single.fromCallable {
         val uri: Uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -32,5 +38,35 @@ class ProdFileService(private val context: Context): FileService {
             }
         }
         return@fromCallable list
+    }
+
+    override fun storePost(bitmap: Bitmap): Completable = Completable.fromAction {
+        val cw = ContextWrapper(context)
+        // path to /data/data/yourapp/app_data/imageDir
+        val directory = cw.getDir("temp", Context.MODE_PRIVATE)
+        // Create imageDir
+        val mypath = File(directory, "tempImage.jpg")
+
+        val fos = FileOutputStream(mypath)
+        try {
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                fos.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override fun getPost(): Single<Bitmap> = Single.fromCallable {
+        val cw = ContextWrapper(context)
+        val directory = cw.getDir("temp", Context.MODE_PRIVATE)
+        val f = File(directory, "tempImage.jpg")
+
+        return@fromCallable BitmapFactory.decodeStream(FileInputStream(f))
     }
 }

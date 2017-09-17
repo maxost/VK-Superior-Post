@@ -20,20 +20,53 @@ import java.util.concurrent.TimeUnit
 enum class StickerState {
     NORMAL,
     CREATING,
-    DELETING
+    OVER_BIN,
+    OUT_BIN
 }
 
 object StickerTasks {
 
-    private val subjects = mutableMapOf<String, BehaviorSubject<Float>>()
+    private val DEFAULT_DURATION: Long = 150
 
-    fun startTask(stickerId: String) {
+    private val subjects = mutableMapOf<String, BehaviorSubject<Float>>()
+//    private val state = mutableMapOf<String, StickerState>()
+
+    fun startTask(stickerId: String, state: Map<String, StickerState>, duration: Long = DEFAULT_DURATION) {
         SwitchLog.scream("stickerId: $stickerId")
+
+//        if(this.state[stickerId] != null && this.state[stickerId] != state[stickerId]) {
+//            val initialValue = 1f - (subjects[stickerId]?.value ?: 1f)
+//
+//            subjects[stickerId]?.onComplete()
+//            subjects.remove(stickerId)
+//
+//            val subject = BehaviorSubject.createDefault<Float>(initialValue)
+//            subjects.put(stickerId, subject)
+//
+//            val initialRangeValue = 1 + (100 * initialValue).toInt()
+//            Observable.range(initialRangeValue, 100 - initialRangeValue)
+//                    .concatMap { Observable.just(it).delay(DEFAULT_DURATION / 100 - (100 * initialValue).toLong(), TimeUnit.MILLISECONDS) }
+//                    .map { it / 100f }
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe {
+//                        SwitchLog.scream("subscribe: $it")
+//                        subject.onNext(it)
+//                    }
+//            this.state.putAll(state)
+//            return
+//        }
+//
+//        this.state.putAll(state)
+
+        //clean up
+        subjects[stickerId]?.onComplete()
+        subjects.remove(stickerId)
+
         val subject = BehaviorSubject.createDefault<Float>(0f)
         subjects.put(stickerId, subject)
 
         Observable.range(1, 100)
-                .concatMap { Observable.just(it).delay(2, TimeUnit.MILLISECONDS) }
+                .concatMap { Observable.just(it).delay(duration / 100, TimeUnit.MILLISECONDS) }
                 .map { it / 100f }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -76,7 +109,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     fun addSticker(sticker: Sticker) {
         stickers.add(sticker)
         stickerState.put(sticker.id, StickerState.CREATING)
-        StickerTasks.startTask(sticker.id)
+        StickerTasks.startTask(sticker.id, stickerState, 200)
         invalidate()
     }
 
@@ -93,6 +126,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
         stickers.forEach { sticker ->
             SwitchLog.scream(sticker.toString())
+            SwitchLog.scream("${stickerState[sticker.id]}")
 
             if(bitmaps.firstOrNull { it.first == sticker.resId } == null) {
                 val drawable = BitmapFactory.decodeResource(context.resources, sticker.resId)
@@ -124,14 +158,9 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                         invalidate()
                     }
                 }
-                StickerState.DELETING -> {
+                StickerState.OVER_BIN -> {
                     val factor = StickerTasks.getTaskCompletionFactor(sticker.id)
-                    if(factor == 1f) {
-                        bitmaps.firstOrNull { it.first == sticker.resId }?.second?.recycle()
-                        bitmaps.removeAll { it.first == sticker.resId }
-                        stickers.remove(sticker)
-                        stickerState.remove(sticker.id)
-                    } else {
+                    if(factor != 1f) {
                         val scaleFactor = sticker.scaleFactor - sticker.scaleFactor * factor
                         val matrix = Matrix().apply {
                             preScale(scaleFactor, scaleFactor)
@@ -139,19 +168,45 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                             var translateX = sticker.xFactor * width
                             var translateY = sticker.yFactor * height
 
-                            SwitchLog.scream("translateX: $translateX translateY: $translateY binRect.centerX: ${binRect.centerX()} binRect.centerY: ${binRect.centerY()}")
+//                            SwitchLog.scream("translateX: $translateX translateY: $translateY binRect.centerX: ${binRect.centerX()} binRect.centerY: ${binRect.centerY()}")
                             val binX = binRect.centerX() - IntArray(2).apply { getLocationOnScreen(this) }[0]
                             val binY = binRect.centerY() - IntArray(2).apply { getLocationOnScreen(this) }[1]
                             translateX += (binX - translateX) * factor - (scaleFactor * width / 2)
                             translateY += (binY - translateY) * factor - (scaleFactor * width / 2)
-                            SwitchLog.scream("new translateX: $translateX new translateY: $translateY")
+//                            SwitchLog.scream("new translateX: $translateX new translateY: $translateY")
 
                             postTranslate(translateX, translateY)
                         }
-                        paint.alpha = 127 - (127 * factor).toInt()
+                        paint.alpha = 160 - (160 * factor).toInt()
                         canvas?.drawBitmap(bitmap, matrix, paint)
                         invalidate()
                     }
+                }
+                StickerState.OUT_BIN -> {
+                    val factor = StickerTasks.getTaskCompletionFactor(sticker.id)
+                    val scaleFactor = sticker.scaleFactor * factor
+                    val matrix = Matrix().apply {
+                        preScale(scaleFactor, scaleFactor)
+                        preRotate(sticker.angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
+                        var translateX = sticker.xFactor * width
+                        var translateY = sticker.yFactor * height
+
+                        SwitchLog.scream("translateX: $translateX translateY: $translateY binRect.centerX: ${binRect.centerX()} binRect.centerY: ${binRect.centerY()}")
+                        val binX = binRect.centerX() - IntArray(2).apply { getLocationOnScreen(this) }[0]
+                        val binY = binRect.centerY() - IntArray(2).apply { getLocationOnScreen(this) }[1]
+
+                        translateX = binX + (translateX - binX) * factor - (scaleFactor * width / 2)
+                        translateY = binY + (translateY - binY) * factor - (scaleFactor * width / 2)
+
+                        SwitchLog.scream("new translateX: $translateX new translateY: $translateY")
+
+                        postTranslate(translateX, translateY)
+                    }
+                    paint.alpha = (160 * factor).toInt()
+                    SwitchLog.scream("alpha: ${paint.alpha}")
+                    canvas?.drawBitmap(bitmap, matrix, paint)
+                    if(factor == 1f) stickerState.put(sticker.id, StickerState.NORMAL)
+                    invalidate()
                 }
                 StickerState.NORMAL -> {
                     drawNormal(sticker, canvas, bitmap)
@@ -161,7 +216,6 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     private fun drawNormal(sticker: Sticker, canvas: Canvas?, bitmap: Bitmap) {
-        SwitchLog.scream("drawNormal")
         val matrix = Matrix().apply {
             preScale(sticker.scaleFactor, sticker.scaleFactor)
             preRotate(sticker.angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
@@ -170,16 +224,10 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
             postTranslate(translateX, translateY)
         }
 
-        if(sticker == currentStickerOverBin) {
-            paint.alpha = 127
-            canvas?.drawBitmap(bitmap, matrix, paint)
-        } else {
-            canvas?.drawBitmap(bitmap, matrix, null)
-        }
+        canvas?.drawBitmap(bitmap, matrix, null)
     }
 
     private var currentSticker: Sticker? = null
-    private var currentStickerOverBin: Sticker? = null
     private var currentTouchDistanceFromCenterX = 0
     private var currentTouchDistanceFromCenterY = 0
 
@@ -278,7 +326,19 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     binRect = listener.onDragging(true)
                     val isOverBin = binRect.contains(event.rawX.toInt(), event.rawY.toInt())
                     listener.onOverBin(isOverBin)
-                    currentStickerOverBin = if(isOverBin) currentSticker else null
+
+                    val stickerId = currentSticker!!.id
+                    if(isOverBin) {
+                        if(stickerState[stickerId] == StickerState.NORMAL || stickerState[stickerId] == StickerState.OUT_BIN) {
+                            stickerState.put(stickerId, StickerState.OVER_BIN)
+                            StickerTasks.startTask(stickerId, stickerState)
+                        }
+                    } else {
+                        if(stickerState[stickerId] == StickerState.OVER_BIN) {
+                            stickerState.put(stickerId, StickerState.OUT_BIN)
+                            StickerTasks.startTask(stickerId, stickerState)
+                        }
+                    }
                 } else listener.onDragging(false)
 
                 invalidate()
@@ -293,8 +353,9 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 if(isOverBin) {
                     currentSticker?.let { sticker ->
                         listener.onDeleteSticker(sticker)
-                        stickerState.put(sticker.id, StickerState.DELETING)
-                        StickerTasks.startTask(sticker.id)
+                        bitmaps.firstOrNull { it.first == sticker.resId }?.second?.recycle()
+                        bitmaps.removeAll { it.first == sticker.resId }
+                        stickers.remove(sticker)
                         invalidate()
                     }
                 }

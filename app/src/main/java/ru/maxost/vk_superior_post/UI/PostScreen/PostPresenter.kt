@@ -1,5 +1,6 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
+import android.graphics.Bitmap
 import com.evernote.android.state.State
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Data.DataManger
@@ -27,6 +28,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun closeKeyboard()
         fun setPostType(postType: PostType)
         fun shiftViewsForKeyboard(shift: Boolean)
+        fun requestPostBitmap()
+        fun showError()
 
         //post
         fun setText(text: String)
@@ -36,7 +39,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun setStickers(stickers: Stack<Sticker>)
 
         //other
-        fun showUploadScreen(post: Post)
+        fun showUploadScreen()
         fun showGallery()
         fun takePhoto()
         fun showStickerPickerDialog()
@@ -159,7 +162,17 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     fun onOpenGalleryClick() = view?.showGallery()
 
-    fun onSubmitClick() = view?.showUploadScreen(post)
+    fun onSubmitClick() = view?.requestPostBitmap()
+
+    fun onBitmapReady(bitmap: Bitmap) {
+        dataManger.savePost(bitmap)
+                .subscribe({
+                    view?.showUploadScreen()
+                }, {
+                    it.printStackTrace()
+                    view?.showError()
+                })
+    }
 
     fun isKeyboardVisible() = isKeyboardVisible
     fun isGalleryPanelVisible() = isBottomPanelVisible
@@ -210,6 +223,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
                     view?.setGalleyList(it)
                 }, {
                     it.printStackTrace()
+                    view?.showError()
                 })
     }
 }

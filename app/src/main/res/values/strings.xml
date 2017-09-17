@@ -5,6 +5,9 @@
     <!-- VK app ID -->
     <integer name="com_vk_sdk_AppId">6174972</integer>
 
+    <!-- Common -->
+    <string name="error">Произошла ошибка</string>
+
     <!-- Login -->
     <string name="login_auth_data_revoked_message">Авторизация отозвана\nНеобходимо выполнить вход</string>
     <string name="login_button_text">Войти через Вконтакте</string>
@@ -19,7 +22,6 @@
     <!-- Upload -->
     <string name="upload_loading">Публикация…</string>
     <string name="upload_success">Опубликовано!</string>
-    <string name="upload_error">Произошла ошибка</string>
     <string name="upload_cancel">Отмена</string>
     <string name="upload_retry">Повторить</string>
     <string name="upload_load_more">Создать ещё</string>

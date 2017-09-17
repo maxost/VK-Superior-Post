@@ -75,4 +75,5 @@ dependencies {
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
     implementation 'com.github.GrenderG:Toasty:1.2.5'
     implementation 'com.mlsdev.rximagepicker:library:2.0.2'
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.4.2'
 }

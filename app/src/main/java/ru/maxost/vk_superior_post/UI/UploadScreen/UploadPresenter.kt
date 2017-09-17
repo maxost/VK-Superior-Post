@@ -32,13 +32,15 @@ class UploadPresenter @Inject constructor(private val dataManger: DataManger)
         if(viewModel.state == ViewModel.ViewState.LOADING) postImage()
     }
 
-    fun onCommonButtonClick() {
+    fun onCancelRetryButtonClick() {
         when(viewModel.state) {
-            UploadPresenter.ViewModel.ViewState.SUCCESS -> view?.showNewPostScreen()
             UploadPresenter.ViewModel.ViewState.ERROR -> postImage()
             UploadPresenter.ViewModel.ViewState.LOADING -> view?.close()
+            else -> {}
         }
     }
+
+    fun onNewPostButtonClick() = view?.showNewPostScreen()
 
     private fun postImage() {
         dataManger.postImage()

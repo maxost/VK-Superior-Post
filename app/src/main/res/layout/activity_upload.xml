@@ -1,40 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.maxost.vk_superior_post.UI.UploadScreen.UploadActivity">
+    android:background="@color/white"
+    >
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/activity_upload_common_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/coolGrey"
+        android:textSize="16sp"
+        android:fontFamily="@font/roboto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="LOADING" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_upload_circle"
+        tools:text="Опубликовано!" />
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/activity_upload_common_button"
+        android:id="@+id/activity_upload_cancel_retry_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/upload_cancel"
+        android:textSize="16sp"
+        android:textColor="@color/cornFlowerBlue"
+        android:background="@drawable/cancel_retry_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        android:alpha="0"
+        />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/activity_upload_new_post_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="@string/login_button_text"
+        android:text="@string/upload_load_more"
         android:textSize="16sp"
         android:textColor="@color/white"
+        android:background="@drawable/new_post_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteX="0dp"
+        android:alpha="0"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/activity_upload_check_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_loader_success"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:id="@+id/activity_upload_check_curtain"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/activity_upload_loader"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:mpb_progressTint="@color/cornFlowerBlue"
+        android:progressTint="@color/cornFlowerBlue"
+        app:mpb_indeterminateTint="@color/cornFlowerBlue"
+        android:indeterminateTint="@color/cornFlowerBlue"
+        />
+
+    <ImageView
+        android:id="@+id/activity_upload_circle"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/blue_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:alpha="0"
         />
 
 </android.support.constraint.ConstraintLayout>

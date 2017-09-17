@@ -22,6 +22,6 @@ class FakeApiService: ApiService {
     override fun wallPostPhoto(photo: VKApiPhoto): Completable {
         return Completable.complete()
                 .delay(3, TimeUnit.SECONDS)
-                .andThen(Completable.error(Exception()))
+//                .andThen(Completable.error(Exception()))
     }
 }

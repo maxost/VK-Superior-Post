@@ -3,18 +3,20 @@ package ru.maxost.vk_superior_post.UI.PostScreen
 import android.Manifest
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.graphics.*
-import android.os.Build
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Point
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
-import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import com.bumptech.glide.Glide
@@ -109,12 +111,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         when (postType) {
             PostType.POST -> {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-                    activity_post_bottom_panel.setPadding(0, 0, 0, 0)
-                    activity_post_top_panel.setPadding(0, 0, 0 ,0)
-                }
-
                 //selector
                 ViewCompat.animate(activity_post_type_selector)
                         .translationXBy(-activity_post_type_selector.width.toFloat())
@@ -137,12 +133,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 }.start()
             }
             PostType.STORY -> {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-                    activity_post_bottom_panel.setPadding(0, 0, 0, 50)
-                    activity_post_top_panel.setPadding(0, 50, 0 ,0)
-                }
 
                 //selector
                 ViewCompat.animate(activity_post_type_selector)

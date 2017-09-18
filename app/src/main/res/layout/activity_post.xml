@@ -1,110 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_post_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".UI.PostScreen.PostActivity"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    >
+    tools:context=".UI.PostScreen.PostActivity">
 
-    <!--<FrameLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent">-->
+    <FrameLayout
+        android:id="@+id/activity_post_compose_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/activity_post_compose_root_layout"
+        <ImageView
+            android:id="@+id/activity_post_compose_background_center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/description_post_background"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            >
+            tools:src="@drawable/bg_stars_center" />
 
-            <ImageView
-                android:id="@+id/activity_post_compose_background_center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/bg_stars_center"
-                android:contentDescription="@string/description_post_background" />
+        <ImageView
+            android:id="@+id/activity_post_compose_background_top"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:contentDescription="@string/description_post_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/bg_beach_top" />
 
-            <ImageView
-                android:id="@+id/activity_post_compose_background_top"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/bg_beach_top"
-                android:contentDescription="@string/description_post_background" />
+        <ImageView
+            android:id="@+id/activity_post_compose_background_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="112dp"
+            android:layout_gravity="bottom"
+            android:contentDescription="@string/description_post_background"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/bg_beach_bottom" />
 
-            <ImageView
-                android:id="@+id/activity_post_compose_background_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="112dp"
-                android:layout_gravity="bottom"
-                android:scaleType="fitXY"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/bg_beach_bottom"
-                android:contentDescription="@string/description_post_background"
-                />
+        <ru.maxost.vk_superior_post.Utils.StickerView
+            android:id="@+id/activity_post_sticker_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-            <ru.maxost.vk_superior_post.Utils.StickerView
-                android:id="@+id/activity_post_sticker_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+        <ru.maxost.vk_superior_post.Utils.TextBorderView
+            android:id="@+id/activity_post_text_border"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
-            <ru.maxost.vk_superior_post.Utils.TextBorderView
-                android:id="@+id/activity_post_text_border"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                />
+        <ru.maxost.vk_superior_post.Utils.MyEditText
+            android:id="@+id/activity_post_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
+            android:hint="@string/post_text_hint"
+            android:inputType="textNoSuggestions|textMultiLine"
+            android:lineSpacingExtra="6sp"
+            android:paddingBottom="24dp"
+            android:paddingEnd="36dp"
+            android:paddingStart="36dp"
+            android:paddingTop="24dp"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="" />
 
-            <ru.maxost.vk_superior_post.Utils.MyEditText
-                android:id="@+id/activity_post_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/roboto_bold"
-                android:gravity="center"
-                android:hint="@string/post_text_hint"
-                android:paddingEnd="36dp"
-                android:paddingStart="36dp"
-                android:paddingTop="24dp"
-                android:paddingBottom="24dp"
-                android:textSize="24sp"
-                android:lineSpacingExtra="6sp"
-                android:inputType="textNoSuggestions|textMultiLine"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="" />
-
-        </FrameLayout>
-
-    <!--</FrameLayout>-->
+    </FrameLayout>
 
     <View
         android:id="@+id/activity_post_top_panel"
@@ -114,8 +99,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view"
@@ -133,12 +117,11 @@
         android:layout_height="24dp"
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
+        android:contentDescription="@string/description_choose_text_style"
         android:src="@drawable/ic_toolbar_font"
         app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
         app:layout_constraintStart_toStartOf="@+id/activity_post_top_panel"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel"
-        android:contentDescription="@string/description_choose_text_style"
-        />
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
 
     <View
         android:id="@+id/activity_post_text_style_clickbox"
@@ -153,12 +136,11 @@
         android:layout_height="22dp"
         android:layout_marginEnd="13dp"
         android:layout_marginRight="13dp"
+        android:contentDescription="@string/description_add_sticker"
         android:src="@drawable/ic_toolbar_sticker"
         app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
         app:layout_constraintEnd_toEndOf="@+id/activity_post_top_panel"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel"
-        android:contentDescription="@string/description_add_sticker"
-        />
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
 
     <View
         android:id="@+id/activity_post_stickers_clickbox"
@@ -172,12 +154,12 @@
         android:id="@+id/activity_post_type_post"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:gravity="center"
         android:fontFamily="@font/roboto_medium"
+        android:gravity="center"
         android:paddingEnd="12dp"
+        android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:paddingStart="12dp"
-        android:paddingLeft="12dp"
         android:text="@string/post_type_post"
         android:textAllCaps="true"
         android:textColor="@color/cornFlowerBlueTwo"
@@ -195,12 +177,12 @@
         android:id="@+id/activity_post_type_story"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:gravity="center"
         android:fontFamily="@font/roboto_medium"
+        android:gravity="center"
         android:paddingEnd="12dp"
+        android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:paddingStart="12dp"
-        android:paddingLeft="12dp"
         android:text="@string/post_type_story"
         android:textAllCaps="true"
         android:textColor="@color/cornFlowerBlueTwo"
@@ -209,8 +191,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/activity_post_type_post"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel"
-        />
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
 
     <View
         android:id="@+id/activity_post_type_selector"
@@ -229,70 +210,64 @@
         android:background="@color/white"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/activity_post_submit_button"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:background="@drawable/send_button"
             android:fontFamily="@font/roboto_medium"
             android:paddingEnd="16dp"
             android:paddingLeft="16dp"
-            android:paddingStart="16dp"
             android:paddingRight="16dp"
+            android:paddingStart="16dp"
             android:text="@string/post_button_send_text"
             android:textColor="@color/white"
-            android:textSize="13sp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            />
+            android:textSize="13sp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/activity_post_backgrounds_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingStart="10dp"
-            android:paddingRight="10dp"
-            android:paddingEnd="10dp"
-            android:clipToPadding="false"
             android:layout_toLeftOf="@+id/activity_post_bottom_panel_vertical_divider"
             android:layout_toStartOf="@+id/activity_post_bottom_panel_vertical_divider"
-            />
+            android:clipToPadding="false"
+            android:paddingEnd="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingStart="10dp" />
 
         <View
             android:id="@+id/activity_post_bottom_panel_top_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/greyDivider"
             android:layout_alignParentTop="true"
-            />
+            android:background="@color/greyDivider" />
 
         <View
             android:id="@+id/activity_post_bottom_panel_vertical_divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/greyDivider"
+            android:layout_above="@id/activity_post_bottom_panel_bottom_divider"
+            android:layout_below="@id/activity_post_bottom_panel_top_divider"
             android:layout_toLeftOf="@id/activity_post_submit_button"
             android:layout_toStartOf="@id/activity_post_submit_button"
-            android:layout_below="@id/activity_post_bottom_panel_top_divider"
-            android:layout_above="@id/activity_post_bottom_panel_bottom_divider"
-            />
+            android:background="@color/greyDivider" />
 
         <View
             android:id="@+id/activity_post_bottom_panel_bottom_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/greyDivider"
             android:layout_alignParentBottom="true"
-            />
+            android:background="@color/greyDivider" />
 
     </RelativeLayout>
 
@@ -300,33 +275,32 @@
         android:id="@+id/activity_post_gallery_list"
         android:layout_width="0dp"
         android:layout_height="208dp"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
-        android:paddingRight="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:background="@color/white"
         android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        android:paddingEnd="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:translationY="208dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/white"
-        android:translationY="208dp"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/activity_post_bin"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:src="@drawable/ic_fab_trash"
-        android:scaleType="center"
-        android:elevation="1dp"
-        android:background="@drawable/drawable_bin"
-        android:padding="4dp"
         android:alpha="0"
-        android:contentDescription="@string/description_delete_sticker" />
+        android:background="@drawable/drawable_bin"
+        android:contentDescription="@string/description_delete_sticker"
+        android:elevation="1dp"
+        android:padding="4dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_fab_trash"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -6,11 +6,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore.MediaColumns
-import android.widget.ImageView
 import io.reactivex.Completable
 import io.reactivex.Single
-import ru.maxost.vk_superior_post.R
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.

@@ -1,16 +1,16 @@
 package ru.maxost.vk_superior_post.Utils
 
 import android.content.Context
+import android.graphics.*
 import android.support.v4.view.MotionEventCompat
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import ru.maxost.switchlog.SwitchLog
-import ru.maxost.vk_superior_post.Model.Sticker
-import android.graphics.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.BehaviorSubject
+import ru.maxost.switchlog.SwitchLog
+import ru.maxost.vk_superior_post.Model.Sticker
 import java.util.concurrent.TimeUnit
 
 /**
@@ -29,34 +29,9 @@ object StickerTasks {
     private val DEFAULT_DURATION: Long = 150
 
     private val subjects = mutableMapOf<String, BehaviorSubject<Float>>()
-//    private val state = mutableMapOf<String, StickerState>()
 
-    fun startTask(stickerId: String, state: Map<String, StickerState>, duration: Long = DEFAULT_DURATION) {
+    fun startTask(stickerId: String, duration: Long = DEFAULT_DURATION) {
         SwitchLog.scream("stickerId: $stickerId")
-
-//        if(this.state[stickerId] != null && this.state[stickerId] != state[stickerId]) {
-//            val initialValue = 1f - (subjects[stickerId]?.value ?: 1f)
-//
-//            subjects[stickerId]?.onComplete()
-//            subjects.remove(stickerId)
-//
-//            val subject = BehaviorSubject.createDefault<Float>(initialValue)
-//            subjects.put(stickerId, subject)
-//
-//            val initialRangeValue = 1 + (100 * initialValue).toInt()
-//            Observable.range(initialRangeValue, 100 - initialRangeValue)
-//                    .concatMap { Observable.just(it).delay(DEFAULT_DURATION / 100 - (100 * initialValue).toLong(), TimeUnit.MILLISECONDS) }
-//                    .map { it / 100f }
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe {
-//                        SwitchLog.scream("subscribe: $it")
-//                        subject.onNext(it)
-//                    }
-//            this.state.putAll(state)
-//            return
-//        }
-//
-//        this.state.putAll(state)
 
         //clean up
         subjects[stickerId]?.onComplete()
@@ -109,7 +84,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     fun addSticker(sticker: Sticker) {
         stickers.add(sticker)
         stickerState.put(sticker.id, StickerState.CREATING)
-        StickerTasks.startTask(sticker.id, stickerState, 200)
+        StickerTasks.startTask(sticker.id, 200)
         invalidate()
     }
 
@@ -331,12 +306,12 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     if(isOverBin) {
                         if(stickerState[stickerId] == StickerState.NORMAL || stickerState[stickerId] == StickerState.OUT_BIN) {
                             stickerState.put(stickerId, StickerState.OVER_BIN)
-                            StickerTasks.startTask(stickerId, stickerState)
+                            StickerTasks.startTask(stickerId)
                         }
                     } else {
                         if(stickerState[stickerId] == StickerState.OVER_BIN) {
                             stickerState.put(stickerId, StickerState.OUT_BIN)
-                            StickerTasks.startTask(stickerId, stickerState)
+                            StickerTasks.startTask(stickerId)
                         }
                     }
                 } else listener.onDragging(false)

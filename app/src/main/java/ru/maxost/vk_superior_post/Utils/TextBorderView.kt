@@ -1,17 +1,13 @@
 package ru.maxost.vk_superior_post.Utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Switch
-import io.reactivex.Observable
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
-import java.util.*
 
 /**
  * Created by Maxim Ostrovidov on 15.09.17.

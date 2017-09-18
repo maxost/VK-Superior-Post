@@ -11,7 +11,6 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import ru.maxost.vk_superior_post.R
-import ru.maxost.vk_superior_post.Utils.DrawableViewBackgroundTarget
 import ru.maxost.vk_superior_post.Utils.GlideDrawableViewBackgroundTarget
 import ru.maxost.vk_superior_post.Utils.RoundedCornersTransformation
 import ru.maxost.vk_superior_post.Utils.dp2px

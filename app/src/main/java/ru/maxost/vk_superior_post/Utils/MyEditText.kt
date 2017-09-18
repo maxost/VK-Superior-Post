@@ -1,7 +1,8 @@
 package ru.maxost.vk_superior_post.Utils
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Rect
+import android.graphics.RectF
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatEditText
 import android.util.AttributeSet

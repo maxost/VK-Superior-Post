@@ -9,7 +9,6 @@ import ru.maxost.vk_superior_post.Data.Services.Api.ApiService
 import ru.maxost.vk_superior_post.Data.Services.Bitmap.BitmapService
 import ru.maxost.vk_superior_post.Data.Services.File.FileService
 import ru.maxost.vk_superior_post.GALLERY_LAST_IMAGES_COUNT
-import ru.maxost.vk_superior_post.Model.Post
 import java.io.File
 import javax.inject.Inject
 

@@ -2,7 +2,6 @@ package ru.maxost.vk_superior_post.UI.UploadScreen
 
 import com.evernote.android.state.State
 import ru.maxost.vk_superior_post.Data.DataManger
-import ru.maxost.vk_superior_post.Model.Post
 import ru.maxost.vk_superior_post.Utils.BasePresenter
 import java.io.Serializable
 import javax.inject.Inject

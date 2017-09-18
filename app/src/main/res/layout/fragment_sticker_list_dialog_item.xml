@@ -4,4 +4,5 @@
     android:id="@+id/fragment_sticker_list_dialog_item_image"
     android:layout_width="match_parent"
     android:layout_height="78dp"
+    android:contentDescription="@string/description_sticker"
     />

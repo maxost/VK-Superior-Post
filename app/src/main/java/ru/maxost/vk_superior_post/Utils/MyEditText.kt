@@ -60,7 +60,7 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
             it.bottom += 40
             it.contains(event.x, event.y)
         }
-        return if (text.isBlank() || isInterceptingTouches && textTouched) super.onTouchEvent(event) else false
+        return if (isInterceptingTouches && text.isBlank() || isInterceptingTouches && textTouched) super.onTouchEvent(event) else false
     }
 
     fun getState(): MyEditTextState {

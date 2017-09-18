@@ -36,7 +36,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/bg_stars_center" />
+                tools:src="@drawable/bg_stars_center"
+                android:contentDescription="@string/description_post_background" />
 
             <ImageView
                 android:id="@+id/activity_post_compose_background_top"
@@ -46,7 +47,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/bg_beach_top" />
+                tools:src="@drawable/bg_beach_top"
+                android:contentDescription="@string/description_post_background" />
 
             <ImageView
                 android:id="@+id/activity_post_compose_background_bottom"
@@ -58,7 +60,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/bg_beach_bottom" />
+                tools:src="@drawable/bg_beach_bottom"
+                android:contentDescription="@string/description_post_background"
+                />
 
             <ru.maxost.vk_superior_post.Utils.StickerView
                 android:id="@+id/activity_post_sticker_view"
@@ -87,6 +91,7 @@
                 android:paddingBottom="24dp"
                 android:textSize="24sp"
                 android:lineSpacingExtra="6sp"
+                android:inputType="textNoSuggestions|textMultiLine"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +131,9 @@
         android:src="@drawable/ic_toolbar_font"
         app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
         app:layout_constraintStart_toStartOf="@+id/activity_post_top_panel"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel"
+        android:contentDescription="@string/description_choose_text_style"
+        />
 
     <View
         android:id="@+id/activity_post_text_style_clickbox"
@@ -144,7 +151,9 @@
         android:src="@drawable/ic_toolbar_sticker"
         app:layout_constraintBottom_toBottomOf="@+id/activity_post_top_panel"
         app:layout_constraintEnd_toEndOf="@+id/activity_post_top_panel"
-        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel" />
+        app:layout_constraintTop_toTopOf="@+id/activity_post_top_panel"
+        android:contentDescription="@string/description_add_sticker"
+        />
 
     <View
         android:id="@+id/activity_post_stickers_clickbox"
@@ -309,6 +318,6 @@
         android:background="@drawable/drawable_bin"
         android:padding="4dp"
         android:alpha="0"
-        />
+        android:contentDescription="@string/description_delete_sticker" />
 
 </android.support.constraint.ConstraintLayout>

@@ -51,7 +51,7 @@ class App : Application() {
         val tokenTracker = object: VKAccessTokenTracker() {
             override fun onVKAccessTokenChanged(oldToken: VKAccessToken?,
                                                 newToken: VKAccessToken?) {
-                //TODO
+                // no-op
             }
         }
         tokenTracker.startTracking()

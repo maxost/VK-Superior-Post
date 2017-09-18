@@ -255,7 +255,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                         .load(R.drawable.bg_beach_center)
                         .asBitmap()
                         .format(DecodeFormat.PREFER_ARGB_8888)
-                        .override(screenSize.x, screenSize.y)
                         .into(activity_post_compose_background_center)
                 Glide.with(this)
                         .load(R.drawable.bg_beach_top)
@@ -265,11 +264,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                         .into(activity_post_compose_background_bottom)
             }
             BackgroundType.STARS -> {
-//                Glide.with(this)
-//                        .load(R.drawable.drawable_stars)
-//                        .override(screenSize.x, screenSize.y)
-//                        .into(activity_post_compose_background_center)
-                activity_post_compose_background_center.setImageResource(R.drawable.drawable_stars) //TODO use async load
+                Glide.with(this)
+                        .load(R.drawable.bg_stars_center)
+                        .into(activity_post_compose_background_center)
+//                activity_post_compose_background_center.setImageResource(R.drawable.drawable_stars)
             }
             BackgroundType.IMAGE -> {
                 Glide.with(this)

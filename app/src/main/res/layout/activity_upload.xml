@@ -76,6 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/description_upload_successful"
         />
 
     <View
@@ -111,6 +112,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:alpha="0"
+        android:contentDescription="@string/description_loading_indicator"
         />
 
 </android.support.constraint.ConstraintLayout>

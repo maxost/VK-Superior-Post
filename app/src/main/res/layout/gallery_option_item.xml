@@ -13,6 +13,7 @@
         android:layout_height="32dp"
         tools:src="@drawable/ic_photopicker_albums"
         android:layout_gravity="center"
+        android:contentDescription="@string/description_choose_image_from_gallery"
         />
 
 </FrameLayout>

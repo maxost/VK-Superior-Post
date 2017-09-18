@@ -18,6 +18,7 @@
         tools:src="@drawable/ic_toolbar_new"
         tools:padding="4dp"
         tools:background="@color/backgroundThumbBlue"
+        android:contentDescription="@string/description_post_background_item"
         />
 
 </FrameLayout>

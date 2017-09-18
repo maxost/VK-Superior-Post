@@ -26,4 +26,17 @@
     <string name="upload_retry">Повторить</string>
     <string name="upload_load_more">Создать ещё</string>
 
+    <!-- Content description -->
+    <string name="description_vk_logo">Логотип Вконтакте</string>
+    <string name="description_post_background">Фон поста</string>
+    <string name="description_choose_text_style">Выбор стиля текста</string>
+    <string name="description_add_sticker">Добавить стикер</string>
+    <string name="description_delete_sticker">Удалить стикер</string>
+    <string name="description_upload_successful">Опубликовано</string>
+    <string name="description_loading_indicator">Индикатор загрузки</string>
+    <string name="description_post_background_item">Элемент списка - Фон поста</string>
+    <string name="description_sticker">Стикер</string>
+    <string name="description_gallery_image">Элемент списка - Изображение из галереи</string>
+    <string name="description_choose_image_from_gallery">Выбрать изображение из галереи</string>
+
 </resources>

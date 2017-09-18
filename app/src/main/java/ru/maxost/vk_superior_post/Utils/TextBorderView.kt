@@ -19,6 +19,10 @@ import java.util.*
  */
 class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : View(context, attributeSet) {
 
+    init {
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+    }
+
     private var state: MyEditTextState? = null
 
     fun setState(state: MyEditTextState) {
@@ -30,6 +34,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private val colorWhite = ContextCompat.getColor(context, R.color.white)
     private val colorWhiteTransparent = ContextCompat.getColor(context, R.color.whiteTransparent)
     private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
+    private val colorTransparent = ContextCompat.getColor(context, R.color.transparent)
     private val hTopOffset = 6.dp2px(context)
     private val hBottomOffset = 8.dp2px(context)
     private val wOffset = 12.dp2px(context)
@@ -46,20 +51,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         pathEffect = CornerPathEffect(10f)
         isAntiAlias = true
     }
-
-    private val shadowPaint = Paint().apply {
-        isDither = true
-        strokeWidth = 4f
-        style = Paint.Style.FILL
-        strokeJoin = Paint.Join.ROUND
-        strokeCap = Paint.Cap.ROUND
-        pathEffect = CornerPathEffect(10f)
-        isAntiAlias = true
-    }
-
-    //TODO multiple enters
-    //TODO multiple spaces
-    //TODO smooth edges
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
@@ -88,12 +79,12 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         if (canvas == null) return
 
         path.reset()
-        paint.color = color
         val lines = state!!.linesList
         val textStartPoint = state!!.startPoint
         val borderStartPoint = IntArray(2).apply { getLocationOnScreen(this) }
 //        SwitchLog.scream("textStartPoint ${textStartPoint[1]} borderStartPoint: ${borderStartPoint[1]}")
 
+        //batch lines and draw it
         val properLines = lines.map { convertRect(it, textStartPoint, borderStartPoint) }
         val dividerIndexes = properLines.withIndex().filter { it.value.width() == 0f }.map { it.index }
         properLines.withIndex().forEach { item ->
@@ -109,16 +100,20 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
             }
         }
 
-        if (color == colorWhite) { //TODO shadow below transparent border
-            shadowPath.reset()
-            shadowPath.addPath(path)
-            shadowPath.offset(0f, 4f)
-            shadowPath.addPath(path)
-            shadowPath.fillType = Path.FillType.EVEN_ODD
-            shadowPaint.color = colorShadow
-            canvas.drawPath(shadowPath, shadowPaint)
-        }
+        shadowPath.reset()
+        shadowPath.addPath(path)
+        shadowPath.offset(0f, 4f)
+        shadowPath.addPath(path)
+        shadowPath.fillType = Path.FillType.EVEN_ODD
+        paint.color = colorShadow
+        canvas.drawPath(shadowPath, paint)
 
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        paint.color = colorTransparent
+        canvas.drawPath(path, paint)
+
+        paint.xfermode = null
+        paint.color = color
         canvas.drawPath(path, paint)
     }
 

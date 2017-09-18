@@ -17,4 +17,5 @@
     <color name="panelWhiteTransparent">#e6ebebeb</color>
     <color name="shadow">#1e000000</color>
     <color name="backgroundThumbBlue">#d6e2f3</color>
+    <color name="transparent">#00ffffff</color>
 </resources>

@@ -49,6 +49,9 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         isDither = true
         strokeWidth = 4f
         style = Paint.Style.FILL
+        strokeJoin = Paint.Join.ROUND
+        strokeCap = Paint.Cap.ROUND
+        pathEffect = CornerPathEffect(10f)
         isAntiAlias = true
     }
 
@@ -87,17 +90,19 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         val textStartPoint = state!!.startPoint
         val borderStartPoint = IntArray(2).apply { getLocationOnScreen(this) }
         SwitchLog.scream("textStartPoint ${textStartPoint[1]} borderStartPoint: ${borderStartPoint[1]}")
-
         createBorderPath(path, lines.map { convertRect(it, textStartPoint, borderStartPoint) })
 
-        canvas.drawPath(path, paint)
+        if(color == colorWhite) { //TODO shadow below transparent border
+            shadowPath.reset()
+            shadowPath.addPath(path)
+            shadowPath.offset(0f, 4f)
+            shadowPath.addPath(path)
+            shadowPath.fillType = Path.FillType.EVEN_ODD
+            shadowPaint.color = colorShadow
+            canvas.drawPath(shadowPath, shadowPaint)
+        }
 
-        shadowPath.reset()
-        shadowPath.addPath(path)
-        shadowPath.offset(0f, 4f)
-        shadowPath.op(path, Path.Op.DIFFERENCE)
-        shadowPaint.color = colorShadow
-        canvas.drawPath(shadowPath, shadowPaint) //TODO shadow
+        canvas.drawPath(path, paint)
     }
 
     private fun convertRect(fromRect: RectF, fromViewStart: IntArray, toViewStart: IntArray): RectF {

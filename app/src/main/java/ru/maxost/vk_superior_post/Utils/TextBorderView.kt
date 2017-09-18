@@ -124,9 +124,10 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
             if(linesList[lineIndex].width().toInt() == 0) continue
 
             val rect = linesList[lineIndex]
-            SwitchLog.scream("rect left: ${rect.left} right: ${rect.right} top: ${rect.top} bottom: ${rect.bottom}")
+            SwitchLog.scream("lineIndex: $lineIndex rect left: ${rect.left} right: ${rect.right} top: ${rect.top} bottom: ${rect.bottom}")
 
             if(linesList.size == 1 || (lineIndex == 0 && lineIndex + 1 < linesList.size && linesList[lineIndex + 1].width().toInt() == 0)) {
+                SwitchLog.scream("1")
                 path.moveTo(rect.left - wOffset + 20, rect.top - hTopOffset)
                 points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
@@ -136,6 +137,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
             }
 
             if (lineIndex == 0) {
+                SwitchLog.scream("2")
                 path.moveTo(rect.centerX(), rect.top - hTopOffset)
                 points.add(PointF(rect.centerX(), rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
@@ -144,6 +146,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
             }
 
             if (lineIndex == linesList.size - 1 || (lineIndex + 1 < linesList.size && linesList[lineIndex + 1].width().toInt() == 0)) {
+                SwitchLog.scream("3")
                 if(rect.right + wOffset < points.last().x) {
                     points.add(PointF(points.last().x, points.last().y + hBottomOffset))
                 }
@@ -154,6 +157,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
             }
 
             if (lineIndex > 0 && lineIndex < linesList.size - 1) {
+                SwitchLog.scream("4")
                 if(rect.right + wOffset < points.last().x) {
                     points.add(PointF(points.last().x, points.last().y + hBottomOffset))
                 }

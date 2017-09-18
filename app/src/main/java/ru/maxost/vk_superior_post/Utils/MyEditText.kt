@@ -51,9 +51,10 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
             }
         }
 
-    //TODO pass touches to sticker view when not pointing exact text
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return if (isInterceptingTouches) super.onTouchEvent(event) else false
+        if(event == null) return super.onTouchEvent(event)
+        val textTouched = getState().linesList.any { it.contains(event.x, event.y) }
+        return if (isInterceptingTouches && textTouched) super.onTouchEvent(event) else false
     }
 
     fun getState(): MyEditTextState {

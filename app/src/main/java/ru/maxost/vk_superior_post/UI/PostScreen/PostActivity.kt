@@ -4,6 +4,7 @@ import android.Manifest
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.*
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
@@ -84,7 +85,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
-        if(height > 0) {
+        if (height > 0) {
             keyboardHeight = height
             presenter.onKeyboardShow(true)
         } else {
@@ -107,21 +108,26 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
         when (postType) {
             PostType.POST -> {
-                activity_post_compose_root_layout.layoutParams =
-                        activity_post_compose_root_layout.layoutParams
-                                .apply {
-                                    height = size.x
-                                }
-                val newConstraints = ConstraintSet().apply {
-                    constrainHeight(R.id.activity_post_type_selector, 3.dp2px(this@PostActivity))
-                    connect(R.id.activity_post_type_selector, ConstraintSet.RIGHT, R.id.activity_post_type_post, ConstraintSet.RIGHT)
-                    connect(R.id.activity_post_type_selector, ConstraintSet.LEFT, R.id.activity_post_type_post, ConstraintSet.LEFT)
-                    connect(R.id.activity_post_type_selector, ConstraintSet.TOP, R.id.activity_post_top_panel, ConstraintSet.TOP)
-                    connect(R.id.activity_post_type_selector, ConstraintSet.BOTTOM, R.id.activity_post_top_panel, ConstraintSet.TOP)
-                }
-                TransitionManager.beginDelayedTransition(activity_post_root_layout)
-                newConstraints.applyTo(activity_post_root_layout)
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+                    activity_post_bottom_panel.setPadding(0, 0, 0, 0)
+                    activity_post_top_panel.setPadding(0, 0, 0 ,0)
+                }
+
+                //selector
+                ViewCompat.animate(activity_post_type_selector)
+                        .translationXBy(-activity_post_type_selector.width.toFloat())
+                        .setDuration(300)
+                        .start()
+
+                //post
+                ResizeAnimation(activity_post_compose_root_layout, activity_post_root_layout.height, size.x).apply {
+                    duration = 300
+                    activity_post_compose_root_layout.startAnimation(this)
+                }
+
+                //panels color
                 ValueAnimator.ofObject(ArgbEvaluator(), transparentWhite, opaqueWhite).apply {
                     duration = 300
                     addUpdateListener {
@@ -131,21 +137,26 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 }.start()
             }
             PostType.STORY -> {
-                activity_post_compose_root_layout.layoutParams =
-                        activity_post_compose_root_layout.layoutParams
-                                .apply {
-                                    height = ViewGroup.LayoutParams.MATCH_PARENT
-                                }
-                val newConstraints = ConstraintSet().apply {
-                    constrainHeight(R.id.activity_post_type_selector, 3.dp2px(this@PostActivity))
-                    connect(R.id.activity_post_type_selector, ConstraintSet.RIGHT, R.id.activity_post_type_story, ConstraintSet.RIGHT)
-                    connect(R.id.activity_post_type_selector, ConstraintSet.LEFT, R.id.activity_post_type_story, ConstraintSet.LEFT)
-                    connect(R.id.activity_post_type_selector, ConstraintSet.TOP, R.id.activity_post_top_panel, ConstraintSet.TOP)
-                    connect(R.id.activity_post_type_selector, ConstraintSet.BOTTOM, R.id.activity_post_top_panel, ConstraintSet.TOP)
-                }
-                TransitionManager.beginDelayedTransition(activity_post_root_layout)
-                newConstraints.applyTo(activity_post_root_layout)
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+                    activity_post_bottom_panel.setPadding(0, 0, 0, 50)
+                    activity_post_top_panel.setPadding(0, 50, 0 ,0)
+                }
+
+                //selector
+                ViewCompat.animate(activity_post_type_selector)
+                        .translationXBy(activity_post_type_selector.width.toFloat())
+                        .setDuration(300)
+                        .start()
+
+                //post
+                ResizeAnimation(activity_post_compose_root_layout, size.x, activity_post_root_layout.height).apply {
+                    duration = 300
+                    activity_post_compose_root_layout.startAnimation(this)
+                }
+
+                //panels color
                 ValueAnimator.ofObject(ArgbEvaluator(), opaqueWhite, transparentWhite).apply {
                     duration = 300
                     addUpdateListener {
@@ -302,26 +313,26 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         val panelHeight = 208.dp2px(this).toFloat()
 
         ViewCompat.animate(activity_post_gallery_list)
-                .translationYBy(if(show) -panelHeight else panelHeight)
-                .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
+                .translationYBy(if (show) -panelHeight else panelHeight)
+                .setDuration(if (animate) DEFAULT_ANIMATION_DURATION else 0)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
 
         ViewCompat.animate(activity_post_compose_root_layout)
-                .translationYBy(if(show) -panelHeight / 2 else panelHeight / 2)
-                .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
+                .translationYBy(if (show) -panelHeight / 2 else panelHeight / 2)
+                .setDuration(if (animate) DEFAULT_ANIMATION_DURATION else 0)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
 
         ViewCompat.animate(activity_post_bottom_panel)
-                .translationYBy(if(show) -panelHeight else panelHeight)
-                .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
+                .translationYBy(if (show) -panelHeight else panelHeight)
+                .setDuration(if (animate) DEFAULT_ANIMATION_DURATION else 0)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
     }
 
     override fun shiftViewsForKeyboard(shift: Boolean) {
-        if(shift) {
+        if (shift) {
             activity_post_compose_root_layout.y -= keyboardHeight / 2
             activity_post_bottom_panel.y -= keyboardHeight
         } else {
@@ -352,7 +363,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     private var binVisible = false
     override fun onDragging(isDragging: Boolean): Rect {
 
-        if(presenter.getCurrentBackground().type == BackgroundType.COLORED
+        if (presenter.getCurrentBackground().type == BackgroundType.COLORED
                 && presenter.getCurrentBackground().colorDrawableResId == R.drawable.background_white_full) {
             activity_post_bin.setBackgroundResource(R.drawable.drawable_bin_circle)
         } else {
@@ -374,7 +385,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                                     val postHeight = activity_post_compose_root_layout.height
                                     val postBottomY = postYLocation + postHeight
 
-                                    val screenYLocation =  IntArray(2).apply {
+                                    val screenYLocation = IntArray(2).apply {
                                         activity_post_root_layout.getLocationOnScreen(this)
                                     }[1]
                                     val screenHeight = activity_post_root_layout.height
@@ -390,17 +401,17 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                             bottomMargin = margin
                         }
 
-        if(binVisible != isDragging) {
+        if (binVisible != isDragging) {
             SwitchLog.scream("isDragging: $isDragging")
             binVisible = isDragging
             val distance = 16.dp2px(this).toFloat()
             activity_post_root_layout.requestLayout()
             ViewCompat.animate(activity_post_bin)
                     .translationY(if (isDragging) -distance else distance / 2)
-                    .alpha(if(isDragging) 1f else 0f)
+                    .alpha(if (isDragging) 1f else 0f)
                     .setDuration(200)
                     .setInterpolator(DEFAULT_INTERPOLATOR)
-                    .setStartDelay(if(isDragging) 300 else 0)
+                    .setStartDelay(if (isDragging) 300 else 0)
                     .start()
         }
 
@@ -416,7 +427,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     private var binExpanded = false
     override fun onOverBin(isOverBin: Boolean) {
-        if(binExpanded == isOverBin) return
+        if (binExpanded == isOverBin) return
 
         SwitchLog.scream("isOverBin: $isOverBin")
         binExpanded = isOverBin

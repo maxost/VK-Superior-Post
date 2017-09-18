@@ -51,7 +51,7 @@ class ProdApiService : ApiService {
                         if (!source.isDisposed) source.onError(IOException())
                     }
                 })
-        source.setCancellable { bitmap.recycle() } //TODO test this
+        source.setCancellable { bitmap.recycle() }
     }
 
     override fun wallPostPhoto(photo: VKApiPhoto): Completable = Completable.create { source ->

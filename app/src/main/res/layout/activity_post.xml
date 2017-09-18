@@ -227,13 +227,6 @@
         app:layout_constraintStart_toStartOf="parent"
         >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/greyDivider"
-            android:layout_alignParentTop="true"
-            />
-
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/activity_post_submit_button"
             android:layout_width="wrap_content"
@@ -270,15 +263,26 @@
             />
 
         <View
+            android:id="@+id/activity_post_bottom_panel_top_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyDivider"
+            android:layout_alignParentTop="true"
+            />
+
+        <View
             android:id="@+id/activity_post_bottom_panel_vertical_divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/greyDivider"
             android:layout_toLeftOf="@id/activity_post_submit_button"
             android:layout_toStartOf="@id/activity_post_submit_button"
+            android:layout_below="@id/activity_post_bottom_panel_top_divider"
+            android:layout_above="@id/activity_post_bottom_panel_bottom_divider"
             />
 
         <View
+            android:id="@+id/activity_post_bottom_panel_bottom_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/greyDivider"

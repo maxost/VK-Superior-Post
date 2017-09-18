@@ -23,10 +23,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        //TODO accessibility
-        //TODO exit dialog
-        //TODO keyboard on start doesn't always pushes bottom panel to top
-
         //dagger
         graph = DaggerAppComponent.builder()
                 .fileModule(FileModule(this))

@@ -165,10 +165,13 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 .filter { it }
                 .flatMap { RxImagePicker.with(this).requestImage(Sources.GALLERY) }
                 .subscribe({ uri ->
-                    //TODO get file instead of uri and show selection in list if match
+                    val screenSize = Point()
+                    windowManager.defaultDisplay.getSize(screenSize)
+
                     Glide.with(this)
                             .load(uri)
-                            .fitCenter()
+                            .override(screenSize.x, screenSize.y)
+                            .centerCrop()
                             .into(activity_post_compose_background_center)
                     getGalleryAdapter().setSelectedFile(null)
                 }, {
@@ -183,9 +186,13 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 .filter { it }
                 .flatMap { RxImagePicker.with(this).requestImage(Sources.CAMERA) }
                 .subscribe({ uri ->
+                    val screenSize = Point()
+                    windowManager.defaultDisplay.getSize(screenSize)
+
                     Glide.with(this)
                             .load(uri)
-                            .fitCenter()
+                            .override(screenSize.x, screenSize.y)
+                            .centerCrop()
                             .into(activity_post_compose_background_center)
                     getGalleryAdapter().setSelectedFile(null)
                 }, {
@@ -272,7 +279,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             BackgroundType.IMAGE -> {
                 Glide.with(this)
                         .load(background.imageFile)
-                        .override(screenSize.x, screenSize.y) //TODO proper handle horizontal photos too
+                        .override(screenSize.x, screenSize.y)
                         .centerCrop()
                         .into(activity_post_compose_background_center)
             }

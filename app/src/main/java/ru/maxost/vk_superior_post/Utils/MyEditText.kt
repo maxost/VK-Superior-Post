@@ -53,8 +53,14 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if(event == null) return super.onTouchEvent(event)
-        val textTouched = getState().linesList.any { it.contains(event.x, event.y) }
-        return if (isInterceptingTouches && textTouched) super.onTouchEvent(event) else false
+        val textTouched = getState().linesList.any {
+            it.right += 40
+            it.left -= 40
+            it.top -= 40
+            it.bottom += 40
+            it.contains(event.x, event.y)
+        }
+        return if (text.isBlank() || isInterceptingTouches && textTouched) super.onTouchEvent(event) else false
     }
 
     fun getState(): MyEditTextState {

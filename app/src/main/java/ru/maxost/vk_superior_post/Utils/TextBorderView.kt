@@ -7,9 +7,11 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
+import io.reactivex.Observable
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
+import java.util.*
 
 /**
  * Created by Maxim Ostrovidov on 15.09.17.
@@ -61,38 +63,53 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        SwitchLog.scream("onLayout top: $top")
+//        SwitchLog.scream("onLayout top: $top")
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        SwitchLog.scream("onSizeChanged h: $h oldh: $oldh")
+//        SwitchLog.scream("onSizeChanged h: $h oldh: $oldh")
     }
 
     override fun onDraw(canvas: Canvas?) {
-        SwitchLog.scream("onDraw")
-        if(state == null || state!!.text.isEmpty()) {
+//        SwitchLog.scream("onDraw")
+        if (state == null || state!!.text.isEmpty()) {
             super.onDraw(canvas)
             return
         }
 
-        if(state?.textStyle == TextStyle.WHITE_WITH_BACKGROUND) drawBorder(canvas, colorWhiteTransparent)
-        if(state?.textStyle == TextStyle.BLACK_WITH_BACKGROUND) drawBorder(canvas, colorWhite)
+        if (state?.textStyle == TextStyle.WHITE_WITH_BACKGROUND) drawBorder(canvas, colorWhiteTransparent)
+        if (state?.textStyle == TextStyle.BLACK_WITH_BACKGROUND) drawBorder(canvas, colorWhite)
 
         super.onDraw(canvas)
     }
 
     private fun drawBorder(canvas: Canvas?, color: Int) {
-        if(canvas == null) return
+        if (canvas == null) return
 
+        path.reset()
         paint.color = color
         val lines = state!!.linesList
         val textStartPoint = state!!.startPoint
         val borderStartPoint = IntArray(2).apply { getLocationOnScreen(this) }
-        SwitchLog.scream("textStartPoint ${textStartPoint[1]} borderStartPoint: ${borderStartPoint[1]}")
-        createBorderPath(path, lines.map { convertRect(it, textStartPoint, borderStartPoint) })
+//        SwitchLog.scream("textStartPoint ${textStartPoint[1]} borderStartPoint: ${borderStartPoint[1]}")
 
-        if(color == colorWhite) { //TODO shadow below transparent border
+        val properLines = lines.map { convertRect(it, textStartPoint, borderStartPoint) }
+        val dividerIndexes = properLines.withIndex().filter { it.value.width() == 0f }.map { it.index }
+        properLines.withIndex().forEach { item ->
+            if (properLines.size == 1) {
+                createBorderPath(path, properLines)
+                SwitchLog.scream("first item")
+            } else if (dividerIndexes.contains(item.index) && item.index > 0 || item.index == properLines.lastIndex) {
+                val leftBoundedList = properLines.subList(0, item.index + 1)
+                val lastEmptyLine = leftBoundedList.dropLast(1).indexOfLast { it.width() == 0f }
+                val properLastEmptyLine = if (lastEmptyLine > -1) lastEmptyLine else 0
+                val resultList = leftBoundedList.subList(properLastEmptyLine, leftBoundedList.lastIndex + 1)
+                createBorderPath(path, resultList.filter { it.width() > 0f })
+            }
+        }
+
+        if (color == colorWhite) { //TODO shadow below transparent border
             shadowPath.reset()
             shadowPath.addPath(path)
             shadowPath.offset(0f, 4f)
@@ -116,38 +133,34 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         }
     }
 
+    //TODO incorrect on pre-M
     private fun createBorderPath(path: Path, linesList: List<RectF>): Path {
         points.clear()
-        path.reset()
 
         for (lineIndex in 0 until linesList.size) {
-            if(linesList[lineIndex].width().toInt() == 0) continue
 
             val rect = linesList[lineIndex]
-            SwitchLog.scream("lineIndex: $lineIndex rect left: ${rect.left} right: ${rect.right} top: ${rect.top} bottom: ${rect.bottom}")
+//            SwitchLog.scream("lineIndex: $lineIndex rect left: ${rect.left} right: ${rect.right} top: ${rect.top} bottom: ${rect.bottom}")
+            if (lineIndex == 0) path.moveTo(rect.centerX(), rect.top - hTopOffset)
 
-            if(linesList.size == 1 || (lineIndex == 0 && lineIndex + 1 < linesList.size && linesList[lineIndex + 1].width().toInt() == 0)) {
-                SwitchLog.scream("1")
-                path.moveTo(rect.left - wOffset + 20, rect.top - hTopOffset)
+            if (linesList.size == 1) {
                 points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
                 points.add(PointF(rect.left - wOffset, rect.bottom + hBottomOffset))
                 points.add(PointF(rect.left - wOffset, rect.top - hTopOffset))
+                points.add(PointF(rect.centerX(), rect.top - hTopOffset))
                 break
             }
 
             if (lineIndex == 0) {
-                SwitchLog.scream("2")
-                path.moveTo(rect.centerX(), rect.top - hTopOffset)
                 points.add(PointF(rect.centerX(), rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
                 continue
             }
 
-            if (lineIndex == linesList.size - 1 || (lineIndex + 1 < linesList.size && linesList[lineIndex + 1].width().toInt() == 0)) {
-                SwitchLog.scream("3")
-                if(rect.right + wOffset < points.last().x) {
+            if (lineIndex == linesList.size - 1) {
+                if (rect.right + wOffset < points.last().x) {
                     points.add(PointF(points.last().x, points.last().y + hBottomOffset))
                 }
                 points.add(PointF(rect.right + wOffset, points.last().y))
@@ -157,8 +170,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
             }
 
             if (lineIndex > 0 && lineIndex < linesList.size - 1) {
-                SwitchLog.scream("4")
-                if(rect.right + wOffset < points.last().x) {
+                if (rect.right + wOffset < points.last().x) {
                     points.add(PointF(points.last().x, points.last().y + hBottomOffset))
                 }
                 points.add(PointF(rect.right + wOffset, points.last().y))
@@ -169,14 +181,11 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         points.forEach { path.lineTo(it.x, it.y) }
 
         //left side
-        if(linesList.size != 1 && points.isNotEmpty() && linesList[1].width().toInt() != 0) {
+        if (linesList.size != 1 && points.isNotEmpty()) {
             val centerX = points.first().x
-            points.reversed().forEach {
-                path.lineTo(centerX - (it.x - centerX), it.y)
-            }
+            points.reversed().forEach { path.lineTo(centerX - (it.x - centerX), it.y) }
         }
 
-        path.close()
         return path
     }
 }

@@ -10,9 +10,7 @@ import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.BitmapCompat
 import android.support.v4.view.ViewCompat
-import android.support.v4.view.ViewPropertyAnimatorListener
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*

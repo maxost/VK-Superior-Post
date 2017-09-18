@@ -58,7 +58,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             setText(post.text)
             setTextStyle(post.textStyle)
             setBackground(post.background)
-            setSelectedBackground(post.background) //TODO scroll doesn't work on activity recreation
+            setSelectedBackground(post.background)
             if(isBottomPanelVisible) loadGalleryImages()
             setPostType(post.postType)
             setStickers(post.stickers)

@@ -10,14 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_sticker_list_dialog.*
+import ru.maxost.switchlog.SwitchLog
 
 import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.Utils.dp2px
 import ru.maxost.vk_superior_post.Utils.px2dp
+import ru.maxost.vk_superior_post.Utils.show
 
-//TODO must have constant height
 class StickerListDialogFragment : BottomSheetDialogFragment() {
 
     interface Listener {
@@ -33,7 +34,9 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         val recyclerView = view!!.findViewById<RecyclerView>(R.id.fragment_sticker_list_dialog_recyclerview)
-        recyclerView!!.layoutManager = GridLayoutManager(context, calculateGridColumns())
+        val columnsCount = calculateGridColumns()
+        val layoutManager = GridLayoutManager(context, columnsCount)
+        recyclerView!!.layoutManager = layoutManager
         recyclerView.adapter = StickerAdapter(arguments.getInt(ARG_ITEM_COUNT))
         recyclerView.addItemDecoration(object: RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
@@ -43,8 +46,15 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
                 if(position > 4 || position < 19) {
                     outRect!!.bottom = 8.dp2px(context)
                 }
+            }
+        })
 
-                //TODO shift left & right edge stickers to edges
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+                SwitchLog.scream("position $position")
+                fragment_sticker_list_dialog_divider.show(position + 1 > columnsCount)
             }
         })
     }

@@ -285,7 +285,6 @@
         android:translationY="208dp"
         />
 
-    <!-- TODO change when white background -->
     <ImageView
         android:id="@+id/activity_post_bin"
         android:layout_width="48dp"

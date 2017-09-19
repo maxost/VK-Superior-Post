@@ -465,9 +465,9 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 activity_post_text.hint = ""
             }
             presenter.onTextInput(it)
-            activity_post_text.post {
-                updateBorder()
-            }
+//            activity_post_text.post {
+//                updateBorder()
+//            }
         }
         activity_post_text_style_clickbox.setOnClickListener { presenter.onTextStyleClick() }
         activity_post_type_post.setOnClickListener { presenter.onPostTypeChange(PostType.POST) }
@@ -477,9 +477,9 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         activity_post_root_layout.post({ keyboardHeightProvider.start() })
 
         activity_post_compose_root_layout.addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-            if (oldLeft != left || oldRight != right || oldBottom != bottom || oldTop != top) {
+//            if (oldLeft != left || oldRight != right || oldBottom != bottom || oldTop != top) {
                 updateBorder()
-            }
+//            }
         }
     }
 

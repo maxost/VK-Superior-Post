@@ -1,5 +1,6 @@
 package ru.maxost.vk_superior_post.Utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.support.v4.content.ContextCompat
@@ -15,18 +16,9 @@ import ru.maxost.vk_superior_post.R
  */
 class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : View(context, attributeSet) {
 
-    init {
-        setLayerType(View.LAYER_TYPE_HARDWARE, null)
-    }
-
     private var state: MyEditTextState? = null
-
-    fun setState(state: MyEditTextState) {
-        SwitchLog.scream(state.toString())
-        this.state = state
-        invalidate()
-    }
-
+    private var prevState: MyEditTextState? = null
+    private var borderBitmap: Bitmap? = null
     private val colorWhite = ContextCompat.getColor(context, R.color.white)
     private val colorWhiteTransparent = ContextCompat.getColor(context, R.color.whiteTransparent)
     private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
@@ -37,7 +29,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private val points = mutableListOf<PointF>()
     private val path = Path()
     private val shadowPath = Path()
-
     private val paint = Paint().apply {
         isDither = true
         strokeWidth = 10f
@@ -48,21 +39,47 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         isAntiAlias = true
     }
 
+    fun setState(state: MyEditTextState) {
+        SwitchLog.scream(state.toString())
+        this.state = state
+        invalidate()
+    }
+
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-        SwitchLog.scream("onDraw")
-        if (state == null || state!!.text.isEmpty()) {
-            super.onDraw(canvas)
+//        SwitchLog.scream("onDraw")
+
+        if (state == null || state!!.text.isEmpty()
+                || state?.textStyle == TextStyle.WHITE
+                || state?.textStyle == TextStyle.BLACK) return
+
+        if(prevState?.text == state?.text && prevState?.textStyle == state?.textStyle && borderBitmap != null) {
+            borderBitmap?.let { drawCanvas(canvas, it) }
             return
         }
 
-        if (state?.textStyle == TextStyle.WHITE_WITH_BACKGROUND) drawBorder(canvas, colorWhiteTransparent)
-        if (state?.textStyle == TextStyle.BLACK_WITH_BACKGROUND) drawBorder(canvas, colorWhite)
-
-        super.onDraw(canvas)
+        borderBitmap?.recycle()
+        borderBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        borderBitmap?.let {
+            if (state?.textStyle == TextStyle.WHITE_WITH_BACKGROUND) {
+                drawBorder(colorWhiteTransparent, it)
+                drawCanvas(canvas, it)
+            }
+            if (state?.textStyle == TextStyle.BLACK_WITH_BACKGROUND) {
+                drawBorder(colorWhite, it)
+                drawCanvas(canvas, it)
+            }
+        }
     }
 
-    private fun drawBorder(canvas: Canvas?, color: Int) {
-        if (canvas == null) return
+    private fun drawCanvas(canvas: Canvas?, bitmap: Bitmap) {
+        canvas!!.drawBitmap(bitmap, Matrix().apply {
+            val translateY = (height.toFloat() - bitmap.height) / 2
+            postTranslate(0f, translateY)
+        }, null)
+    }
+
+    private fun drawBorder(color: Int, bitmap: Bitmap) {
 
         path.reset()
         val lines = state!!.linesList
@@ -70,7 +87,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         val borderStartPoint = IntArray(2).apply { getLocationOnScreen(this) }
 //        SwitchLog.scream("textStartPoint ${textStartPoint[1]} borderStartPoint: ${borderStartPoint[1]}")
 
-        //batch lines and draw it
+        //batch lines and draw those batches separately
         val properLines = lines.map { convertRect(it, textStartPoint, borderStartPoint) }
         val dividerIndexes = properLines.withIndex().filter { it.value.width() == 0f }.map { it.index }
         properLines.withIndex().forEach { item ->
@@ -86,19 +103,23 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
             }
         }
 
+        val newCanvas = Canvas(bitmap)
+
         shadowPath.reset()
         shadowPath.addPath(path)
         shadowPath.offset(0f, 4f)
         paint.color = colorShadow
-        canvas.drawPath(shadowPath, paint)
+        newCanvas.drawPath(shadowPath, paint)
 
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         paint.color = colorTransparent
-        canvas.drawPath(path, paint)
+        newCanvas.drawPath(path, paint)
 
         paint.xfermode = null
         paint.color = color
-        canvas.drawPath(path, paint)
+        newCanvas.drawPath(path, paint)
+
+        prevState = state
     }
 
     private fun convertRect(fromRect: RectF, fromViewStart: IntArray, toViewStart: IntArray): RectF {
@@ -112,7 +133,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         }
     }
 
-    //TODO incorrect on pre-M
     private fun createBorderPath(path: Path, linesList: List<RectF>): Path {
         points.clear()
 

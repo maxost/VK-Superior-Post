@@ -46,6 +46,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0
+        get() = if(field > 0) field else 208.dp2px(this@PostActivity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         initListeners()
         initBackgroundsList()
         initGalleryList()
+        setUpGalleryList()
         initPresenter(savedInstanceState)
 
         //prevent editText gain focus
@@ -89,6 +91,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         if (height > 0) {
             keyboardHeight = height
             presenter.onKeyboardShow(true)
+            setUpGalleryList()
         } else {
             presenter.onKeyboardShow(false)
         }
@@ -300,22 +303,21 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun showGalleryPanel(show: Boolean, animate: Boolean) {
-        val panelHeight = 208.dp2px(this).toFloat()
 
         ViewCompat.animate(activity_post_gallery_list)
-                .translationYBy(if (show) -panelHeight else panelHeight)
+                .translationYBy(if (show) -keyboardHeight.toFloat() else keyboardHeight.toFloat())
                 .setDuration(if (animate) DEFAULT_ANIMATION_DURATION else 0)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
 
         ViewCompat.animate(activity_post_compose_root_layout)
-                .translationYBy(if (show) -panelHeight / 2 else panelHeight / 2)
+                .translationYBy(if (show) -keyboardHeight.toFloat() / 2 else keyboardHeight.toFloat() / 2)
                 .setDuration(if (animate) DEFAULT_ANIMATION_DURATION else 0)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
 
         ViewCompat.animate(activity_post_bottom_panel)
-                .translationYBy(if (show) -panelHeight else panelHeight)
+                .translationYBy(if (show) -keyboardHeight.toFloat() else keyboardHeight.toFloat())
                 .setDuration(if (animate) DEFAULT_ANIMATION_DURATION else 0)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
@@ -364,10 +366,9 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 (activity_post_bin.layoutParams as ConstraintLayout.LayoutParams)
                         .apply {
                             val bottomPanelHeight = 56.dp2px(this@PostActivity)
-                            val galleryListHeight = 208.dp2px(this@PostActivity)
                             val margin = when {
                                 presenter.isKeyboardVisible() -> keyboardHeight + bottomPanelHeight
-                                presenter.isGalleryPanelVisible() -> galleryListHeight + bottomPanelHeight
+                                presenter.isGalleryPanelVisible() -> keyboardHeight + bottomPanelHeight
                                 presenter.isPostTypePost() -> {
                                     val postYLocation = IntArray(2).apply {
                                         activity_post_compose_root_layout.getLocationOnScreen(this)
@@ -465,9 +466,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 activity_post_text.hint = ""
             }
             presenter.onTextInput(it)
-//            activity_post_text.post {
-//                updateBorder()
-//            }
         }
         activity_post_text_style_clickbox.setOnClickListener { presenter.onTextStyleClick() }
         activity_post_type_post.setOnClickListener { presenter.onPostTypeChange(PostType.POST) }
@@ -476,10 +474,8 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         keyboardHeightProvider = KeyboardHeightProvider(this)
         activity_post_root_layout.post({ keyboardHeightProvider.start() })
 
-        activity_post_compose_root_layout.addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-//            if (oldLeft != left || oldRight != right || oldBottom != bottom || oldTop != top) {
-                updateBorder()
-//            }
+        activity_post_compose_root_layout.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            updateBorder()
         }
     }
 
@@ -523,7 +519,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             override fun getItemOffsets(outRect: Rect, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
                 val position = parent!!.getChildLayoutPosition(view)
                 if (position % 2 == 1) {
-                    outRect.top = 4.dp2px(this@PostActivity)
+//                    outRect.top = 8.dp2px(this@PostActivity)
                 }
                 if (position > getGalleryAdapter().getItemsCount() - 3) {
                     outRect.right = 0
@@ -536,5 +532,13 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     private fun updateBorder() {
         activity_post_text_border.setState(activity_post_text.getState())
+    }
+
+    private fun setUpGalleryList() {
+        activity_post_gallery_list.layoutParams = activity_post_gallery_list.layoutParams.apply {
+            this.height = keyboardHeight
+        }
+        activity_post_gallery_list.translationY = keyboardHeight.toFloat()
+        activity_post_gallery_list.show(true)
     }
 }

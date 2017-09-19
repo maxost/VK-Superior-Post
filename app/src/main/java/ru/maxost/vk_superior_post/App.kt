@@ -20,6 +20,13 @@ class App : Application() {
 
     companion object { @JvmStatic lateinit var graph: AppComponent }
 
+    //TODO limit text maxlines
+    //TODO upscale output bitmap
+    //TODO screen rotation
+    //TODO gallery on top of keyboard
+    //TODO remove status bar
+    //TODO fix borders bleyat'
+
     override fun onCreate() {
         super.onCreate()
 

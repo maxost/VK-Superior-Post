@@ -36,14 +36,11 @@ inline fun galleryAdapter(context: Context,
         : RecyclerView.Adapter<RecyclerView.ViewHolder>
         = object : RecyclerView.Adapter<RecyclerView.ViewHolder>(), GalleryAdapter {
 
-    init {
-        setHasStableIds(true)
-    }
+    init { setHasStableIds(true) }
 
     private var data = listOf<File>()
     private var selectedFile: File? = null
     private val placeholder = ContextCompat.getDrawable(context, R.drawable.drawable_placeholder)
-    private val transparentDrawable = ColorDrawable(Color.TRANSPARENT)
     private var recyclerView: RecyclerView? = null
 
     override fun getItemCount(): Int = data.size + 2
@@ -117,19 +114,6 @@ inline fun galleryAdapter(context: Context,
     }
 
     override fun setSelectedFile(file: File?) {
-
-        // glitches!
-//        var oldIndex: Int? = null
-//        var newIndex: Int? = null
-//
-//        selectedFile?.let { oldIndex = data.indexOf(it) }
-//        file?.let { newIndex = data.indexOf(it) }
-//
-//        selectedFile = file
-//
-//        oldIndex?.let { notifyItemChanged(it) }
-//        newIndex?.let { notifyItemChanged(it) }
-
         selectedFile = file
         notifyDataSetChanged()
         file?.let {

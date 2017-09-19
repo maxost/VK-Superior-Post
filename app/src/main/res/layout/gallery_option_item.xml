@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<ru.maxost.vk_superior_post.Utils.GalleryItemFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="84dp"
-    android:layout_height="84dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/drawable_gallery_option_background"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -16,4 +17,4 @@
         android:contentDescription="@string/description_choose_image_from_gallery"
         />
 
-</FrameLayout>
+</ru.maxost.vk_superior_post.Utils.GalleryItemFrameLayout>

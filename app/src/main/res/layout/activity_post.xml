@@ -35,7 +35,7 @@
         <ImageView
             android:id="@+id/activity_post_compose_background_top"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/description_post_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
         <ImageView
             android:id="@+id/activity_post_compose_background_bottom"
             android:layout_width="match_parent"
-            android:layout_height="112dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:contentDescription="@string/description_post_background"
             android:scaleType="fitXY"

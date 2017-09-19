@@ -29,18 +29,20 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private val points = mutableListOf<PointF>()
     private val path = Path()
     private val shadowPath = Path()
+    private val shadowHeight = 2.dp2px(context).toFloat()
+    private val cornerRadius = 4.dp2px(context).toFloat()
     private val paint = Paint().apply {
         isDither = true
         strokeWidth = 10f
         style = Paint.Style.FILL
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
-        pathEffect = CornerPathEffect(10f)
+        pathEffect = CornerPathEffect(cornerRadius)
         isAntiAlias = true
     }
 
     fun setState(state: MyEditTextState) {
-        SwitchLog.scream(state.toString())
+//        SwitchLog.scream(state.toString())
         this.state = state
         invalidate()
     }
@@ -107,7 +109,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
 
         shadowPath.reset()
         shadowPath.addPath(path)
-        shadowPath.offset(0f, 4f)
+        shadowPath.offset(0f, shadowHeight)
         paint.color = colorShadow
         newCanvas.drawPath(shadowPath, paint)
 

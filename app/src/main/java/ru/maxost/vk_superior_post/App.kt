@@ -23,9 +23,9 @@ class App : Application() {
     //TODO limit text maxlines
     //TODO upscale output bitmap
     //TODO screen rotation
-    //TODO gallery on top of keyboard
-    //TODO remove status bar
     //TODO fix borders bleyat'
+    //TODO story selector width
+    //TODO hint color
 
     override fun onCreate() {
         super.onCreate()

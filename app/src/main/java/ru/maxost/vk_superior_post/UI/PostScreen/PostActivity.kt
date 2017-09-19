@@ -99,6 +99,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
+        SwitchLog.scream("$height")
         if (height > 0) {
             keyboardHeight = height
             presenter.onKeyboardShow(true)
@@ -285,9 +286,11 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                         .into(activity_post_compose_background_center)
                 Glide.with(this)
                         .load(R.drawable.bg_beach_top)
+                        .fitCenter()
                         .into(activity_post_compose_background_top)
                 Glide.with(this)
                         .load(R.drawable.bg_beach_bottom)
+                        .fitCenter()
                         .into(activity_post_compose_background_bottom)
             }
             BackgroundType.STARS -> {
@@ -308,6 +311,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun closeKeyboard() {
+        SwitchLog.scream()
         val view = this.currentFocus
         if (view != null) {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -319,13 +323,16 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         getGalleryAdapter().setNewData(list)
     }
 
-    override fun showGalleryPanel(show: Boolean, animate: Boolean) {
+    override fun showGalleryPanel(show: Boolean, animate: Boolean, shiftViews: Boolean) {
+        SwitchLog.scream("show: $show animate: $animate")
 
         ViewCompat.animate(activity_post_gallery_list)
                 .translationYBy(if (show) -keyboardHeight.toFloat() else keyboardHeight.toFloat())
                 .setDuration(if (animate) DEFAULT_ANIMATION_DURATION else 0)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
+
+        if(!shiftViews) return
 
         ViewCompat.animate(activity_post_compose_root_layout)
                 .translationYBy(if (show) -keyboardHeight.toFloat() / 2 else keyboardHeight.toFloat() / 2)
@@ -341,6 +348,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun shiftViewsForKeyboard(shift: Boolean) {
+        SwitchLog.scream("$shift")
         if (shift) {
             activity_post_compose_root_layout.y -= keyboardHeight / 2
             activity_post_bottom_panel.y -= keyboardHeight

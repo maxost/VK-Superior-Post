@@ -20,7 +20,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     interface View {
         //ui
         fun setGalleyList(list: List<File>)
-        fun showGalleryPanel(show: Boolean, animate: Boolean)
+        fun showGalleryPanel(show: Boolean, animate: Boolean, shiftViews: Boolean)
         fun setSelectedBackground(background: Background?)
         fun setSelectedGalleryImage(file: File?)
         fun enableSubmitButton(enable: Boolean)
@@ -85,14 +85,15 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         if(isKeyboardVisible == show) return
 
         if(show) {
-            view?.shiftViewsForKeyboard(true)
             if(isBottomPanelVisible) {
-                view?.showGalleryPanel(false, false)
-                isBottomPanelVisible = false
+//                view?.showGalleryPanel(false, false)
+//                isBottomPanelVisible = false
+            } else {
+                view?.shiftViewsForKeyboard(true)
             }
 
         } else {
-            view?.shiftViewsForKeyboard(false)
+            if(!isBottomPanelVisible) view?.shiftViewsForKeyboard(false)
         }
 
         isKeyboardVisible = show
@@ -102,7 +103,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         return when {
             isKeyboardVisible -> false
             isBottomPanelVisible -> {
-                view?.showGalleryPanel(false, true)
+                view?.showGalleryPanel(false, true, true)
                 isBottomPanelVisible = false
                 true
             }
@@ -181,20 +182,20 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     private fun onImageBackgroundSelected() {
 
+        val keyBoardWasVisible = isKeyboardVisible
+
+        if(isKeyboardVisible) {
+            view?.closeKeyboard()
+//            view?.shiftViewsForKeyboard(false)
+            isKeyboardVisible = false
+        }
+
         if(isBottomPanelVisible) {
             loadGalleryImages()
             return
         }
 
-        val keyBoardWasVisible = isKeyboardVisible
-
-        if(isKeyboardVisible) {
-            view?.closeKeyboard()
-            view?.shiftViewsForKeyboard(false)
-            isKeyboardVisible = false
-        }
-
-        view?.showGalleryPanel(true, !keyBoardWasVisible)
+        view?.showGalleryPanel(true, !keyBoardWasVisible, !keyBoardWasVisible)
         isBottomPanelVisible = true
 
         loadGalleryImages()

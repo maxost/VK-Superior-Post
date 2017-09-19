@@ -57,6 +57,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         setUpGalleryList()
         initPresenter(savedInstanceState)
 
+        activity_post_top_panel.layoutParams = (activity_post_top_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
+            topMargin = getStatusBarHeight()
+        }
+
         //prevent editText gain focus
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         activity_post_text.clearFocus()

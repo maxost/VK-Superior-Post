@@ -8,7 +8,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import java.net.URI
 
-
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
  * (c) White Soft
@@ -41,4 +40,13 @@ fun Activity.hideKeyboard() {
         view = View(this)
     }
     imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Context.getStatusBarHeight(): Int {
+    var result = 0
+    val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+    if (resourceId > 0) {
+        result = resources.getDimensionPixelSize(resourceId)
+    }
+    return result
 }

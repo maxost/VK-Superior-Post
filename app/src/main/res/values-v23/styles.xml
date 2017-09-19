@@ -5,8 +5,10 @@
         <item name="colorPrimary">@color/cornFlowerBlue</item>
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/coolBlue</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/white</item>
     </style>
 
 </resources>

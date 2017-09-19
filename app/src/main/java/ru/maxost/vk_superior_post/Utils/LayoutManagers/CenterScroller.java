@@ -24,7 +24,7 @@ public class CenterScroller extends LinearSmoothScroller {
     }
 
     @Override
-    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-        return 200f / displayMetrics.densityDpi; // TODO need to speed up when distance is really long
+    protected int calculateTimeForScrolling(int dx) {
+        return 300;
     }
 }

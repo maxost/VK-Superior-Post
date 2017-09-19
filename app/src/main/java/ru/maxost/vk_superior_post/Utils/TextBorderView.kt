@@ -16,7 +16,7 @@ import ru.maxost.vk_superior_post.R
 class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : View(context, attributeSet) {
 
     init {
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        setLayerType(View.LAYER_TYPE_HARDWARE, null)
     }
 
     private var state: MyEditTextState? = null
@@ -48,18 +48,8 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         isAntiAlias = true
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-//        SwitchLog.scream("onLayout top: $top")
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-//        SwitchLog.scream("onSizeChanged h: $h oldh: $oldh")
-    }
-
     override fun onDraw(canvas: Canvas?) {
-//        SwitchLog.scream("onDraw")
+        SwitchLog.scream("onDraw")
         if (state == null || state!!.text.isEmpty()) {
             super.onDraw(canvas)
             return
@@ -99,8 +89,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         shadowPath.reset()
         shadowPath.addPath(path)
         shadowPath.offset(0f, 4f)
-        shadowPath.addPath(path)
-        shadowPath.fillType = Path.FillType.EVEN_ODD
         paint.color = colorShadow
         canvas.drawPath(shadowPath, paint)
 

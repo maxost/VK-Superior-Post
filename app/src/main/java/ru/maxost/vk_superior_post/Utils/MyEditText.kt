@@ -1,6 +1,7 @@
 package ru.maxost.vk_superior_post.Utils
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.RectF
 import android.support.v4.content.ContextCompat
@@ -28,32 +29,26 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 
     var textStyle = TextStyle.WHITE
         set(value) {
-            SwitchLog.scream("$value")
             field = value
-
-            setShadowLayer(0f, 0f, 0f, 0)
-            if (text.isBlank()) return
-
             when (textStyle) {
-                TextStyle.BLACK -> {
+                TextStyle.BLACK, TextStyle.BLACK_WITH_BACKGROUND ->
                     setTextColor(ContextCompat.getColor(this.context, R.color.black))
-                }
-                TextStyle.WHITE -> {
+                TextStyle.WHITE, TextStyle.WHITE_WITH_BACKGROUND ->
                     setTextColor(ContextCompat.getColor(this.context, R.color.white))
-                    setShadowLayer(5f, 0f, 5f, colorShadow)
-                }
-                TextStyle.BLACK_WITH_BACKGROUND -> {
-                    setTextColor(ContextCompat.getColor(this.context, R.color.black))
-                }
-                TextStyle.WHITE_WITH_BACKGROUND -> {
-                    setTextColor(ContextCompat.getColor(this.context, R.color.white))
-                    setShadowLayer(5f, 0f, 5f, colorShadow)
-                }
             }
         }
 
+    override fun onDraw(canvas: Canvas?) {
+        if (text.isNotEmpty() && (textStyle == TextStyle.WHITE || textStyle == TextStyle.WHITE_WITH_BACKGROUND)) {
+            setShadowLayer(5f, 0f, 5f, colorShadow)
+        } else {
+            setShadowLayer(0f, 0f, 0f, 0)
+        }
+        super.onDraw(canvas)
+    }
+
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if(event == null) return super.onTouchEvent(event)
+        if (event == null) return super.onTouchEvent(event)
         val textTouched = getState().linesList.any {
             it.right += 40
             it.left -= 40

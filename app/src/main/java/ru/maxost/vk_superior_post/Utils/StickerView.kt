@@ -44,10 +44,11 @@ object StickerTasks {
                 .concatMap { Observable.just(it).delay(duration / 100, TimeUnit.MILLISECONDS) }
                 .map { it / 100f }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    SwitchLog.scream("subscribe: $it")
+                .subscribe({
                     subject.onNext(it)
-                }
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     fun getTaskCompletionFactor(stickerId: String): Float {
@@ -100,8 +101,8 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         SwitchLog.scream("stickers: ${stickers.size} bitmaps: ${bitmaps.size}")
 
         stickers.forEach { sticker ->
-            SwitchLog.scream(sticker.toString())
-            SwitchLog.scream("${stickerState[sticker.id]}")
+//            SwitchLog.scream(sticker.toString())
+//            SwitchLog.scream("${stickerState[sticker.id]}")
 
             if(bitmaps.firstOrNull { it.first == sticker.resId } == null) {
                 val drawable = BitmapFactory.decodeResource(context.resources, sticker.resId)
@@ -209,6 +210,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     private var primaryStart: Point = Point()
     private var secondaryStart: Point = Point()
     private var startAngle: Float = 0f
+    private var pointerStartAngle = 0f
     private var startScaleFactor = 0f
     private var startDistance: Int = 0
 
@@ -218,11 +220,11 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         val action = MotionEventCompat.getActionMasked(event)
         when (action) {
             MotionEvent.ACTION_DOWN -> {
-                SwitchLog.scream("DOWN x: ${event.x} y: ${event.y}")
+//                SwitchLog.scream("DOWN x: ${event.x} y: ${event.y}")
                 stickers.lastOrNull {
                     calculateRect(it, width, height).contains(event.x.toInt(), event.y.toInt())
                 }?.let {
-                    SwitchLog.scream("Sticker match!")
+//                    SwitchLog.scream("Sticker match!")
                     (context as Listener).onMultiTouch(true)
 
                     //move sticker to the end of list
@@ -240,15 +242,16 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 return false
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
-                SwitchLog.scream("POINTER_DOWN x: ${event.x} y: ${event.y}")
+//                SwitchLog.scream("POINTER_DOWN x: ${event.x} y: ${event.y}")
                 currentSticker?.let {
-                    secondaryStart = Point(event.getX(1).toInt(), event.getY(1).toInt())
-                    startAngle = it.angle
-                    startScaleFactor = it.scaleFactor
-
                     val primaryPoint = Point(event.getX(0).toInt(), event.getY(0).toInt())
                     val secondaryPoint = Point(event.getX(1).toInt(), event.getY(1).toInt())
                     startDistance = calculateDistance(primaryPoint, secondaryPoint)
+
+                    secondaryStart = Point(event.getX(1).toInt(), event.getY(1).toInt())
+                    startAngle = it.angle
+                    pointerStartAngle = calcRotationAngleInDegrees(primaryPoint, secondaryPoint)
+                    startScaleFactor = it.scaleFactor
                 }
                 return true
             }
@@ -261,22 +264,23 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     val primaryPoint = Point(event.getX(0).toInt(), event.getY(0).toInt())
                     val secondaryPoint = Point(event.getX(1).toInt(), event.getY(1).toInt())
 
-                    //TODO glitches when trying to adjust angle from an opposite position
                     val currentAngle = calcRotationAngleInDegrees(primaryPoint, secondaryPoint)
-                    val angleChange = calcRotationAngleInDegrees(primaryStart, secondaryStart) - currentAngle
-                    val newAngle = startAngle - angleChange
+                    val angleChange = pointerStartAngle - currentAngle
+                    val newAngle = correctAngle(startAngle - angleChange)
 
                     val currentDistance = calculateDistance(primaryPoint, secondaryPoint)
                     val distanceChange =  currentDistance - startDistance
-
-                    //TODO scale with center between fingers
                     val startStickerSize = (startScaleFactor * width).toInt()
+
                     val newStickerSize: Int = startStickerSize + distanceChange
                     val newStickerScaleFactor: Float = newStickerSize.toFloat() / width.toFloat()
                     val newScaleFactorBounded = Math.min(Math.max(newStickerScaleFactor, MIN_SCALE_FACTOR), MAX_SCALE_FACTOR)
 
+                    currentSticker?.scaleFactor = newScaleFactorBounded
+                    currentSticker?.angle = newAngle
+
                     SwitchLog.scream(
-                            //                                "startDistance: $startDistance " +
+//                                                            "startDistance: $startDistance " +
 //                                "distanceChange: ${distanceChange.toFloat()} " +
 //                                "width: ${width.toFloat()} " +
 //                                "origScaleSize: $scaleFactor " +
@@ -284,13 +288,11 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 //                                "newStickerSize: $newStickerSize " +
 //                                "newStickerScaleFactor: $newStickerScaleFactor " +
 //                                "newScaleFactorBounded: $newScaleFactorBounded " +
-                            "startAngle: $startAngle " +
-                                    "currentAngle: $currentAngle " +
-                                    "angleChange: $angleChange " +
-                                    "newAngle: $newAngle")
-
-                    currentSticker?.scaleFactor = newScaleFactorBounded
-                    currentSticker?.angle = newAngle
+//                            "startAngle: $startAngle " +
+//                                    "currentAngle: $currentAngle " +
+//                                    "angleChange: $angleChange " +
+//                                    "newAngle: $newAngle"
+                    )
                 }
 
                 currentSticker?.xFactor = (event.x + currentTouchDistanceFromCenterX) / width
@@ -341,6 +343,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 primaryStart = Point()
                 secondaryStart = Point()
                 startAngle = 0f
+                pointerStartAngle = 0f
                 startScaleFactor = 0f
                 startDistance = 0
                 return true
@@ -352,6 +355,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
                     secondaryStart = Point()
                     startAngle = 0f
+                    pointerStartAngle = 0f
                     startScaleFactor = 0f
                     startDistance = 0
 
@@ -398,7 +402,12 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
     private fun correctAngle(angle: Float): Float {
         var newAngle = angle
-        if (angle < 0) newAngle += 360f
+        while(newAngle < 0) {
+            newAngle += 360
+        }
+        while(newAngle > 360) {
+            newAngle -= 360
+        }
         return newAngle
     }
 
@@ -406,7 +415,9 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         var theta = Math.atan2((targetPt.y - centerPt.y).toDouble(), (targetPt.x - centerPt.x).toDouble())
         theta += Math.PI / 2.0
         var angle = Math.toDegrees(theta)
-        if (angle < 0) angle += 360.0
+
+        correctAngle(angle.toFloat())
+
         return angle.toFloat()
     }
 }

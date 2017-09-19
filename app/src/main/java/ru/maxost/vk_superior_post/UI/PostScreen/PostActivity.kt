@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Bundle
-import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
@@ -274,6 +273,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             BackgroundType.STARS -> {
                 Glide.with(this)
                         .load(R.drawable.bg_stars_center)
+                        .override(screenSize.x, screenSize.y)
                         .into(activity_post_compose_background_center)
 //                activity_post_compose_background_center.setImageResource(R.drawable.drawable_stars)
             }
@@ -465,7 +465,9 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 activity_post_text.hint = ""
             }
             presenter.onTextInput(it)
-            Handler().postDelayed({ updateBorder() }, 1)
+            activity_post_text.post {
+                updateBorder()
+            }
         }
         activity_post_text_style_clickbox.setOnClickListener { presenter.onTextStyleClick() }
         activity_post_type_post.setOnClickListener { presenter.onPostTypeChange(PostType.POST) }
@@ -474,8 +476,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         keyboardHeightProvider = KeyboardHeightProvider(this)
         activity_post_root_layout.post({ keyboardHeightProvider.start() })
 
-        activity_post_compose_root_layout.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateBorder()
+        activity_post_compose_root_layout.addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            if (oldLeft != left || oldRight != right || oldBottom != bottom || oldTop != top) {
+                updateBorder()
+            }
         }
     }
 

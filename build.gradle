@@ -8,6 +8,7 @@ buildscript {
         rx_android_version    = '2.0.1'
         android_state_version = '1.1.5'
         dagger_version        = '2.11'
+        firebase_version      = '11.2.2'
     }
 
     repositories {
@@ -18,6 +19,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0-beta6'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:3.1.0'
     }
 }
 

@@ -50,6 +50,10 @@ dependencies {
     implementation "com.android.support:design:$support_lib_version"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
+    //firebase
+    compile "com.google.firebase:firebase-core:$firebase_version"
+    compile "com.google.firebase:firebase-crash:$firebase_version"
+
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
@@ -78,3 +82,5 @@ dependencies {
     implementation 'com.mlsdev.rximagepicker:library:2.0.2'
     implementation 'me.zhanghai.android.materialprogressbar:library:1.4.2'
 }
+
+apply plugin: 'com.google.gms.google-services'

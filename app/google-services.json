@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "289314635190",
+    "firebase_url": "https://vk-superior-post.firebaseio.com",
+    "project_id": "vk-superior-post",
+    "storage_bucket": "vk-superior-post.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289314635190:android:e64b67eb39dc1210",
+        "android_client_info": {
+          "package_name": "ru.maxost.vk_superior_post"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289314635190-sv4hs1d5c2gkpn70lfsv373cromqbe71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZb9Cu7RVPUX_u7tsEp-zI9Yh3LAHRoZ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

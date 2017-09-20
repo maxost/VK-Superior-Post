@@ -2,7 +2,6 @@ package ru.maxost.vk_superior_post.Utils.LayoutManagers;
 
 import android.content.Context;
 import android.support.v7.widget.LinearSmoothScroller;
-import android.util.DisplayMetrics;
 
 import ru.maxost.switchlog.SwitchLog;
 

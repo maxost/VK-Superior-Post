@@ -6,7 +6,6 @@ import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
-import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
 

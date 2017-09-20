@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatEditText
 import android.util.AttributeSet
 import android.view.MotionEvent
-import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
 import java.io.Serializable

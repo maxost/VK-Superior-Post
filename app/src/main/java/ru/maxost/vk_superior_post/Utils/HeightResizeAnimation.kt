@@ -3,7 +3,6 @@ package ru.maxost.vk_superior_post.Utils
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import ru.maxost.switchlog.SwitchLog
 
 /**
  * Created by Maksim Ostrovidov on 18.09.17.

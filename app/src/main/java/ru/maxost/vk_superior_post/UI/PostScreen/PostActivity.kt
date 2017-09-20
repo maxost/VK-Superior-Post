@@ -103,7 +103,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         if (height > 0) {
             keyboardHeight = height
             presenter.onKeyboardShow(true)
-            setUpGalleryList()
+            if(height != activity_post_gallery_list.height) setUpGalleryList()
         } else {
             presenter.onKeyboardShow(false)
         }

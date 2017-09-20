@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
@@ -69,21 +70,26 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             }
         }
 
+        if(savedInstanceState != null) {
+            activity_post_root_layout.viewTreeObserver
+                    .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            activity_post_root_layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            presenter.onPostSelectorReady()
+                        }
+                    })
+        }
+
         initListeners()
         initBackgroundsList()
         initGalleryList()
         setUpGalleryList()
         initPresenter(savedInstanceState)
 
-        //prevent editText from gaining focus
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        activity_post_text.clearFocus()
-        activity_post_root_layout.requestFocus()
-
-        if (savedInstanceState == null) {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-            activity_post_text.requestFocus()
-        }
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        activity_post_text.isFocusableInTouchMode = true
+        activity_post_text.requestFocus()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -122,7 +128,24 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 .show(supportFragmentManager, null)
     }
 
-    override fun setPostType(postType: PostType) {
+    override fun updatePostSelector(postType: PostType) {
+        when (postType) {
+            PostType.POST -> {
+                ViewCompat.animate(activity_post_type_selector)
+                        .translationX(0f)
+                        .setDuration(0)
+                        .start()
+            }
+            PostType.STORY -> {
+                ViewCompat.animate(activity_post_type_selector)
+                        .translationX(activity_post_type_selector.width.toFloat() + 3.dp2px(this))
+                        .setDuration(0)
+                        .start()
+            }
+        }
+    }
+
+    override fun setPostType(postType: PostType, animate: Boolean) {
         val size = Point()
         windowManager.defaultDisplay.getSize(size)
 
@@ -146,18 +169,18 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 //selector
                 ViewCompat.animate(activity_post_type_selector)
                         .translationX(0f)
-                        .setDuration(DEFAULT_ANIMATION_DURATION)
+                        .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
                         .start()
 
                 //post
                 HeightResizeAnimation(activity_post_compose_root_layout, activity_post_root_layout.height, size.x).apply {
-                    duration = DEFAULT_ANIMATION_DURATION
+                    duration = if(animate) DEFAULT_ANIMATION_DURATION else 0
                     activity_post_compose_root_layout.startAnimation(this)
                 }
 
                 //panels color
                 ValueAnimator.ofObject(ArgbEvaluator(), transparentWhite, opaqueWhite).apply {
-                    duration = DEFAULT_ANIMATION_DURATION
+                    duration = if(animate) DEFAULT_ANIMATION_DURATION else 0
                     addUpdateListener {
                         activity_post_top_panel.setBackgroundColor(it.animatedValue as Int)
                         activity_post_bottom_panel.setBackgroundColor(it.animatedValue as Int)
@@ -168,7 +191,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 //statusBar color
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ValueAnimator.ofObject(ArgbEvaluator(), transparentStatusBarColor, opaqueStatusBarColor).apply {
-                        duration = DEFAULT_ANIMATION_DURATION
+                        duration = if(animate) DEFAULT_ANIMATION_DURATION else 0
                         addUpdateListener { window.statusBarColor = it.animatedValue as Int }
                         start()
                     }
@@ -179,18 +202,18 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 //selector
                 ViewCompat.animate(activity_post_type_selector)
                         .translationX(activity_post_type_selector.width.toFloat() + 3.dp2px(this))
-                        .setDuration(DEFAULT_ANIMATION_DURATION)
+                        .setDuration(if(animate) DEFAULT_ANIMATION_DURATION else 0)
                         .start()
 
                 //post
                 HeightResizeAnimation(activity_post_compose_root_layout, size.x, activity_post_root_layout.height).apply {
-                    duration = DEFAULT_ANIMATION_DURATION
+                    duration = if(animate) DEFAULT_ANIMATION_DURATION else 0
                     activity_post_compose_root_layout.startAnimation(this)
                 }
 
                 //panels color
                 ValueAnimator.ofObject(ArgbEvaluator(), opaqueWhite, transparentWhite).apply {
-                    duration = DEFAULT_ANIMATION_DURATION
+                    duration = if(animate) DEFAULT_ANIMATION_DURATION else 0
                     addUpdateListener {
                         activity_post_top_panel.setBackgroundColor(it.animatedValue as Int)
                         activity_post_bottom_panel.setBackgroundColor(it.animatedValue as Int)
@@ -204,7 +227,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 //statusBar color
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ValueAnimator.ofObject(ArgbEvaluator(), opaqueStatusBarColor, transparentStatusBarColor).apply {
-                        duration = DEFAULT_ANIMATION_DURATION
+                        duration = if(animate) DEFAULT_ANIMATION_DURATION else 0
                         addUpdateListener { window.statusBarColor = it.animatedValue as Int }
                         start()
                     }

@@ -104,8 +104,8 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
 
             Picasso.with(context) // Glide not loading image sometimes so it's fast workaround
                     .load(imageResId)
-                    .centerInside()
                     .fit()
+                    .centerInside()
                     .into(holder.image)
 
             holder.itemView.tag = imageResId

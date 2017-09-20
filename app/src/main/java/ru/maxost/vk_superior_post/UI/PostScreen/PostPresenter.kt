@@ -26,7 +26,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun setSelectedGalleryImage(file: File?)
         fun enableSubmitButton(enable: Boolean)
         fun closeKeyboard()
-        fun setPostType(postType: PostType)
+        fun setPostType(postType: PostType, animate: Boolean)
+        fun updatePostSelector(postType: PostType)
         fun shiftViewsForKeyboard(shift: Boolean)
         fun requestPostBitmap()
         fun showError()
@@ -60,7 +61,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
             setBackground(post.background)
             setSelectedBackground(post.background)
             if(isBottomPanelVisible) loadGalleryImages()
-            setPostType(post.postType)
+            setPostType(post.postType, false)
             setStickers(post.stickers)
         }
     }
@@ -79,7 +80,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         if(post.postType == postType) return
 
         post.postType = postType
-        view?.setPostType(post.postType)
+        view?.setPostType(post.postType, true)
     }
 
     fun onKeyboardShow(show: Boolean) {
@@ -175,6 +176,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     fun isKeyboardVisible() = isKeyboardVisible
     fun isGalleryPanelVisible() = isBottomPanelVisible
     fun isPostTypePost() = post.postType == PostType.POST
+    fun onPostSelectorReady() = view?.updatePostSelector(post.postType)
 
     private fun onImageBackgroundSelected() {
 

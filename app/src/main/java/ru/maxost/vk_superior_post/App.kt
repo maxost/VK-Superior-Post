@@ -22,6 +22,9 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        //TODO selector
+        //TODO clean build!!!
+
         //dagger
         graph = DaggerAppComponent.builder()
                 .fileModule(FileModule(this))

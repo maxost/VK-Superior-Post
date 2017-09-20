@@ -105,7 +105,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 //            SwitchLog.scream("${stickerState[sticker.id]}")
 
             if(bitmaps.firstOrNull { it.first == sticker.resId } == null) {
-                val drawable = BitmapFactory.decodeResource(context.resources, sticker.resId)
+                val drawable = BitmapFactory.decodeResource(context.resources, sticker.resId, BitmapFactory.Options().apply { inScaled = false })
                 val ratio: Float = drawable.width.toFloat() / drawable.height.toFloat()
                 val scaledWidth = width * ratio
                 val scaledHeight = width
@@ -207,6 +207,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     private var pointerStartAngle = 0f
     private var startScaleFactor = 0f
     private var startDistance: Int = 0
+    private var disableBin = false
 
     private var binRect = Rect()
 
@@ -214,7 +215,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         val action = MotionEventCompat.getActionMasked(event)
         when (action) {
             MotionEvent.ACTION_DOWN -> {
-//                SwitchLog.scream("DOWN x: ${event.x} y: ${event.y}")
+                SwitchLog.scream("DOWN x: ${event.x} y: ${event.y}")
                 stickers.lastOrNull {
                     calculateRect(it, width, height).contains(event.x.toInt(), event.y.toInt())
                 }?.let {
@@ -230,13 +231,32 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     primaryStart = Point(event.x.toInt(), event.y.toInt())
 
                     currentSticker = it
-                    return true
                 }
-                return false
+                return true
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
-//                SwitchLog.scream("POINTER_DOWN x: ${event.x} y: ${event.y}")
+                SwitchLog.scream("POINTER_DOWN x: ${event.getX(1)} y: ${event.getX(1)}")
+                if(currentSticker == null) {
+                    stickers.lastOrNull {
+                        calculateRect(it, width, height).contains(event.getX(1).toInt(), event.getY(1).toInt())
+                    }?.let {
+                        (context as Listener).onMultiTouch(true)
+
+                        //move sticker to the end of list
+                        stickers.remove(it)
+                        stickers.add(it)
+
+                        val rect = calculateRect(it, width, height)
+                        currentTouchDistanceFromCenterX = (rect.centerX() - event.getX(0)).toInt()
+                        currentTouchDistanceFromCenterY = (rect.centerY() - event.getY(0)).toInt()
+                        primaryStart = Point(event.getX(0).toInt(), event.getY(0).toInt())
+
+                        currentSticker = it
+                    }
+                }
+
                 currentSticker?.let {
+                    disableBin = true
                     val primaryPoint = Point(event.getX(0).toInt(), event.getY(0).toInt())
                     val secondaryPoint = Point(event.getX(1).toInt(), event.getY(1).toInt())
                     startDistance = calculateDistance(primaryPoint, secondaryPoint)
@@ -292,7 +312,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 currentSticker?.yFactor = (event.y + currentTouchDistanceFromCenterY) / height
 
                 val listener = context as Listener
-                if(event.pointerCount == 1) {
+                if(event.pointerCount == 1 && !disableBin) {
                     binRect = listener.onDragging(true)
                     val isOverBin = binRect.contains(event.rawX.toInt(), event.rawY.toInt())
                     listener.onOverBin(isOverBin)
@@ -320,7 +340,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 listener.onMultiTouch(false)
                 listener.onDragging(false)
                 val isOverBin = binRect.contains(event.rawX.toInt(), event.rawY.toInt())
-                if(isOverBin) {
+                if(isOverBin && !disableBin) {
                     currentSticker?.let { sticker ->
                         listener.onDeleteSticker(sticker)
                         bitmaps.firstOrNull { it.first == sticker.resId }?.second?.recycle()
@@ -330,6 +350,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     }
                 }
 
+                disableBin = false
                 currentSticker = null
                 currentTouchDistanceFromCenterX = 0
                 currentTouchDistanceFromCenterY = 0
@@ -351,10 +372,13 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     startScaleFactor = 0f
                     startDistance = 0
 
-                    val rect = calculateRect(currentSticker!!, width, height)
-                    currentTouchDistanceFromCenterX = (rect.centerX() - event.getX(1)).toInt()
-                    currentTouchDistanceFromCenterY = (rect.centerY() - event.getY(1)).toInt()
-                    primaryStart = Point(event.x.toInt(), event.y.toInt())
+                    currentSticker?.let {
+                        val rect = calculateRect(it, width, height)
+                        currentTouchDistanceFromCenterX = (rect.centerX() - event.getX(1)).toInt()
+                        currentTouchDistanceFromCenterY = (rect.centerY() - event.getY(1)).toInt()
+                        primaryStart = Point(event.x.toInt(), event.y.toInt())
+                    }
+
                 } else {
                     secondaryStart = Point()
                     startAngle = 0f

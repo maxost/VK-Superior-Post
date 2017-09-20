@@ -13,8 +13,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(
         ApiModule::class,
-        FileModule::class,
-        BitmapModule::class
+        FileModule::class
 ))
 interface AppComponent {
     fun getLoginPresenter(): LoginPresenter

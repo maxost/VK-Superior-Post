@@ -14,15 +14,11 @@ class HeightResizeAnimation(private var view: View,
                             private val targetHeight: Int) : Animation() {
 
     override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-
         val newHeight = if(startHeight > targetHeight) {
             startHeight - (startHeight - targetHeight) * interpolatedTime
         } else {
             startHeight + (targetHeight - startHeight) * interpolatedTime
         }
-
-        SwitchLog.scream("$newHeight")
-
         view.layoutParams.height = newHeight.toInt()
         view.requestLayout()
     }

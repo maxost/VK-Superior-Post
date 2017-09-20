@@ -42,8 +42,8 @@ import java.util.*
 
 class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity(), StickerView.Listener {
 
-    private val DEFAULT_ANIMATION_DURATION = 300.toLong()
-    private val DEFAULT_INTERPOLATOR = AccelerateDecelerateInterpolator()
+    private val DEFAULT_ANIMATION_DURATION by lazy { 300.toLong() }
+    private val DEFAULT_INTERPOLATOR by lazy { AccelerateDecelerateInterpolator() }
 
     private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0

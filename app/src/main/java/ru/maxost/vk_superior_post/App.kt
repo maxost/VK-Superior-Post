@@ -8,7 +8,6 @@ import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.DI.AppComponent
-import ru.maxost.vk_superior_post.DI.BitmapModule
 import ru.maxost.vk_superior_post.DI.DaggerAppComponent
 import ru.maxost.vk_superior_post.DI.FileModule
 
@@ -26,7 +25,6 @@ class App : Application() {
         //dagger
         graph = DaggerAppComponent.builder()
                 .fileModule(FileModule(this))
-                .bitmapModule(BitmapModule(this))
                 .build()
 
         //log

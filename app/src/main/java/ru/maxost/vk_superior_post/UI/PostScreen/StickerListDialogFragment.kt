@@ -62,11 +62,7 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment
-        if (parent != null) {
-            listener = parent as Listener?
-        } else {
-            listener = context as Listener?
-        }
+        listener = if (parent != null) parent as Listener? else context as Listener?
     }
 
     override fun onDetach() {

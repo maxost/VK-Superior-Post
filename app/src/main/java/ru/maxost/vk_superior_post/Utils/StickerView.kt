@@ -1,5 +1,6 @@
 package ru.maxost.vk_superior_post.Utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.support.v4.view.MotionEventCompat
@@ -57,8 +58,6 @@ object StickerTasks {
             subjects[stickerId]?.onComplete()
             subjects.remove(stickerId)
         }
-
-//        SwitchLog.scream("stickerId: $stickerId CompletionFactor: $factor")
         return factor ?: 1f
     }
 }
@@ -96,6 +95,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         invalidate()
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 //        SwitchLog.scream("stickers: ${stickers.size} bitmaps: ${bitmaps.size}")
@@ -144,12 +144,10 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                             var translateX = sticker.xFactor * width
                             var translateY = sticker.yFactor * height
 
-//                            SwitchLog.scream("translateX: $translateX translateY: $translateY binRect.centerX: ${binRect.centerX()} binRect.centerY: ${binRect.centerY()}")
                             val binX = binRect.centerX() - IntArray(2).apply { getLocationOnScreen(this) }[0]
                             val binY = binRect.centerY() - IntArray(2).apply { getLocationOnScreen(this) }[1]
                             translateX += (binX - translateX) * factor - (scaleFactor * width / 2)
                             translateY += (binY - translateY) * factor - (scaleFactor * width / 2)
-//                            SwitchLog.scream("new translateX: $translateX new translateY: $translateY")
 
                             postTranslate(translateX, translateY)
                         }
@@ -167,19 +165,15 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                         var translateX = sticker.xFactor * width
                         var translateY = sticker.yFactor * height
 
-                        SwitchLog.scream("translateX: $translateX translateY: $translateY binRect.centerX: ${binRect.centerX()} binRect.centerY: ${binRect.centerY()}")
                         val binX = binRect.centerX() - IntArray(2).apply { getLocationOnScreen(this) }[0]
                         val binY = binRect.centerY() - IntArray(2).apply { getLocationOnScreen(this) }[1]
 
                         translateX = binX + (translateX - binX) * factor - (scaleFactor * width / 2)
                         translateY = binY + (translateY - binY) * factor - (scaleFactor * width / 2)
 
-                        SwitchLog.scream("new translateX: $translateX new translateY: $translateY")
-
                         postTranslate(translateX, translateY)
                     }
                     paint.alpha = (160 * factor).toInt()
-                    SwitchLog.scream("alpha: ${paint.alpha}")
                     canvas?.drawBitmap(bitmap, matrix, paint)
                     if(factor == 1f) stickerState.put(sticker.id, StickerState.NORMAL)
                     invalidate()
@@ -224,7 +218,6 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 stickers.lastOrNull {
                     calculateRect(it, width, height).contains(event.x.toInt(), event.y.toInt())
                 }?.let {
-//                    SwitchLog.scream("Sticker match!")
                     (context as Listener).onMultiTouch(true)
 
                     //move sticker to the end of list
@@ -322,7 +315,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                SwitchLog.scream("ACTION_UP or ACTION_CANCEL x: ${event.x} y: ${event.y}")
+//                SwitchLog.scream("ACTION_UP or ACTION_CANCEL x: ${event.x} y: ${event.y}")
                 val listener = context as Listener
                 listener.onMultiTouch(false)
                 listener.onDragging(false)
@@ -349,10 +342,9 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 return true
             }
             MotionEvent.ACTION_POINTER_UP -> {
-                SwitchLog.scream("ACTION_POINTER_UP x: ${event.x} y: ${event.y} index: ${event.actionIndex}")
+//                SwitchLog.scream("ACTION_POINTER_UP x: ${event.x} y: ${event.y} index: ${event.actionIndex}")
 
                 if(event.actionIndex == 0) {
-
                     secondaryStart = Point()
                     startAngle = 0f
                     pointerStartAngle = 0f
@@ -386,8 +378,6 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         rect.left   = (width * sticker.xFactor - stickerWidth  / 2).toInt()
         rect.right  = (width * sticker.xFactor + stickerWidth  / 2).toInt()
 
-//        SwitchLog.scream("left: ${rect.left} top: ${rect.top} right: ${rect.right} bottom: ${rect.bottom} " +
-//                "stickerHeight: $stickerHeight stickerWidth: $stickerWidth")
         return rect
     }
 
@@ -414,10 +404,8 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     private fun calcRotationAngleInDegrees(centerPt: Point, targetPt: Point): Float {
         var theta = Math.atan2((targetPt.y - centerPt.y).toDouble(), (targetPt.x - centerPt.x).toDouble())
         theta += Math.PI / 2.0
-        var angle = Math.toDegrees(theta)
-
+        val angle = Math.toDegrees(theta)
         correctAngle(angle.toFloat())
-
         return angle.toFloat()
     }
 }

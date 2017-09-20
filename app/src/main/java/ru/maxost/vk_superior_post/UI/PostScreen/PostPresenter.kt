@@ -87,13 +87,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         if(isKeyboardVisible == show) return
 
         if(show) {
-            if(isBottomPanelVisible) {
-//                view?.showGalleryPanel(false, false)
-//                isBottomPanelVisible = false
-            } else {
-                view?.shiftViewsForKeyboard(true)
-            }
-
+            if(!isBottomPanelVisible) view?.shiftViewsForKeyboard(true)
         } else {
             if(!isBottomPanelVisible) view?.shiftViewsForKeyboard(false)
         }
@@ -188,7 +182,6 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
         if(isKeyboardVisible) {
             view?.closeKeyboard()
-//            view?.shiftViewsForKeyboard(false)
             isKeyboardVisible = false
         }
 

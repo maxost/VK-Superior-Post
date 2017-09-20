@@ -6,7 +6,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.maxost.vk_superior_post.Data.Services.Api.ApiService
-import ru.maxost.vk_superior_post.Data.Services.Bitmap.BitmapService
 import ru.maxost.vk_superior_post.Data.Services.File.FileService
 import ru.maxost.vk_superior_post.GALLERY_LAST_IMAGES_COUNT
 import java.io.File
@@ -17,8 +16,7 @@ import javax.inject.Inject
  * (c) White Soft
  */
 class DataManger @Inject constructor(private val fileService: FileService,
-                                     private val apiService: ApiService,
-                                     private val bitmapService: BitmapService) {
+                                     private val apiService: ApiService) {
 
     fun isLoggedIn(): Single<Boolean> {
         return apiService.isLoggedIn()

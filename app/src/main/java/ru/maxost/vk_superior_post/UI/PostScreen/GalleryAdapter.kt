@@ -40,7 +40,6 @@ inline fun galleryAdapter(context: Context,
 
     private var data = listOf<File>()
     private var selectedFile: File? = null
-    private val placeholder = ContextCompat.getDrawable(context, R.drawable.drawable_placeholder)
     private var recyclerView: RecyclerView? = null
 
     override fun getItemCount(): Int = data.size + 2
@@ -99,7 +98,7 @@ inline fun galleryAdapter(context: Context,
                 val file = data[position - 2]
                 Glide.with(context)
                         .load(file)
-                        .placeholder(placeholder)
+                        .placeholder(R.drawable.drawable_placeholder)
                         .bitmapTransform(CenterCrop(context), RoundedCornersTransformation(context, 4.dp2px(context), 0))
                         .into(GlideDrawableViewBackgroundTarget(image))
 

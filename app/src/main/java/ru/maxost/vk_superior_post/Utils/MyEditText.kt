@@ -26,6 +26,7 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 
     var isInterceptingTouches = true
     private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
+    private val textShadowHeight = 1.dp2px(context).toFloat()
 
     var textStyle = TextStyle.WHITE
         set(value) {
@@ -44,7 +45,7 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
 
     override fun onDraw(canvas: Canvas?) {
         if (text.isNotEmpty() && (textStyle == TextStyle.WHITE || textStyle == TextStyle.WHITE_WITH_BACKGROUND)) {
-            setShadowLayer(5f, 0f, 5f, colorShadow)
+            setShadowLayer(textShadowHeight, 0f, textShadowHeight, colorShadow)
         } else {
             setShadowLayer(0f, 0f, 0f, 0)
         }
@@ -76,6 +77,7 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
     private fun getLineRect(lineIndex: Int): RectF {
         val rect = Rect()
         getLineBounds(lineIndex, rect)
+        rect.bottom = rect.top + lineHeight
 
         // getLineBounds returns incorrect width of the line
         // so we will calculate it separately
@@ -95,11 +97,11 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
         if (layout == null) return 0
         val lineStart = layout.getLineStart(lineIndex)
         val lineEnd = layout.getLineEnd(lineIndex)
-        val textLine = text.subSequence(lineStart, lineEnd)
+        val textLine = text.subSequence(lineStart, lineEnd).toString().replace("\n", "")
         if (textLine.isBlank()) return 0
         val rect = Rect()
-        paint.getTextBounds(textLine.toString(), 0, textLine.length, rect)
-        return rect.width() + calculateLeadingAndTailingSpacesWidth(textLine.toString())
+        paint.getTextBounds(textLine, 0, textLine.length, rect)
+        return rect.width() + calculateLeadingAndTailingSpacesWidth(textLine)
     }
 
     private fun calculateLeadingAndTailingSpacesWidth(text: String): Int {

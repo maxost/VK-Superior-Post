@@ -23,13 +23,13 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private val colorWhiteTransparent = ContextCompat.getColor(context, R.color.whiteTransparent)
     private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
     private val colorTransparent = ContextCompat.getColor(context, R.color.transparent)
-    private val hTopOffset = 6.dp2px(context)
-    private val hBottomOffset = 8.dp2px(context)
-    private val wOffset = 12.dp2px(context)
+    private val hTopOffset = 4.dp2px(context)
+    private val hBottomOffset = 4.dp2px(context)
+    private val wOffset = 10.dp2px(context)
     private val points = mutableListOf<PointF>()
     private val path = Path()
     private val shadowPath = Path()
-    private val shadowHeight = 2.dp2px(context).toFloat()
+    private val shadowHeight = 1.dp2px(context).toFloat()
     private val cornerRadius = 4.dp2px(context).toFloat()
     private val paint = Paint().apply {
         isDither = true
@@ -87,15 +87,13 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         val lines = state!!.linesList
         val textStartPoint = state!!.startPoint
         val borderStartPoint = IntArray(2).apply { getLocationOnScreen(this) }
-//        SwitchLog.scream("textStartPoint ${textStartPoint[1]} borderStartPoint: ${borderStartPoint[1]}")
 
         //batch lines and draw those batches separately
         val properLines = lines.map { convertRect(it, textStartPoint, borderStartPoint) }
         val dividerIndexes = properLines.withIndex().filter { it.value.width() == 0f }.map { it.index }
         properLines.withIndex().forEach { item ->
             if (properLines.size == 1) {
-                createBorderPath(path, properLines)
-                SwitchLog.scream("first item")
+                createBorderPath(path, properLines.filter { it.width() > 0f })
             } else if (dividerIndexes.contains(item.index) && item.index > 0 || item.index == properLines.lastIndex) {
                 val leftBoundedList = properLines.subList(0, item.index + 1)
                 val lastEmptyLine = leftBoundedList.dropLast(1).indexOfLast { it.width() == 0f }
@@ -141,7 +139,6 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         for (lineIndex in 0 until linesList.size) {
 
             val rect = linesList[lineIndex]
-//            SwitchLog.scream("lineIndex: $lineIndex rect left: ${rect.left} right: ${rect.right} top: ${rect.top} bottom: ${rect.bottom}")
             if (lineIndex == 0) path.moveTo(rect.centerX(), rect.top - hTopOffset)
 
             if (linesList.size == 1) {
@@ -153,6 +150,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
                 break
             }
 
+            //first
             if (lineIndex == 0) {
                 points.add(PointF(rect.centerX(), rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
@@ -160,22 +158,24 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
                 continue
             }
 
+            //middle
+            if (lineIndex > 0 && lineIndex < linesList.size - 1) {
+                if (rect.right + wOffset < points.last().x) {
+                    points.add(PointF(points.last().x, points.last().y + hBottomOffset*2))
+                }
+                points.add(PointF(rect.right + wOffset, points.last().y))
+                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
+                continue
+            }
+
+            //last
             if (lineIndex == linesList.size - 1) {
                 if (rect.right + wOffset < points.last().x) {
-                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
+                    points.add(PointF(points.last().x, points.last().y + hBottomOffset*2))
                 }
                 points.add(PointF(rect.right + wOffset, points.last().y))
                 points.add(PointF(rect.right + wOffset, rect.bottom + hBottomOffset))
                 points.add(PointF(rect.centerX(), rect.bottom + hBottomOffset))
-                continue
-            }
-
-            if (lineIndex > 0 && lineIndex < linesList.size - 1) {
-                if (rect.right + wOffset < points.last().x) {
-                    points.add(PointF(points.last().x, points.last().y + hBottomOffset))
-                }
-                points.add(PointF(rect.right + wOffset, points.last().y))
-                points.add(PointF(rect.right + wOffset, rect.bottom - hTopOffset))
                 continue
             }
         }

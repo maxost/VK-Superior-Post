@@ -21,11 +21,9 @@ class App : Application() {
     companion object { @JvmStatic lateinit var graph: AppComponent }
 
     //TODO limit text maxlines
-    //TODO upscale output bitmap
     //TODO screen rotation
     //TODO fix borders bleyat'
-    //TODO story selector width
-    //TODO hint color
+    //TODO gallery background
 
     override fun onCreate() {
         super.onCreate()

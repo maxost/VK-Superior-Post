@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#2c2d2e</color>
+    <color name="blackTransparent">#402c2d2e</color>
     <color name="grey">#909499</color>
+    <color name="greyTransparent">#d9909499</color>
     <color name="lightGrey">#ebebeb</color>
     <color name="coolGrey">#909499</color>
     <color name="white">#ffffff</color>
@@ -14,7 +16,6 @@
     <color name="coolBlue">#4680c2</color>
     <color name="blue">#528bcc</color>
     <color name="greyDivider">#26000000</color>
-    <color name="panelWhiteTransparent">#e6ebebeb</color>
     <color name="shadow">#1e000000</color>
     <color name="backgroundThumbBlue">#d6e2f3</color>
     <color name="transparent">#00ffffff</color>

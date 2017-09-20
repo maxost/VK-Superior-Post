@@ -4,6 +4,12 @@
         <item name="colorPrimary">@color/cornFlowerBlue</item>
         <item name="colorPrimaryDark">@color/black</item>
         <item name="colorAccent">@color/coolBlue</item>
+        <item name="android:windowAnimationStyle">@style/FadeTransitions</item>
+    </style>
+
+    <style name="FadeTransitions" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
     </style>
 
 </resources>

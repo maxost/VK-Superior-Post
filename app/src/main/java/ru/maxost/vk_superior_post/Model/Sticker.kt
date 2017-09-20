@@ -9,6 +9,6 @@ import java.io.Serializable
 data class Sticker(val id: String,
                    val resId: Int,
                    var xFactor: Float = 0.2f,
-                   var yFactor: Float = 0.2f,
+                   var yFactor: Float = 0.4f,
                    var scaleFactor: Float = 0.3f,
                    var angle: Float = 0f) : Serializable

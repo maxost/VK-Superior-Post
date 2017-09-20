@@ -9,9 +9,9 @@ import ru.maxost.switchlog.SwitchLog
  * Created by Maksim Ostrovidov on 18.09.17.
  * dustlooped@yandex.ru
  */
-class ResizeAnimation(private var view: View,
-                      private var startHeight: Int,
-                      private val targetHeight: Int) : Animation() {
+class HeightResizeAnimation(private var view: View,
+                            private var startHeight: Int,
+                            private val targetHeight: Int) : Animation() {
 
     override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
 

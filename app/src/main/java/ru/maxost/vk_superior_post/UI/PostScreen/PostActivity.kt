@@ -47,26 +47,33 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0
-        get() = if(field > 0) field else 208.dp2px(this@PostActivity)
+        get() = if (field > 0) field else 208.dp2px(this@PostActivity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-
         setContentView(R.layout.activity_post)
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.grey)
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+            activity_post_top_panel.layoutParams = (activity_post_top_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
+                topMargin = getStatusBarHeight()
+            }
+        }
+
         initListeners()
         initBackgroundsList()
         initGalleryList()
         setUpGalleryList()
         initPresenter(savedInstanceState)
-
-        activity_post_top_panel.layoutParams = (activity_post_top_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
-            topMargin = getStatusBarHeight()
-        }
 
         //prevent editText from gaining focus
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
@@ -103,7 +110,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         if (height > 0) {
             keyboardHeight = height
             presenter.onKeyboardShow(true)
-            if(height != activity_post_gallery_list.height) setUpGalleryList()
+            if (height != activity_post_gallery_list.height) setUpGalleryList()
         } else {
             presenter.onKeyboardShow(false)
         }
@@ -122,50 +129,68 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         val opaqueWhite = ContextCompat.getColor(this, R.color.white)
         val transparentWhite = ContextCompat.getColor(this, R.color.whiteTransparentMore)
 
+        var opaqueStatusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+        var transparentStatusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+            opaqueStatusBarColor = ContextCompat.getColor(this, R.color.grey)
+            transparentStatusBarColor = ContextCompat.getColor(this, R.color.greyTransparent)
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            opaqueStatusBarColor = ContextCompat.getColor(this, R.color.white)
+            transparentStatusBarColor = ContextCompat.getColor(this, R.color.whiteTransparentMore)
+        }
+
         when (postType) {
             PostType.POST -> {
 
                 //selector
                 ViewCompat.animate(activity_post_type_selector)
-                        .translationXBy(-activity_post_type_selector.width.toFloat())
-                        .setDuration(300)
+                        .translationX(0f)
+                        .setDuration(DEFAULT_ANIMATION_DURATION)
                         .start()
 
                 //post
-                ResizeAnimation(activity_post_compose_root_layout, activity_post_root_layout.height, size.x).apply {
-                    duration = 300
+                HeightResizeAnimation(activity_post_compose_root_layout, activity_post_root_layout.height, size.x).apply {
+                    duration = DEFAULT_ANIMATION_DURATION
                     activity_post_compose_root_layout.startAnimation(this)
                 }
 
                 //panels color
                 ValueAnimator.ofObject(ArgbEvaluator(), transparentWhite, opaqueWhite).apply {
-                    duration = 300
+                    duration = DEFAULT_ANIMATION_DURATION
                     addUpdateListener {
                         activity_post_top_panel.setBackgroundColor(it.animatedValue as Int)
                         activity_post_bottom_panel.setBackgroundColor(it.animatedValue as Int)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            window.statusBarColor = it.animatedValue as Int
-                        }
                     }
-                }.start()
+                    start()
+                }
+
+                //statusBar color
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ValueAnimator.ofObject(ArgbEvaluator(), transparentStatusBarColor, opaqueStatusBarColor).apply {
+                        duration = DEFAULT_ANIMATION_DURATION
+                        addUpdateListener { window.statusBarColor = it.animatedValue as Int }
+                        start()
+                    }
+                }
             }
             PostType.STORY -> {
 
                 //selector
                 ViewCompat.animate(activity_post_type_selector)
-                        .translationXBy(activity_post_type_selector.width.toFloat())
-                        .setDuration(300)
+                        .translationX(activity_post_type_selector.width.toFloat() + 3.dp2px(this))
+                        .setDuration(DEFAULT_ANIMATION_DURATION)
                         .start()
 
                 //post
-                ResizeAnimation(activity_post_compose_root_layout, size.x, activity_post_root_layout.height).apply {
-                    duration = 300
+                HeightResizeAnimation(activity_post_compose_root_layout, size.x, activity_post_root_layout.height).apply {
+                    duration = DEFAULT_ANIMATION_DURATION
                     activity_post_compose_root_layout.startAnimation(this)
                 }
 
                 //panels color
                 ValueAnimator.ofObject(ArgbEvaluator(), opaqueWhite, transparentWhite).apply {
-                    duration = 300
+                    duration = DEFAULT_ANIMATION_DURATION
                     addUpdateListener {
                         activity_post_top_panel.setBackgroundColor(it.animatedValue as Int)
                         activity_post_bottom_panel.setBackgroundColor(it.animatedValue as Int)
@@ -173,7 +198,17 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                             window.statusBarColor = it.animatedValue as Int
                         }
                     }
-                }.start()
+                    start()
+                }
+
+                //statusBar color
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ValueAnimator.ofObject(ArgbEvaluator(), opaqueStatusBarColor, transparentStatusBarColor).apply {
+                        duration = DEFAULT_ANIMATION_DURATION
+                        addUpdateListener { window.statusBarColor = it.animatedValue as Int }
+                        start()
+                    }
+                }
             }
         }
 
@@ -229,14 +264,17 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         activity_post_text.isCursorVisible = false
         updateBorder()
 
+        val aspectRatio: Float = activity_post_compose_root_layout.height.toFloat() / activity_post_compose_root_layout.width.toFloat()
         val bitmap = Bitmap.createBitmap(
                 activity_post_compose_root_layout.width,
                 activity_post_compose_root_layout.height,
                 Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         activity_post_compose_root_layout.draw(canvas)
-        presenter.onBitmapReady(bitmap)
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 1080, (1080f * aspectRatio).toInt(), true)
+        bitmap.recycle()
 
+        presenter.onBitmapReady(scaledBitmap)
         activity_post_text.isCursorVisible = true
     }
 
@@ -298,7 +336,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                         .load(R.drawable.bg_stars_center)
                         .override(screenSize.x, screenSize.y)
                         .into(activity_post_compose_background_center)
-//                activity_post_compose_background_center.setImageResource(R.drawable.drawable_stars)
             }
             BackgroundType.IMAGE -> {
                 Glide.with(this)
@@ -332,7 +369,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
 
-        if(!shiftViews) return
+        if (!shiftViews) return
 
         ViewCompat.animate(activity_post_compose_root_layout)
                 .translationYBy(if (show) -keyboardHeight.toFloat() / 2 else keyboardHeight.toFloat() / 2)
@@ -546,7 +583,8 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 if (position % 2 == 1) {
 //                    outRect.top = 8.dp2px(this@PostActivity)
                 }
-                if (position > getGalleryAdapter().getItemsCount() - 3) {
+                val count = getGalleryAdapter().getItemsCount()
+                if ((count % 2 == 0 && position > count - 3) || (count % 2 == 1 && position > count - 1)) {
                     outRect.right = 0
                 } else {
                     outRect.right = 8.dp2px(this@PostActivity)

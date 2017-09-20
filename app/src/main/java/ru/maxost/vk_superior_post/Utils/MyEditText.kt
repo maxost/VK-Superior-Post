@@ -31,10 +31,14 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
         set(value) {
             field = value
             when (textStyle) {
-                TextStyle.BLACK, TextStyle.BLACK_WITH_BACKGROUND ->
+                TextStyle.BLACK, TextStyle.BLACK_WITH_BACKGROUND -> {
                     setTextColor(ContextCompat.getColor(this.context, R.color.black))
-                TextStyle.WHITE, TextStyle.WHITE_WITH_BACKGROUND ->
+                    setHintTextColor(ContextCompat.getColor(this.context, R.color.blackTransparent))
+                }
+                TextStyle.WHITE, TextStyle.WHITE_WITH_BACKGROUND -> {
                     setTextColor(ContextCompat.getColor(this.context, R.color.white))
+                    setHintTextColor(ContextCompat.getColor(this.context, R.color.whiteTransparent))
+                }
             }
         }
 

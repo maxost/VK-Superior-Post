@@ -255,7 +255,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun showGallery() {
-        RxImagePicker.with(this).requestImage(Sources.GALLERY)
+        RxPermissions(this)
+                .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .filter { it }
+                .flatMap { RxImagePicker.with(this).requestImage(Sources.GALLERY) }
                 .subscribe({
                     onImagePicked(it)
                 }, {
@@ -264,7 +267,10 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun takePhoto() {
-        RxImagePicker.with(this).requestImage(Sources.CAMERA)
+        RxPermissions(this)
+                .request(Manifest.permission.CAMERA)
+                .filter { it }
+                .flatMap { RxImagePicker.with(this).requestImage(Sources.CAMERA) }
                 .subscribe({
                     onImagePicked(it)
                 }, {

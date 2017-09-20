@@ -1,6 +1,7 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.evernote.android.state.State
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Data.DataManger
@@ -8,6 +9,7 @@ import ru.maxost.vk_superior_post.Model.*
 import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.Utils.BasePresenter
 import java.io.File
+import java.net.URI
 import java.util.*
 import javax.inject.Inject
 
@@ -36,6 +38,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         fun setText(text: String)
         fun setTextStyle(textStyle: TextStyle)
         fun setBackground(background: Background)
+        fun setBackground(uri: URI)
         fun addSticker(sticker: Sticker)
         fun setStickers(stickers: Stack<Sticker>)
 
@@ -48,6 +51,8 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
 
     @State var post: Post = Post()
     @State var lastSelectedGalleryImage: File? = null
+    @State var keyboardHeight = 0
+    @State var tempPhotoUri: URI? = null
 
     private var isKeyboardVisible: Boolean = false
     private var isBottomPanelVisible: Boolean = false
@@ -56,9 +61,14 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
         super.attach(view, isInitialAttach)
 
         this.view?.apply {
+            if(tempPhotoUri!=null && post.background.type == BackgroundType.IMAGE) {
+                setBackground(tempPhotoUri!!)
+            } else {
+                setBackground(post.background)
+            }
+
             setText(post.text)
             setTextStyle(post.textStyle)
-            setBackground(post.background)
             setSelectedBackground(post.background)
             if(isBottomPanelVisible) loadGalleryImages()
             setPostType(post.postType, false)
@@ -149,6 +159,7 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     }
 
     fun onFileSelected(file: File) {
+        tempPhotoUri = null
         post.background = Background(type = BackgroundType.IMAGE, imageFile = file)
 
         view?.setSelectedGalleryImage(file)
@@ -212,12 +223,18 @@ class PostPresenter @Inject constructor(private val dataManger: DataManger)
     private fun loadGalleryImages() {
         dataManger.getImagesFromGallery()
                 .subscribe({
-                    val previousWasNotImage = post.background.type != BackgroundType.IMAGE
-                    if(it.isNotEmpty() && previousWasNotImage) {
-                        val file = lastSelectedGalleryImage ?: it.first()
-                        post.background = Background(type = BackgroundType.IMAGE, imageFile = file)
-                        view?.setBackground(post.background)
-                        view?.setSelectedGalleryImage(file)
+                    if(tempPhotoUri!=null) {
+                        view?.setBackground(tempPhotoUri!!)
+                        view?.setSelectedGalleryImage(null)
+                        post.background = Background(type = BackgroundType.IMAGE, imageFile = null)
+                    } else {
+                        val previousWasNotImage = post.background.type != BackgroundType.IMAGE
+                        if (it.isNotEmpty() && previousWasNotImage) {
+                            val file = lastSelectedGalleryImage ?: it.first()
+                            post.background = Background(type = BackgroundType.IMAGE, imageFile = file)
+                            view?.setBackground(post.background)
+                            view?.setSelectedGalleryImage(file)
+                        }
                     }
                     view?.setGalleyList(it)
                 }, {

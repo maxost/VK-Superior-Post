@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
@@ -39,6 +40,7 @@ import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightProvider
 import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterGridLayoutManager
 import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterLinearLayoutManager
 import java.io.File
+import java.net.URI
 import java.util.*
 
 class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, KeyboardHeightActivity(), StickerView.Listener {
@@ -48,23 +50,27 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
 
     private val presenter by lazy(LazyThreadSafetyMode.NONE) { App.graph.getPostPresenter() }
     private var keyboardHeight: Int = 0
-        get() = if (field > 0) field else 208.dp2px(this@PostActivity)
+        get() = when {
+            field > 0 -> field
+            presenter.keyboardHeight > 0 -> presenter.keyboardHeight
+            else -> 208.dp2px(this@PostActivity)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
+        StateSaver.restoreInstanceState(presenter, savedInstanceState)
 
+        //status bar stuff
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
             window.statusBarColor = ContextCompat.getColor(this, R.color.grey)
         } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             window.statusBarColor = ContextCompat.getColor(this, R.color.white)
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
             activity_post_top_panel.layoutParams = (activity_post_top_panel.layoutParams as ConstraintLayout.LayoutParams).apply {
                 topMargin = getStatusBarHeight()
             }
@@ -84,12 +90,21 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         initBackgroundsList()
         initGalleryList()
         setUpGalleryList()
-        initPresenter(savedInstanceState)
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         activity_post_text.isFocusableInTouchMode = true
         activity_post_text.requestFocus()
+
+        if (RxImagePicker.with(this).activeSubscription != null) {
+            RxImagePicker.with(this).activeSubscription.subscribe({
+                onImagePicked(it)
+            }, {
+                it.printStackTrace()
+            })
+        }
+
+        presenter.attach(this, savedInstanceState == null)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -115,6 +130,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         SwitchLog.scream("$height")
         if (height > 0) {
             keyboardHeight = height
+            presenter.keyboardHeight = height
             presenter.onKeyboardShow(true)
             if (height != activity_post_gallery_list.height) setUpGalleryList()
         } else {
@@ -239,44 +255,20 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun showGallery() {
-        RxPermissions(this)
-                .request(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .filter { it }
-                .flatMap { RxImagePicker.with(this).requestImage(Sources.GALLERY) }
-                .subscribe({ uri ->
-                    val screenSize = Point()
-                    windowManager.defaultDisplay.getSize(screenSize)
-
-                    Glide.with(this)
-                            .load(uri)
-                            .override(screenSize.x, screenSize.y)
-                            .centerCrop()
-                            .into(activity_post_compose_background_center)
-                    getGalleryAdapter().setSelectedFile(null)
+        RxImagePicker.with(this).requestImage(Sources.GALLERY)
+                .subscribe({
+                    onImagePicked(it)
                 }, {
                     it.printStackTrace()
-                    Toasty.error(this, "Произошла ошибка").show()
                 })
     }
 
     override fun takePhoto() {
-        RxPermissions(this)
-                .request(Manifest.permission.CAMERA)
-                .filter { it }
-                .flatMap { RxImagePicker.with(this).requestImage(Sources.CAMERA) }
-                .subscribe({ uri ->
-                    val screenSize = Point()
-                    windowManager.defaultDisplay.getSize(screenSize)
-
-                    Glide.with(this)
-                            .load(uri)
-                            .override(screenSize.x, screenSize.y)
-                            .centerCrop()
-                            .into(activity_post_compose_background_center)
-                    getGalleryAdapter().setSelectedFile(null)
+        RxImagePicker.with(this).requestImage(Sources.CAMERA)
+                .subscribe({
+                    onImagePicked(it)
                 }, {
                     it.printStackTrace()
-                    Toasty.error(this, "Произошла ошибка").show()
                 })
     }
 
@@ -523,6 +515,30 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 .start()
     }
 
+    private fun onImagePicked(uri: Uri) {
+        setBackgroundFromUri(uri)
+        presenter.tempPhotoUri = uri.toJavaURI()
+    }
+
+    override fun setBackground(uri: URI) {
+        setBackgroundFromUri(uri.toAndroidUri())
+    }
+
+    private fun setBackgroundFromUri(uri: Uri) {
+        activity_post_compose_background_top.setImageResource(0)
+        activity_post_compose_background_bottom.setImageResource(0)
+
+        val screenSize = Point()
+        windowManager.defaultDisplay.getSize(screenSize)
+
+        Glide.with(this)
+                .load(uri)
+                .override(screenSize.x, screenSize.y)
+                .centerCrop()
+                .into(activity_post_compose_background_center)
+        getGalleryAdapter().setSelectedFile(null)
+    }
+
     override fun onDeleteSticker(sticker: Sticker) {
         presenter.onStickerDelete(sticker)
 
@@ -532,11 +548,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
                 .setDuration(200)
                 .setInterpolator(DEFAULT_INTERPOLATOR)
                 .start()
-    }
-
-    private fun initPresenter(savedInstanceState: Bundle?) {
-        StateSaver.restoreInstanceState(presenter, savedInstanceState)
-        presenter.attach(this, savedInstanceState == null)
     }
 
     private fun initListeners() {

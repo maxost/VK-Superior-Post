@@ -10,7 +10,7 @@
 
     <!-- Login -->
     <string name="login_auth_data_revoked_message">Auth data revoked\nPlease sign in again</string>
-    <string name="login_button_text">VK Authorization</string>
+    <string name="login_button_text">VK Login</string>
 
     <!-- Post -->
     <string name="post_text_hint">What\'s up?</string>

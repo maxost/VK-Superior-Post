@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils
+package ru.maxost.vk_superior_post.UI.CustomViews
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
+import ru.maxost.vk_superior_post.UI.UIUtils.dp2px
 
 /**
  * Created by Maxim Ostrovidov on 15.09.17.
@@ -18,37 +19,37 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private var state: MyEditTextState? = null
     private var prevState: MyEditTextState? = null
     private var borderBitmap: Bitmap? = null
-    private val colorWhite = ContextCompat.getColor(context, R.color.white)
-    private val colorWhiteTransparent = ContextCompat.getColor(context, R.color.whiteTransparent)
-    private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
-    private val colorTransparent = ContextCompat.getColor(context, R.color.transparent)
-    private val hTopOffset = 4.dp2px(context)
-    private val hBottomOffset = 4.dp2px(context)
-    private val wOffset = 10.dp2px(context)
+    private val colorWhite by lazy { ContextCompat.getColor(context, R.color.white) }
+    private val colorWhiteTransparent by lazy { ContextCompat.getColor(context, R.color.whiteTransparent) }
+    private val colorShadow by lazy { ContextCompat.getColor(context, R.color.shadow) }
+    private val colorTransparent by lazy { ContextCompat.getColor(context, R.color.transparent) }
+    private val hTopOffset by lazy { 4.dp2px(context) }
+    private val hBottomOffset by lazy { 4.dp2px(context) }
+    private val wOffset by lazy { 10.dp2px(context) }
     private val points = mutableListOf<PointF>()
     private val path = Path()
     private val shadowPath = Path()
-    private val shadowHeight = 1.dp2px(context).toFloat()
-    private val cornerRadius = 4.dp2px(context).toFloat()
-    private val paint = Paint().apply {
-        isDither = true
-        strokeWidth = 10f
-        style = Paint.Style.FILL
-        strokeJoin = Paint.Join.ROUND
-        strokeCap = Paint.Cap.ROUND
-        pathEffect = CornerPathEffect(cornerRadius)
-        isAntiAlias = true
+    private val shadowHeight by lazy { 1.dp2px(context).toFloat() }
+    private val cornerRadius by lazy { 4.dp2px(context).toFloat() }
+    private val paint by lazy {
+        Paint().apply {
+            isDither = true
+            strokeWidth = 10f
+            style = Paint.Style.FILL
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
+            pathEffect = CornerPathEffect(cornerRadius)
+            isAntiAlias = true
+        }
     }
 
     fun setState(state: MyEditTextState) {
-//        SwitchLog.scream(state.toString())
         this.state = state
         invalidate()
     }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
-//        SwitchLog.scream("onDraw")
 
         if (state == null || state!!.text.isEmpty()
                 || state?.textStyle == TextStyle.WHITE
@@ -90,11 +91,11 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
         //batch lines and draw those batches separately
         val properLines = lines.map { convertRect(it, textStartPoint, borderStartPoint) }
         val dividerIndexes = properLines.withIndex().filter { it.value.width() == 0f }.map { it.index }
-        properLines.withIndex().forEach { item ->
+        properLines.withIndex().forEach { (index) ->
             if (properLines.size == 1) {
                 createBorderPath(path, properLines.filter { it.width() > 0f })
-            } else if (dividerIndexes.contains(item.index) && item.index > 0 || item.index == properLines.lastIndex) {
-                val leftBoundedList = properLines.subList(0, item.index + 1)
+            } else if (dividerIndexes.contains(index) && index > 0 || index == properLines.lastIndex) {
+                val leftBoundedList = properLines.subList(0, index + 1)
                 val lastEmptyLine = leftBoundedList.dropLast(1).indexOfLast { it.width() == 0f }
                 val properLastEmptyLine = if (lastEmptyLine > -1) lastEmptyLine else 0
                 val resultList = leftBoundedList.subList(properLastEmptyLine, leftBoundedList.lastIndex + 1)
@@ -135,6 +136,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
     private fun createBorderPath(path: Path, linesList: List<RectF>): Path {
         points.clear()
 
+        //right side
         for (lineIndex in 0 until linesList.size) {
 
             val rect = linesList[lineIndex]
@@ -149,7 +151,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
                 break
             }
 
-            //first
+            //first line
             if (lineIndex == 0) {
                 points.add(PointF(rect.centerX(), rect.top - hTopOffset))
                 points.add(PointF(rect.right + wOffset, rect.top - hTopOffset))
@@ -157,7 +159,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
                 continue
             }
 
-            //middle
+            //middle lines
             if (lineIndex > 0 && lineIndex < linesList.size - 1) {
                 if (rect.right + wOffset < points.last().x) {
                     points.add(PointF(points.last().x, points.last().y + hBottomOffset*2))
@@ -167,7 +169,7 @@ class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: A
                 continue
             }
 
-            //last
+            //last line
             if (lineIndex == linesList.size - 1) {
                 if (rect.right + wOffset < points.last().x) {
                     points.add(PointF(points.last().x, points.last().y + hBottomOffset*2))

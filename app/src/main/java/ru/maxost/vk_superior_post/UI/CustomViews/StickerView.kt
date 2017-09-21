@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils
+package ru.maxost.vk_superior_post.UI.CustomViews
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -54,7 +54,7 @@ object StickerTasks {
 
     fun getTaskCompletionFactor(stickerId: String): Float {
         val factor = subjects[stickerId]?.value
-        if(factor == 1f) {
+        if (factor == 1f) {
             subjects[stickerId]?.onComplete()
             subjects.remove(stickerId)
         }
@@ -98,13 +98,9 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-//        SwitchLog.scream("stickers: ${stickers.size} bitmaps: ${bitmaps.size}")
 
         stickers.forEach { sticker ->
-//            SwitchLog.scream(sticker.toString())
-//            SwitchLog.scream("${stickerState[sticker.id]}")
-
-            if(bitmaps.firstOrNull { it.first == sticker.resId } == null) {
+            if (bitmaps.firstOrNull { it.first == sticker.resId } == null) {
                 val drawable = BitmapFactory.decodeResource(context.resources, sticker.resId, BitmapFactory.Options().apply { inScaled = false })
                 val ratio: Float = drawable.width.toFloat() / drawable.height.toFloat()
                 val scaledWidth = width * ratio
@@ -115,10 +111,10 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
             val bitmap = bitmaps.firstOrNull { it.first == sticker.resId }?.second ?: throw IllegalArgumentException("no bitmap!?")
 
-            when(stickerState[sticker.id]) {
+            when (stickerState[sticker.id]) {
                 StickerState.CREATING -> {
                     val factor = StickerTasks.getTaskCompletionFactor(sticker.id)
-                    if(factor == 1f) {
+                    if (factor == 1f) {
                         stickerState.put(sticker.id, StickerState.NORMAL)
                         drawNormal(sticker, canvas, bitmap)
                     } else {
@@ -136,7 +132,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 }
                 StickerState.OVER_BIN -> {
                     val factor = StickerTasks.getTaskCompletionFactor(sticker.id)
-                    if(factor != 1f) {
+                    if (factor != 1f) {
                         val scaleFactor = sticker.scaleFactor - sticker.scaleFactor * factor
                         val matrix = Matrix().apply {
                             preScale(scaleFactor, scaleFactor)
@@ -175,7 +171,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     }
                     paint.alpha = (160 * factor).toInt()
                     canvas?.drawBitmap(bitmap, matrix, paint)
-                    if(factor == 1f) stickerState.put(sticker.id, StickerState.NORMAL)
+                    if (factor == 1f) stickerState.put(sticker.id, StickerState.NORMAL)
                     invalidate()
                 }
                 StickerState.NORMAL -> {
@@ -236,7 +232,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
                 SwitchLog.scream("POINTER_DOWN x: ${event.getX(1)} y: ${event.getX(1)}")
-                if(currentSticker == null) {
+                if (currentSticker == null) {
                     stickers.lastOrNull {
                         calculateRect(it, width, height).contains(event.getX(1).toInt(), event.getY(1).toInt())
                     }?.let {
@@ -269,11 +265,11 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
-//                SwitchLog.scream("MOVE x: ${event.x} y: ${event.y}")
+                SwitchLog.scream("MOVE x: ${event.x} y: ${event.y}")
 
-                if(currentSticker==null) return false
+                if (currentSticker == null) return false
 
-                if(event.pointerCount == 2) {
+                if (event.pointerCount == 2) {
                     val primaryPoint = Point(event.getX(0).toInt(), event.getY(0).toInt())
                     val secondaryPoint = Point(event.getX(1).toInt(), event.getY(1).toInt())
 
@@ -282,7 +278,7 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     val newAngle = correctAngle(startAngle - angleChange)
 
                     val currentDistance = calculateDistance(primaryPoint, secondaryPoint)
-                    val distanceChange =  currentDistance - startDistance
+                    val distanceChange = currentDistance - startDistance
                     val startStickerSize = (startScaleFactor * width).toInt()
 
                     val newStickerSize: Int = startStickerSize + distanceChange
@@ -293,18 +289,17 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     currentSticker?.angle = newAngle
 
                     SwitchLog.scream(
-//                                                            "startDistance: $startDistance " +
-//                                "distanceChange: ${distanceChange.toFloat()} " +
-//                                "width: ${width.toFloat()} " +
-//                                "origScaleSize: $scaleFactor " +
-//                                "startStickerSize: $startStickerSize " +
-//                                "newStickerSize: $newStickerSize " +
-//                                "newStickerScaleFactor: $newStickerScaleFactor " +
-//                                "newScaleFactorBounded: $newScaleFactorBounded " +
-//                            "startAngle: $startAngle " +
-//                                    "currentAngle: $currentAngle " +
-//                                    "angleChange: $angleChange " +
-//                                    "newAngle: $newAngle"
+                            "startDistance: $startDistance " +
+                                    "distanceChange: ${distanceChange.toFloat()} " +
+                                    "width: ${width.toFloat()} " +
+                                    "startStickerSize: $startStickerSize " +
+                                    "newStickerSize: $newStickerSize " +
+                                    "newStickerScaleFactor: $newStickerScaleFactor " +
+                                    "newScaleFactorBounded: $newScaleFactorBounded " +
+                                    "startAngle: $startAngle " +
+                                    "currentAngle: $currentAngle " +
+                                    "angleChange: $angleChange " +
+                                    "newAngle: $newAngle"
                     )
                 }
 
@@ -312,19 +307,19 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 currentSticker?.yFactor = (event.y + currentTouchDistanceFromCenterY) / height
 
                 val listener = context as Listener
-                if(event.pointerCount == 1 && !disableBin) {
+                if (event.pointerCount == 1 && !disableBin) {
                     binRect = listener.onDragging(true)
                     val isOverBin = binRect.contains(event.rawX.toInt(), event.rawY.toInt())
                     listener.onOverBin(isOverBin)
 
                     val stickerId = currentSticker!!.id
-                    if(isOverBin) {
-                        if(stickerState[stickerId] == StickerState.NORMAL || stickerState[stickerId] == StickerState.OUT_BIN) {
+                    if (isOverBin) {
+                        if (stickerState[stickerId] == StickerState.NORMAL || stickerState[stickerId] == StickerState.OUT_BIN) {
                             stickerState.put(stickerId, StickerState.OVER_BIN)
                             StickerTasks.startTask(stickerId)
                         }
                     } else {
-                        if(stickerState[stickerId] == StickerState.OVER_BIN) {
+                        if (stickerState[stickerId] == StickerState.OVER_BIN) {
                             stickerState.put(stickerId, StickerState.OUT_BIN)
                             StickerTasks.startTask(stickerId)
                         }
@@ -335,12 +330,12 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-//                SwitchLog.scream("ACTION_UP or ACTION_CANCEL x: ${event.x} y: ${event.y}")
+                SwitchLog.scream("ACTION_UP or ACTION_CANCEL x: ${event.x} y: ${event.y}")
                 val listener = context as Listener
                 listener.onMultiTouch(false)
                 listener.onDragging(false)
                 val isOverBin = binRect.contains(event.rawX.toInt(), event.rawY.toInt())
-                if(isOverBin && !disableBin) {
+                if (isOverBin && !disableBin) {
                     currentSticker?.let { sticker ->
                         listener.onDeleteSticker(sticker)
                         bitmaps.firstOrNull { it.first == sticker.resId }?.second?.recycle()
@@ -363,9 +358,9 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
                 return true
             }
             MotionEvent.ACTION_POINTER_UP -> {
-//                SwitchLog.scream("ACTION_POINTER_UP x: ${event.x} y: ${event.y} index: ${event.actionIndex}")
+                SwitchLog.scream("ACTION_POINTER_UP x: ${event.x} y: ${event.y} index: ${event.actionIndex}")
 
-                if(event.actionIndex == 0) {
+                if (event.actionIndex == 0) {
                     secondaryStart = Point()
                     startAngle = 0f
                     pointerStartAngle = 0f
@@ -397,10 +392,10 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
         val stickerHeight = width * sticker.scaleFactor
         val stickerWidth = width * sticker.scaleFactor
 
-        rect.top    = (height * sticker.yFactor - stickerHeight / 2).toInt()
+        rect.top = (height * sticker.yFactor - stickerHeight / 2).toInt()
         rect.bottom = (height * sticker.yFactor + stickerHeight / 2).toInt()
-        rect.left   = (width * sticker.xFactor - stickerWidth  / 2).toInt()
-        rect.right  = (width * sticker.xFactor + stickerWidth  / 2).toInt()
+        rect.left = (width * sticker.xFactor - stickerWidth / 2).toInt()
+        rect.right = (width * sticker.xFactor + stickerWidth / 2).toInt()
 
         return rect
     }
@@ -416,10 +411,10 @@ class StickerView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
     private fun correctAngle(angle: Float): Float {
         var newAngle = angle
-        while(newAngle < 0) {
+        while (newAngle < 0) {
             newAngle += 360
         }
-        while(newAngle > 360) {
+        while (newAngle > 360) {
             newAngle -= 360
         }
         return newAngle

@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.UI.PostScreen
+package ru.maxost.vk_superior_post.UI.PostScreen.Adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -9,9 +9,9 @@ import com.bumptech.glide.Glide
 import ru.maxost.vk_superior_post.Model.Background
 import ru.maxost.vk_superior_post.Model.BackgroundType
 import ru.maxost.vk_superior_post.R
-import ru.maxost.vk_superior_post.Utils.GlideDrawableViewBackgroundTarget
-import ru.maxost.vk_superior_post.Utils.RoundedCornersTransformation
-import ru.maxost.vk_superior_post.Utils.dp2px
+import ru.maxost.vk_superior_post.UI.UIUtils.GlideDrawableViewBackgroundTarget
+import ru.maxost.vk_superior_post.UI.UIUtils.RoundedCornersTransformation
+import ru.maxost.vk_superior_post.UI.UIUtils.dp2px
 
 /**
  * Created by Maksim Ostrovidov on 08.09.17.

@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils
+package ru.maxost.vk_superior_post.UI.UIUtils
 
 import android.view.View
 import android.view.animation.Animation

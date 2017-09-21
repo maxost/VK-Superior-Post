@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils.KeyboardHeight;
+package ru.maxost.vk_superior_post.UI.CustomViews.KeyboardHeightDetector;
 
 import android.support.v7.app.AppCompatActivity;
 
@@ -8,10 +8,6 @@ import android.support.v7.app.AppCompatActivity;
  */
 public class KeyboardHeightActivity extends AppCompatActivity implements KeyboardHeightObserver {
 
-    /** Tag for logging */
-    private final static String TAG = "sample_MainActivity";
-
-    /** The keyboard height provider */
     protected KeyboardHeightProvider keyboardHeightProvider;
 
     @Override
@@ -19,27 +15,19 @@ public class KeyboardHeightActivity extends AppCompatActivity implements Keyboar
         //no-op
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void onPause() {
         super.onPause();
         keyboardHeightProvider.setKeyboardHeightObserver(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onResume() {
         super.onResume();
         keyboardHeightProvider.setKeyboardHeightObserver(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onDestroy() {
         super.onDestroy();

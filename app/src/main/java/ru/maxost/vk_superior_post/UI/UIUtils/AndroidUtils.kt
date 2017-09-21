@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils
+package ru.maxost.vk_superior_post.UI.UIUtils
 
 import android.content.Context
 import android.net.Uri
@@ -17,10 +17,6 @@ fun Uri.toJavaURI(): URI = URI(this.toString())
 fun Int.dp2px(context: Context): Int = (this * context.resources.displayMetrics.density).toInt()
 
 fun Int.px2dp(context: Context): Int = (this / context.resources.displayMetrics.density).toInt()
-
-fun Float.dp2px(context: Context): Float = this * context.resources.displayMetrics.density
-
-fun Float.px2dp(context: Context): Float = this / context.resources.displayMetrics.density
 
 fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 

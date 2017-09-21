@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils
+package ru.maxost.vk_superior_post.UI.CustomViews
 
 import android.content.Context
 import android.util.AttributeSet

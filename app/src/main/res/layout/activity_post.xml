@@ -54,18 +54,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/bg_beach_bottom" />
 
-        <ru.maxost.vk_superior_post.Utils.StickerView
+        <ru.maxost.vk_superior_post.UI.CustomViews.StickerView
             android:id="@+id/activity_post_sticker_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <ru.maxost.vk_superior_post.Utils.TextBorderView
+        <ru.maxost.vk_superior_post.UI.CustomViews.TextBorderView
             android:id="@+id/activity_post_text_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
-        <ru.maxost.vk_superior_post.Utils.MyEditText
+        <ru.maxost.vk_superior_post.UI.CustomViews.MyEditText
             android:id="@+id/activity_post_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

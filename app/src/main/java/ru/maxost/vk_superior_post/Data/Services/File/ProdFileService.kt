@@ -43,14 +43,11 @@ class ProdFileService(private val context: Context) : FileService {
 
     override fun storePost(bitmap: Bitmap): Completable = Completable.fromAction {
         val cw = ContextWrapper(context)
-        // path to /data/data/yourapp/app_data/imageDir
         val directory = cw.getDir("temp", Context.MODE_PRIVATE)
-        // Create imageDir
         val mypath = File(directory, "tempImage.jpg")
 
         val fos = FileOutputStream(mypath)
         try {
-            // Use the compress method on the BitMap object to write image to the OutputStream
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
         } catch (e: Exception) {
             e.printStackTrace()

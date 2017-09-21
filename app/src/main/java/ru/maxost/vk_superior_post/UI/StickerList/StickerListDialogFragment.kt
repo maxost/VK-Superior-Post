@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.UI.PostScreen
+package ru.maxost.vk_superior_post.UI.StickerList
 
 import android.content.Context
 import android.graphics.Rect
@@ -15,9 +15,9 @@ import kotlinx.android.synthetic.main.fragment_sticker_list_dialog.*
 import ru.maxost.switchlog.SwitchLog
 
 import ru.maxost.vk_superior_post.R
-import ru.maxost.vk_superior_post.Utils.dp2px
-import ru.maxost.vk_superior_post.Utils.px2dp
-import ru.maxost.vk_superior_post.Utils.show
+import ru.maxost.vk_superior_post.UI.UIUtils.dp2px
+import ru.maxost.vk_superior_post.UI.UIUtils.px2dp
+import ru.maxost.vk_superior_post.UI.UIUtils.show
 
 class StickerListDialogFragment : BottomSheetDialogFragment() {
 
@@ -102,7 +102,7 @@ class StickerListDialogFragment : BottomSheetDialogFragment() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val imageResId = resources.getIdentifier("sticker_fish_${position + 1}", "drawable", context.packageName)
 
-            Picasso.with(context) // Glide not loading image sometimes so it's fast workaround
+            Picasso.with(context) // Glide doesn't load images sometimes in this list so using Picasso is a fast workaround
                     .load(imageResId)
                     .fit()
                     .centerInside()

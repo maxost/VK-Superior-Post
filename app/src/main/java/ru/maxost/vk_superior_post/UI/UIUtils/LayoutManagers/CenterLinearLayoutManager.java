@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils.LayoutManagers;
+package ru.maxost.vk_superior_post.UI.UIUtils.LayoutManagers;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;

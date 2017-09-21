@@ -1,7 +1,6 @@
 package ru.maxost.vk_superior_post.UI.PostScreen
 
 import android.graphics.Bitmap
-import android.net.Uri
 import com.evernote.android.state.State
 import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.Data.DataManger

@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.activity_upload.*
 import ru.maxost.vk_superior_post.App
 import ru.maxost.vk_superior_post.R
 import ru.maxost.vk_superior_post.UI.PostScreen.PostActivity
-import ru.maxost.vk_superior_post.Utils.dp2px
-import ru.maxost.vk_superior_post.Utils.show
+import ru.maxost.vk_superior_post.UI.UIUtils.dp2px
+import ru.maxost.vk_superior_post.UI.UIUtils.show
 
 class UploadActivity : AppCompatActivity(), UploadPresenter.View {
 
@@ -31,6 +31,7 @@ class UploadActivity : AppCompatActivity(), UploadPresenter.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upload)
 
+        //status bar stuff
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
@@ -44,6 +45,7 @@ class UploadActivity : AppCompatActivity(), UploadPresenter.View {
 
         activity_upload_cancel_retry_button.setOnClickListener { presenter.onCancelRetryButtonClick() }
         activity_upload_new_post_button.setOnClickListener { presenter.onNewPostButtonClick() }
+
         StateSaver.restoreInstanceState(presenter, savedInstanceState)
         presenter.attach(this, savedInstanceState==null)
     }

@@ -1,4 +1,4 @@
-package ru.maxost.vk_superior_post.Utils
+package ru.maxost.vk_superior_post.UI.CustomViews
 
 import android.content.Context
 import android.graphics.Canvas
@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import ru.maxost.vk_superior_post.Model.TextStyle
 import ru.maxost.vk_superior_post.R
+import ru.maxost.vk_superior_post.UI.UIUtils.dp2px
 import java.io.Serializable
 
 /**
@@ -24,8 +25,8 @@ data class MyEditTextState(val text: String,
 class MyEditText @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : AppCompatEditText(context, attributeSet) {
 
     var isInterceptingTouches = true
-    private val colorShadow = ContextCompat.getColor(context, R.color.shadow)
-    private val textShadowHeight = 1.dp2px(context).toFloat()
+    private val colorShadow by lazy { ContextCompat.getColor(context, R.color.shadow) }
+    private val textShadowHeight by lazy { 1.dp2px(context).toFloat() }
 
     var textStyle = TextStyle.WHITE
         set(value) {
@@ -60,7 +61,8 @@ class MyEditText @JvmOverloads constructor(context: Context, attributeSet: Attri
             it.bottom += 40
             it.contains(event.x, event.y)
         }
-        return if (isInterceptingTouches && text.isBlank() || isInterceptingTouches && textTouched) super.onTouchEvent(event) else false
+        return if (isInterceptingTouches && text.isBlank() || isInterceptingTouches && textTouched)
+            super.onTouchEvent(event) else false
     }
 
     fun getState(): MyEditTextState {

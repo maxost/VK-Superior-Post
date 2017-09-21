@@ -33,12 +33,18 @@ import ru.maxost.switchlog.SwitchLog
 import ru.maxost.vk_superior_post.App
 import ru.maxost.vk_superior_post.Model.*
 import ru.maxost.vk_superior_post.R
+import ru.maxost.vk_superior_post.UI.CustomViews.KeyboardHeightDetector.KeyboardHeightActivity
+import ru.maxost.vk_superior_post.UI.CustomViews.KeyboardHeightDetector.KeyboardHeightProvider
+import ru.maxost.vk_superior_post.UI.CustomViews.StickerView
+import ru.maxost.vk_superior_post.UI.PostScreen.Adapters.BackgroundsAdapter
+import ru.maxost.vk_superior_post.UI.PostScreen.Adapters.GalleryAdapter
+import ru.maxost.vk_superior_post.UI.PostScreen.Adapters.backgroundsAdapter
+import ru.maxost.vk_superior_post.UI.PostScreen.Adapters.galleryAdapter
+import ru.maxost.vk_superior_post.UI.StickerList.StickerListDialogFragment
+import ru.maxost.vk_superior_post.UI.UIUtils.*
+import ru.maxost.vk_superior_post.UI.UIUtils.LayoutManagers.CenterGridLayoutManager
+import ru.maxost.vk_superior_post.UI.UIUtils.LayoutManagers.CenterLinearLayoutManager
 import ru.maxost.vk_superior_post.UI.UploadScreen.UploadActivity
-import ru.maxost.vk_superior_post.Utils.*
-import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightActivity
-import ru.maxost.vk_superior_post.Utils.KeyboardHeight.KeyboardHeightProvider
-import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterGridLayoutManager
-import ru.maxost.vk_superior_post.Utils.LayoutManagers.CenterLinearLayoutManager
 import java.io.File
 import java.net.URI
 import java.util.*
@@ -76,6 +82,7 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
             }
         }
 
+        //update post type selector
         if(savedInstanceState != null) {
             activity_post_root_layout.viewTreeObserver
                     .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -91,11 +98,13 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         initGalleryList()
         setUpGalleryList()
 
+        //request soft keyboard
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         activity_post_text.isFocusableInTouchMode = true
         activity_post_text.requestFocus()
 
+        //in case of activity re-creation after opening camera or gallery
         if (RxImagePicker.with(this).activeSubscription != null) {
             RxImagePicker.with(this).activeSubscription.subscribe({
                 onImagePicked(it)
@@ -127,7 +136,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
     }
 
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
-        SwitchLog.scream("$height")
         if (height > 0) {
             keyboardHeight = height
             presenter.keyboardHeight = height
@@ -620,9 +628,6 @@ class PostActivity : PostPresenter.View, StickerListDialogFragment.Listener, Key
         activity_post_gallery_list.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
                 val position = parent!!.getChildLayoutPosition(view)
-                if (position % 2 == 1) {
-//                    outRect.top = 8.dp2px(this@PostActivity)
-                }
                 val count = getGalleryAdapter().getItemsCount()
                 if ((count % 2 == 0 && position > count - 3) || (count % 2 == 1 && position > count - 1)) {
                     outRect.right = 0

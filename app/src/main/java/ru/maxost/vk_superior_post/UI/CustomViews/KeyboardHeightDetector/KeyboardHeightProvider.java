@@ -15,7 +15,7 @@
  * along with Siebe Projects samples.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ru.maxost.vk_superior_post.Utils.KeyboardHeight;
+package ru.maxost.vk_superior_post.UI.CustomViews.KeyboardHeightDetector;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -31,15 +31,11 @@ import android.widget.PopupWindow;
 
 import ru.maxost.vk_superior_post.R;
 
-
 /**
  * The keyboard height provider, this class uses a PopupWindow
  * to calculate the window height when the floating keyboard is opened and closed.
  */
 public class KeyboardHeightProvider extends PopupWindow {
-
-    /** The tag for logging purposes */
-    private final static String TAG = "sample_KeyboardHeightProvider";
 
     /** The keyboard height observer */
     private KeyboardHeightObserver observer;

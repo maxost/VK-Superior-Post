@@ -19,4 +19,5 @@
     <color name="shadow">#1e000000</color>
     <color name="backgroundThumbBlue">#d6e2f3</color>
     <color name="transparent">#00ffffff</color>
+    <color name="subHeaderColor">#74a6df</color>
 </resources>

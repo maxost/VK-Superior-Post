@@ -20,7 +20,7 @@ android {
         config {
             keyAlias 'key'
             keyPassword '123456'
-            storeFile file('/home/synode/AndroidStudioProjects/vk-superior-post/VkSuperiorPostKeystore.jks')
+            storeFile file('/home/user/AndroidStudioProjects/vksuperiorpost/VkSuperiorPostKeystore.jks')
             storePassword '123456'
         }
     }

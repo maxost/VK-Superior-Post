@@ -6,37 +6,37 @@
     <integer name="com_vk_sdk_AppId">6174972</integer>
 
     <!-- Common -->
-    <string name="error">Произошла ошибка</string>
+    <string name="error">Error has occurred</string>
 
     <!-- Login -->
-    <string name="login_auth_data_revoked_message">Авторизация отозвана\nНеобходимо выполнить вход</string>
-    <string name="login_button_text">Войти через Вконтакте</string>
+    <string name="login_auth_data_revoked_message">Auth data revoked\nPlease sign in again</string>
+    <string name="login_button_text">VK Authorization</string>
 
     <!-- Post -->
-    <string name="post_text_hint">Что у Вас нового?</string>
-    <string name="post_button_send_text">Отправить</string>
-    <string name="post_type_post">Запись</string>
-    <string name="post_type_story">История</string>
-    <string name="post_stickers">Стикеры</string>
+    <string name="post_text_hint">What\'s up?</string>
+    <string name="post_button_send_text">Send</string>
+    <string name="post_type_post">Post</string>
+    <string name="post_type_story">Story</string>
+    <string name="post_stickers">Stickers</string>
 
     <!-- Upload -->
-    <string name="upload_loading">Публикация…</string>
-    <string name="upload_success">Опубликовано!</string>
-    <string name="upload_cancel">Отмена</string>
-    <string name="upload_retry">Повторить</string>
-    <string name="upload_load_more">Создать ещё</string>
+    <string name="upload_loading">Publishing…</string>
+    <string name="upload_success">Published!</string>
+    <string name="upload_cancel">Cancel</string>
+    <string name="upload_retry">Retry</string>
+    <string name="upload_load_more">Create another post</string>
 
     <!-- Content description -->
-    <string name="description_vk_logo">Логотип Вконтакте</string>
-    <string name="description_post_background">Фон поста</string>
-    <string name="description_choose_text_style">Выбор стиля текста</string>
-    <string name="description_add_sticker">Добавить стикер</string>
-    <string name="description_delete_sticker">Удалить стикер</string>
-    <string name="description_upload_successful">Опубликовано</string>
-    <string name="description_loading_indicator">Индикатор загрузки</string>
-    <string name="description_post_background_item">Элемент списка - Фон поста</string>
-    <string name="description_sticker">Стикер</string>
-    <string name="description_gallery_image">Элемент списка - Изображение из галереи</string>
-    <string name="description_choose_image_from_gallery">Выбрать изображение из галереи</string>
+    <string name="description_vk_logo">VK logo</string>
+    <string name="description_post_background">lost background</string>
+    <string name="description_choose_text_style">choose text style</string>
+    <string name="description_add_sticker">add sticker</string>
+    <string name="description_delete_sticker">delete sticker</string>
+    <string name="description_upload_successful">published</string>
+    <string name="description_loading_indicator">loading indicator</string>
+    <string name="description_post_background_item">list item - background</string>
+    <string name="description_sticker">sticker</string>
+    <string name="description_gallery_image">list item - gallery image</string>
+    <string name="description_choose_image_from_gallery">choose image from gallery</string>
 
 </resources>

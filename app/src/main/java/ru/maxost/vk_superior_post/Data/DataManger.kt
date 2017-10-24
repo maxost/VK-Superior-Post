@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class DataManger @Inject constructor(private val fileService: FileService,
                                      private val apiService: ApiService) {

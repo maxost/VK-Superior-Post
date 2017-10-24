@@ -13,7 +13,7 @@ import ru.maxost.vk_superior_post.DI.FileModule
 
 /**
  * Created by Maxim Ostrovidov on 06.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class App: Application() {
 

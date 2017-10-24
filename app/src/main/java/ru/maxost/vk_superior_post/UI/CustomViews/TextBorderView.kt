@@ -12,7 +12,7 @@ import ru.maxost.vk_superior_post.UI.UIUtils.dp2px
 
 /**
  * Created by Maxim Ostrovidov on 15.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class TextBorderView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : View(context, attributeSet) {
 

@@ -15,7 +15,7 @@ import java.io.IOException
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class ProdFileService(private val context: Context) : FileService {
 

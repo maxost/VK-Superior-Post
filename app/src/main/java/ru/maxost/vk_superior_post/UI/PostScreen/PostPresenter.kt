@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 /**
  * Created by Maxim Ostrovidov on 06.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class PostPresenter @Inject constructor(private val dataManger: DataManger)
     : BasePresenter<PostPresenter.View>() {

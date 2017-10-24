@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Created by Maxim Ostrovidov on 11.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 enum class StickerState {
     NORMAL,

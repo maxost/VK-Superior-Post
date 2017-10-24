@@ -4,7 +4,7 @@ import java.io.Serializable
 
 /**
  * Created by Maxim Ostrovidov on 08.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 data class Sticker(val id: String,
                    val resId: Int,

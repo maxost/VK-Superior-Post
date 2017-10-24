@@ -8,7 +8,7 @@ import java.net.URI
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 fun URI.toAndroidUri(): Uri = Uri.parse(this.toString())
 

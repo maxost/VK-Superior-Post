@@ -7,7 +7,7 @@ import android.widget.ImageView
 
 /**
  * Created by Maxim Ostrovidov on 19.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class GalleryItemFrameLayout @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : FrameLayout(context, attributeSet) {
 

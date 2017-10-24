@@ -7,7 +7,7 @@ import io.reactivex.Single
 
 /**
  * Created by Maxim Ostrovidov on 06.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 interface ApiService {
     fun isLoggedIn(): Single<Boolean>

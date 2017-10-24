@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class ProdApiService : ApiService {
 

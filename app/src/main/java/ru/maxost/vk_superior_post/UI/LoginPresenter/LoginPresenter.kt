@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 class LoginPresenter @Inject constructor(private val dataManger: DataManger)
     : BasePresenter<LoginPresenter.View>() {

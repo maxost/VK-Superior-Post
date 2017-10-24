@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 /**
  * Created by Maxim Ostrovidov on 07.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 @Singleton
 @Component(modules = arrayOf(

@@ -7,7 +7,7 @@ import java.io.File
 
 /**
  * Created by Maxim Ostrovidov on 06.09.17.
- * (c) White Soft
+ * dustlooped@yandex.ru
  */
 interface FileService {
     fun getImagesFromGallery(count: Int): Single<List<File>>
